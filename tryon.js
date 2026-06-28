@@ -77,60 +77,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
     directionalLight.position.set(0, 1, 1);
     scene.add(directionalLight);
-    
-    // --- Procedural 3D Glasses Placeholder ---
-    // A beautiful true 3D pair of glasses using Three.js primitives
+       // --- Procedural Premium 3D Glasses (Square Matte Black & Gold) ---
     glassesModel = new THREE.Group();
 
-    const frameMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2, metalness: 0.8 });
-    const lensMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff, transmission: 0.9, opacity: 1, metalness: 0.1, roughness: 0,
-      ior: 1.5, thickness: 0.05, side: THREE.DoubleSide, transparent: true
-    });
+    // Materials
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1e, roughness: 0.9, metalness: 0.1 });
+    const lensMat = new THREE.MeshStandardMaterial({ color: 0xffffff, opacity: 0.15, transparent: true, metalness: 0.8, roughness: 0.1, side: THREE.DoubleSide });
     const goldMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.3, metalness: 1.0 });
 
-    const lensRadius = 0.22;
-    const lensRatio = 0.75; // Squish vertically to look like real oval/rectangular glasses
-    
-    // Lenses
-    const lensGeo = new THREE.CylinderGeometry(lensRadius, lensRadius, 0.01, 32);
-    lensGeo.rotateX(Math.PI / 2);
-    const lLens = new THREE.Mesh(lensGeo, lensMat);
-    lLens.position.set(-0.25, 0, 0);
-    lLens.scale.set(1, lensRatio, 1);
-    glassesModel.add(lLens);
-    const rLens = new THREE.Mesh(lensGeo, lensMat);
-    rLens.position.set(0.25, 0, 0);
-    rLens.scale.set(1, lensRatio, 1);
-    glassesModel.add(rLens);
+    const w = 0.52; // Lens width
+    const h = 0.38; // Lens height (1:1.37 ratio approx)
+    const r = 0.08; // Corner radius
+    const t = 0.025; // Frame thickness
 
-    // Frames
-    const frameGeo = new THREE.TorusGeometry(lensRadius, 0.02, 16, 64);
+    // Helper to draw rounded rectangle shape
+    const createRoundedRect = (width, height, radius) => {
+      const s = new THREE.Shape();
+      const x = -width/2, y = -height/2;
+      s.moveTo(x, y + radius);
+      s.lineTo(x, y + height - radius);
+      s.quadraticCurveTo(x, y + height, x + radius, y + height);
+      s.lineTo(x + width - radius, y + height);
+      s.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+      s.lineTo(x + width, y + radius);
+      s.quadraticCurveTo(x + width, y, x + width - radius, y);
+      s.lineTo(x + radius, y);
+      s.quadraticCurveTo(x, y, x, y + radius);
+      return s;
+    };
+
+    // Construct matte black front frames via extrusion
+    const outerShape = createRoundedRect(w, h, r);
+    const innerShape = createRoundedRect(w - t*2, h - t*2, r - t/2);
+    outerShape.holes.push(innerShape);
+
+    const extrudeSettings = { depth: 0.02, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 0.004, bevelThickness: 0.004 };
+    const lensExtrudeSettings = { depth: 0.002, bevelEnabled: false };
+
+    const frameGeo = new THREE.ExtrudeGeometry(outerShape, extrudeSettings);
+    const lensGeo = new THREE.ExtrudeGeometry(innerShape, lensExtrudeSettings);
+
     const lFrame = new THREE.Mesh(frameGeo, frameMat);
-    lFrame.position.set(-0.25, 0, 0);
-    lFrame.scale.set(1, lensRatio, 1);
-    glassesModel.add(lFrame);
     const rFrame = new THREE.Mesh(frameGeo, frameMat);
-    rFrame.position.set(0.25, 0, 0);
-    rFrame.scale.set(1, lensRatio, 1);
-    glassesModel.add(rFrame);
+    const lLens = new THREE.Mesh(lensGeo, lensMat);
+    const rLens = new THREE.Mesh(lensGeo, lensMat);
 
-    // Bridge
-    const bridgeGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.1, 16);
+    const frameOffset = w/2 + 0.04;
+    lFrame.position.set(-frameOffset, 0, 0);
+    rFrame.position.set(frameOffset, 0, 0);
+    lLens.position.set(-frameOffset, 0, 0.01);
+    rLens.position.set(frameOffset, 0, 0.01);
+    
+    glassesModel.add(lFrame, rFrame, lLens, rLens);
+
+    // Bridge (Thin black metal)
+    const bridgeGeo = new THREE.CylinderGeometry(0.008, 0.008, 0.1, 16);
     bridgeGeo.rotateZ(Math.PI / 2);
-    const bridge = new THREE.Mesh(bridgeGeo, goldMat);
+    const bridge = new THREE.Mesh(bridgeGeo, frameMat);
+    bridge.position.set(0, h/2 - 0.06, 0.01); // At top-center
     glassesModel.add(bridge);
 
-    // Side Arms (Temples) extending backwards into -Z
-    const templeLen = 0.6;
-    const templeGeo = new THREE.CylinderGeometry(0.015, 0.015, templeLen, 16);
-    templeGeo.rotateX(Math.PI / 2);
-    const lTemple = new THREE.Mesh(templeGeo, goldMat);
-    lTemple.position.set(-0.47, 0, -templeLen / 2);
-    glassesModel.add(lTemple);
-    const rTemple = new THREE.Mesh(templeGeo, goldMat);
-    rTemple.position.set(0.47, 0, -templeLen / 2);
-    glassesModel.add(rTemple);
+    // Ribbed Gold Hinges (Stack of thin blocks)
+    const hingeGroup = new THREE.Group();
+    const ribGeo = new THREE.BoxGeometry(0.02, 0.004, 0.025);
+    for (let i=0; i<4; i++) {
+      const rib = new THREE.Mesh(ribGeo, goldMat);
+      rib.position.y = (i - 1.5) * 0.006;
+      hingeGroup.add(rib);
+    }
+    const lHinge = hingeGroup.clone();
+    lHinge.position.set(-frameOffset - w/2 - 0.01, h/2 - 0.06, 0.01);
+    const rHinge = hingeGroup.clone();
+    rHinge.position.set(frameOffset + w/2 + 0.01, h/2 - 0.06, 0.01);
+    glassesModel.add(lHinge, rHinge);
+
+    // Temples (Tapered matte black)
+    const templeLen = 0.7;
+    const templeGeo = new THREE.BoxGeometry(0.015, 0.03, templeLen);
+    templeGeo.translate(0, 0, -templeLen/2); // Origin at hinge
+    const lTemple = new THREE.Mesh(templeGeo, frameMat);
+    lTemple.position.set(-frameOffset - w/2 - 0.015, h/2 - 0.06, 0.01);
+    const rTemple = new THREE.Mesh(templeGeo, frameMat);
+    rTemple.position.set(frameOffset + w/2 + 0.015, h/2 - 0.06, 0.01);
+    glassesModel.add(lTemple, rTemple);
 
     // Hide initially
     glassesModel.visible = false;
@@ -293,46 +322,38 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       // Key Landmarks
-      const leftEye = getV3(33);    // Physical left eye (right side of unmirrored screen)
-      const rightEye = getV3(263);  // Physical right eye (left side)
-      const noseTop = getV3(6);
-      const chin = getV3(152);      // Bottom of the face (much better for stable pitch than nose tip)
-      const leftTemple = getV3(234);
-      const rightTemple = getV3(454);
+      const leftOuterEye = getV3(33);    // Outer corner of right eye (left side of screen)
+      const rightOuterEye = getV3(263);  // Outer corner of left eye (right side of screen)
+      const leftInnerEye = getV3(133);
+      const rightInnerEye = getV3(362);
+      const leftPupil = getV3(468);
+      const rightPupil = getV3(473);
+      const noseBridge = new THREE.Vector3().addVectors(leftInnerEye, rightInnerEye).multiplyScalar(0.5);
+      const chin = getV3(152);
 
       // --- Calculate 3D Orientation Matrix ---
-      const center = new THREE.Vector3().addVectors(leftEye, rightEye).multiplyScalar(0.5);
+      const eyeCenter = new THREE.Vector3().addVectors(leftPupil, rightPupil).multiplyScalar(0.5);
       
-      // X Axis (Right-pointing vector from rightEye to leftEye)
-      // Since leftEye is on the right (+X), leftEye - rightEye points +X
-      const xAxis = new THREE.Vector3().subVectors(leftEye, rightEye).normalize();
-      
-      // Y Axis Temp (Up-pointing vector from chin to center of eyes)
-      // Using the chin creates a much flatter facial plane, avoiding artificial upward tilt from the nose tip
-      const yAxisTemp = new THREE.Vector3().subVectors(center, chin).normalize();
-      
-      // Z Axis (Out of face towards camera)
-      // X x Y = Z (Right x Up = Out)
+      const xAxis = new THREE.Vector3().subVectors(rightOuterEye, leftOuterEye).normalize();
+      const yAxisTemp = new THREE.Vector3().subVectors(eyeCenter, chin).normalize();
       const zAxis = new THREE.Vector3().crossVectors(xAxis, yAxisTemp).normalize();
-      
-      // True Orthogonal Y Axis (Z x X = Y)
       const yAxis = new THREE.Vector3().crossVectors(zAxis, xAxis).normalize();
 
-      // Create Quaternion from Rotation Matrix
       const rotationMatrix = new THREE.Matrix4().makeBasis(xAxis, yAxis, zAxis);
       const quaternion = new THREE.Quaternion().setFromRotationMatrix(rotationMatrix);
 
       // --- Calculate Position & Scale ---
-      // Scale based on temple distance
-      const templeDist = leftTemple.distanceTo(rightTemple);
-      const glassesWidth = templeDist * 1.15; // Slightly wider than temples
+      // Measure dynamic width from outer corners
+      const eyeWidth = leftOuterEye.distanceTo(rightOuterEye);
+      // Scale model so it extends slightly past outer corners
+      const glassesWidth = eyeWidth * 1.05; 
 
-      // Offset slightly down the nose from the eyes
-      const noseOffset = new THREE.Vector3().subVectors(noseTop, center).multiplyScalar(0.15);
-      const position = center.clone().add(noseOffset);
-      
-      // Push the glasses forward along the face normal (zAxis) so they rest on the nose/cheeks without clipping!
-      position.add(zAxis.clone().multiplyScalar(glassesWidth * 0.08));
+      // Pin position: 
+      // X and Z from the exact nose bridge (midpoint of inner eyes)
+      // Y from the pupils (so lenses vertically center on the eyes)
+      const position = new THREE.Vector3(noseBridge.x, eyeCenter.y, noseBridge.z);
+      // Push slightly forward along zAxis to prevent clipping into forehead/cheeks
+      position.add(zAxis.clone().multiplyScalar(glassesWidth * 0.05));
 
       // --- Smooth with EMA ---
       const alpha = 0.35;

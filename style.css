@@ -741,6 +741,10 @@ input:-webkit-autofill:active {
   z-index: 3; text-align: center; pointer-events: none;
   transition: opacity 0.5s ease;
 }
+.tryon-guide.hidden, .tryon-loading.hidden {
+  opacity: 0 !important;
+  pointer-events: none;
+}
 .guide-oval {
   width: 220px; height: 320px; border: 2px dashed rgba(255,255,255,0.6);
   border-radius: 50%; margin: 0 auto 20px auto;
