@@ -1,0 +1,40 @@
+<svg width="400" height="200" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Glow Filters -->
+  <defs>
+    <filter id="glowBlue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2CDCF6" />
+      <stop offset="100%" stop-color="#1976D2" />
+    </linearGradient>
+    <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4E157" />
+      <stop offset="100%" stop-color="#43A047" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Loop (Blue) with Arrow -->
+  <path d="M200 80 C150 -20, 50 10, 80 80 C110 150, 150 120, 200 80 Z" 
+        stroke="url(#gradBlue)" stroke-width="18" fill="none" 
+        stroke-linecap="round" filter="url(#glowBlue)"/>
+  <!-- Left Arrow Head -->
+  <polygon points="65,35 105,45 80,75" fill="url(#gradBlue)" filter="url(#glowBlue)"/>
+
+  <!-- Right Loop (Green) with Arrow -->
+  <path d="M200 80 C250 180, 350 150, 320 80 C290 10, 250 40, 200 80 Z" 
+        stroke="url(#gradGreen)" stroke-width="18" fill="none" 
+        stroke-linecap="round" filter="url(#glowGreen)"/>
+  <!-- Right Arrow Head -->
+  <polygon points="335,125 295,115 320,85" fill="url(#gradGreen)" filter="url(#glowGreen)"/>
+
+  <!-- Text -->
+  <text x="200" y="160" font-family="Inter, sans-serif" font-weight="700" font-size="44" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">
+    lensmakers
+  </text>
+</svg>
