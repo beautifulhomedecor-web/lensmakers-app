@@ -90,10 +90,8 @@ a, button, .category-card, .premium-card, .tryon-card, .trending-card { cursor: 
 
 /* Global App Wrapper for iOS scaling */
 .app-wrapper {
-  padding-bottom: 110px; /* Prevent bottom nav from hiding footer */
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.5s ease;
   transform-origin: center top;
-  will-change: transform, filter;
 }
 body.modal-open .app-wrapper {
   transform: scale(0.95) translateY(20px);
@@ -126,8 +124,6 @@ body.modal-open .app-wrapper {
 body::before, body::after {
   content: ''; position: fixed; width: 150vw; height: 150vh; top: -25vh; left: -25vw;
   z-index: -1; pointer-events: none; mix-blend-mode: screen;
-  will-change: transform;
-  transform: translateZ(0); /* Force GPU acceleration */
 }
 body::before {
   background: radial-gradient(circle at 30% 30%, rgba(255, 77, 141, 0.12) 0%, transparent 40%);
@@ -309,6 +305,7 @@ input:-webkit-autofill:active {
   transition: transform 300ms ease, box-shadow 300ms ease;
   transform-style: preserve-3d;
   position: relative;
+  overflow: hidden;
 }
 
 .map-card::after {
@@ -327,8 +324,6 @@ input:-webkit-autofill:active {
   background: rgba(255, 255, 255, 0.05); /* Slight tint for the map area */
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
-  border-top-left-radius: calc(var(--radius-lg) - 1px);
-  border-top-right-radius: calc(var(--radius-lg) - 1px);
 }
 
 /* Adapting map SVG colors for dark mode */
@@ -732,7 +727,10 @@ input:-webkit-autofill:active {
 /* Live Video & Canvas */
 .tryon-video, .tryon-canvas, .snapshot-img {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  object-fit: cover; transform: scaleX(-1); /* Mirror */
+  object-fit: cover;
+}
+.tryon-video.mirrored, .tryon-canvas.mirrored {
+  transform: scaleX(-1); /* Mirror for selfie camera */
 }
 .snapshot-img { transform: none; } /* Result image is already flipped */
 .tryon-canvas { z-index: 2; }
@@ -763,27 +761,7 @@ input:-webkit-autofill:active {
   display: flex; justify-content: space-between; align-items: center;
   z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
 }
-/* ---- Header ---- */
-.header {
-  position: sticky; top: 0; z-index: 100;
-  padding: 16px var(--page-padding);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: 0 4px 30px rgba(0,0,0,0.2);
-}
 
-.header__inner {
-  display: flex; justify-content: space-between; align-items: center;
-}
-
-.header__brand {
-  display: flex; align-items: center; gap: 8px; cursor: pointer;
-}
-.header__wordmark {
-  font-weight: 700; font-size: 1.15rem; letter-spacing: -0.5px;
-}
 .icon-btn {
   background: rgba(0,0,0,0.3); border: none; border-radius: 50%;
   width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
@@ -890,9 +868,6 @@ input:-webkit-autofill:active {
   .header {
     max-width: 1200px;
     top: 20px;
-    margin: 0 auto;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--glass-border);
   }
   
   /* Make Navigation a floating macOS-style dock */

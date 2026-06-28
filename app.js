@@ -196,29 +196,23 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---- 3D Parallax Tilt Effect (Mouse & Touch) ---- */
   const interactiveCards = document.querySelectorAll('.map-card, .category-card, .premium-card, .tryon-card, .trending-card');
   
-  let ticking = false;
   const handleMove = (e, card) => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        const rect = card.getBoundingClientRect();
-        const clientX = e.clientX;
-        const clientY = e.clientY;
-        
-        const x = clientX - rect.left; 
-        const y = clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = ((y - centerY) / centerY) * -15; // Max 15deg tilt
-        const rotateY = ((x - centerX) / centerX) * 15;
-        
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-        card.style.transition = 'transform 0.1s ease';
-        ticking = false;
-      });
-      ticking = true;
-    }
+    const rect = card.getBoundingClientRect();
+    // Get coordinates from either mouse or first touch point
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    const x = clientX - rect.left; 
+    const y = clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = ((y - centerY) / centerY) * -15; // Max 15deg tilt
+    const rotateY = ((x - centerX) / centerX) * 15;
+    
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    card.style.transition = 'transform 0.1s ease';
   };
 
   const handleLeave = (card) => {
@@ -227,9 +221,15 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   interactiveCards.forEach(card => {
-    // Only bind mouse events (Disable 3D tilt on mobile touch to prevent scroll lag)
+    // Mouse Events
     card.addEventListener('mousemove', (e) => handleMove(e, card));
     card.addEventListener('mouseleave', () => handleLeave(card));
+    
+    // Touch Events (Mobile)
+    card.addEventListener('touchstart', (e) => handleMove(e, card), { passive: true });
+    card.addEventListener('touchmove', (e) => handleMove(e, card), { passive: true });
+    card.addEventListener('touchend', () => handleLeave(card));
+    card.addEventListener('touchcancel', () => handleLeave(card));
   });
 
   /* ---- Custom Cursor & Spotlight Hover ---- */
@@ -237,30 +237,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const cursorGlow = document.getElementById('cursorGlow');
   
   if (cursorDot && cursorGlow) {
-    let cursorX = 0, cursorY = 0;
-    let glowX = 0, glowY = 0;
-    
     document.addEventListener('mousemove', (e) => {
-      cursorX = e.clientX;
-      cursorY = e.clientY;
+      cursorDot.style.left = `${e.clientX}px`;
+      cursorDot.style.top = `${e.clientY}px`;
       
-      // Instantly move the dot
-      cursorDot.style.left = `${cursorX}px`;
-      cursorDot.style.top = `${cursorY}px`;
+      // Slight delay for the outer glow (magnetic feel)
+      setTimeout(() => {
+        cursorGlow.style.left = `${e.clientX}px`;
+        cursorGlow.style.top = `${e.clientY}px`;
+      }, 50);
     });
-    
-    // Smooth animation loop for the magnetic glow
-    const animateGlow = () => {
-      // Ease glow position towards cursor
-      glowX += (cursorX - glowX) * 0.15;
-      glowY += (cursorY - glowY) * 0.15;
-      
-      cursorGlow.style.left = `${glowX}px`;
-      cursorGlow.style.top = `${glowY}px`;
-      
-      requestAnimationFrame(animateGlow);
-    };
-    animateGlow();
     
     // Magnetic snap on interactable elements
     const interactables = document.querySelectorAll('button, a, .category-card, .premium-card, .trending-card, .bottom-nav__item');
