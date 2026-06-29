@@ -1,475 +1,258 @@
-/* ============================================
-   LENSMAKERS — Virtual Try-On Engine (v3 - True 3D WebGL)
-   Real-time AR Glasses overlay using MediaPipe FaceMesh & Three.js
-   ============================================ */
+/**
+ * Lensmaker - Virtual Try-On
+ * Uses MediaPipe Face Mesh to overlay glasses in real-time via webcam.
+ *
+ * HTML requirements:
+ *   <video id="input-video" playsinline style="display:none;"></video>
+ *   <canvas id="output-canvas"></canvas>
+ *   <img id="glasses-img" src="glasses.png" style="display:none;" crossorigin="anonymous" />
+ *
+ * CDN requirements (load before this script):
+ *   @mediapipe/camera_utils
+ *   @mediapipe/drawing_utils
+ *   @mediapipe/face_mesh
+ */
 
-// --- Configuration ---
-// Determines how wide the glasses render relative to the user's outer eye corners.
-// 1.6 = 160% of the distance between outer eye corners. Tune this to adjust overall fit!
-const SCALE_MULTIPLIER = 1.6;
+// ─── Constants ───────────────────────────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
-  // ---- DOM Elements ----
-  const tryonModal    = document.getElementById('tryonModal');
-  const tryonPermission = document.getElementById('tryonPermission');
-  const tryonLive     = document.getElementById('tryonLive');
-  const tryonResult   = document.getElementById('tryonResult');
-  const tryonLoading  = document.getElementById('tryonLoading');
-  const tryonGuide    = document.getElementById('tryonGuide');
+/**
+ * MediaPipe landmark indices used for glasses placement.
+ *
+ * Face Mesh gives 468 landmarks. Key ones for eyewear:
+ *   33  = left eye outer corner  (from user's perspective: their right)
+ *   263 = right eye outer corner (from user's perspective: their left)
+ *   168 = nose bridge (mid-point between eyes, on nose)
+ *   197 = nose tip area (used as depth anchor)
+ *
+ * Reference: https://github.com/google/mediapipe/blob/master/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+ */
+const LM = {
+  LEFT_EYE_OUTER: 33,
+  RIGHT_EYE_OUTER: 263,
+  NOSE_BRIDGE: 168,
+  LEFT_EYE_INNER: 133,
+  RIGHT_EYE_INNER: 362,
+};
 
-  const videoElement  = document.getElementById('tryonVideo');
-  const canvasElement = document.getElementById('tryonCanvas');
-  const canvasCtx     = canvasElement.getContext('2d');
-  const snapshotImg   = document.getElementById('snapshotImg');
+/**
+ * How much wider than the eye-to-eye span to make the glasses frame.
+ * 1.5 = glasses are 50% wider than the raw eye span. Tune to taste.
+ */
+const GLASSES_WIDTH_SCALE = 1.28;
 
-  const allowCameraBtn   = document.getElementById('allowCameraBtn');
-  const closePermissionBtn = document.getElementById('closePermissionBtn');
-  const closeTryonBtn    = document.getElementById('closeTryonBtn');
-  const flipCameraBtn    = document.getElementById('flipCameraBtn');
-  const captureBtn       = document.getElementById('captureBtn');
-  const retakeBtn        = document.getElementById('retakeBtn');
-  const closeResultBtn   = document.getElementById('closeResultBtn');
-  
-  const glassesThumbs    = document.querySelectorAll('.glasses-thumb');
-  const liveFrameName    = document.getElementById('liveFrameName');
+/**
+ * Vertical offset: move glasses up relative to the eye-center line.
+ * Positive = move up (as fraction of glasses height).
+ */
+const GLASSES_VERTICAL_OFFSET_RATIO = 0.25;
 
-  // ---- State ----
-  let stream = null;
-  let faceMesh = null;
-  let isVideoPlaying = false;
-  let useFrontCamera = true;
-  let animationFrameId = null;
-  let faceDetected = false;
-  
-  // Smoothing state (EMA)
-  let smooth = null;
+/**
+ * Aspect ratio of your glasses PNG (width / height).
+ * Update this to match your actual PNG so it doesn't stretch.
+ * e.g. a 400x160 image → 400/160 = 2.5
+ */
+const GLASSES_ASPECT_RATIO = 2.1;
 
-  // ---- Three.js Setup ----
-  let scene, camera, renderer, glassesModel;
+// ─── State ───────────────────────────────────────────────────────────────────
 
-  const initThreeJs = () => {
-    if (renderer) return;
+let glassesImage = null;
+let isRunning = false;
+let camera = null;
 
-    // Create Scene
-    scene = new THREE.Scene();
+// ─── Init ─────────────────────────────────────────────────────────────────────
 
-    // Create Camera (Orthographic to match 2D pixel coordinates exactly)
-    // We will update dimensions in the render loop
-    camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 2000);
-    camera.position.z = 1000;
+/**
+ * Entry point. Call this from your page (e.g. button click or DOMContentLoaded).
+ * @param {string} [glassesImgId="glasses-img"] - ID of the <img> with the glasses PNG
+ */
+function initTryOn(glassesImgId = "glasses-img") {
+  const videoEl = document.getElementById("input-video");
+  const canvasEl = document.getElementById("output-canvas");
+  const imgEl = document.getElementById(glassesImgId);
 
-    // Create Renderer with transparent background
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
-    
-    // Add WebGL canvas to the DOM, position it exactly over the video
-    // IMPORTANT: Add 'tryon-canvas' class so it inherits the CSS mirror transform!
-    renderer.domElement.classList.add('tryon-canvas');
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.objectFit = 'cover';
-    renderer.domElement.style.zIndex = '3'; // Above the 2D canvas
-    
-    // Insert after tryonCanvas
-    canvasElement.parentNode.insertBefore(renderer.domElement, canvasElement.nextSibling);
+  if (!videoEl || !canvasEl || !imgEl) {
+    console.error("[Lensmaker] Missing required elements: #input-video, #output-canvas, or #" + glassesImgId);
+    return;
+  }
 
-    // Lights for realism
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
-    
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(0, 1, 1);
-    scene.add(directionalLight);
-       // --- Procedural Premium 3D Glasses (Square Matte Black & Gold) ---
-    glassesModel = new THREE.Group();
-    const modelBase = new THREE.Group(); // Inner group for normalization
+  glassesImage = imgEl;
 
-    // Materials
-    const frameMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1e, roughness: 0.9, metalness: 0.1 });
-    const lensMat = new THREE.MeshStandardMaterial({ color: 0xffffff, opacity: 0.15, transparent: true, metalness: 0.8, roughness: 0.1, side: THREE.DoubleSide });
-    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.3, metalness: 1.0 });
+  // ── Set up MediaPipe Face Mesh ──────────────────────────────────────────────
+  const faceMesh = new FaceMesh({
+    locateFile: (file) =>
+      `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+  });
 
-    const w = 0.52; // Lens width
-    const h = 0.38; // Lens height (1:1.37 ratio approx)
-    const r = 0.08; // Corner radius
-    const t = 0.025; // Frame thickness
-    const gap = w * 0.14; // Bridge gap = 14% of lens width
-    const frameOffset = (w + gap) / 2; // Center offset for left/right lenses
+  faceMesh.setOptions({
+    maxNumFaces: 1,
+    refineLandmarks: true,   // More accurate eye/lip landmarks
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5,
+  });
 
-    // Total physical width of the model from left edge to right edge
-    const totalPhysicalWidth = (frameOffset + w/2 + 0.01) * 2; 
+  faceMesh.onResults((results) => onFaceMeshResults(results, canvasEl));
 
-    // Helper to draw rounded rectangle shape
-    const createRoundedRect = (width, height, radius) => {
-      const s = new THREE.Shape();
-      const x = -width/2, y = -height/2;
-      s.moveTo(x, y + radius);
-      s.lineTo(x, y + height - radius);
-      s.quadraticCurveTo(x, y + height, x + radius, y + height);
-      s.lineTo(x + width - radius, y + height);
-      s.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
-      s.lineTo(x + width, y + radius);
-      s.quadraticCurveTo(x + width, y, x + width - radius, y);
-      s.lineTo(x + radius, y);
-      s.quadraticCurveTo(x, y, x, y + radius);
-      return s;
+  // ── Set up Camera ───────────────────────────────────────────────────────────
+  camera = new Camera(videoEl, {
+    onFrame: async () => {
+      await faceMesh.send({ image: videoEl });
+    },
+    width: 1280,
+    height: 720,
+  });
+
+  camera.start().then(() => {
+    isRunning = true;
+    console.log("[Lensmaker] Camera started.");
+  }).catch((err) => {
+    console.error("[Lensmaker] Camera error:", err);
+    showError(canvasEl, "Camera access denied. Please allow webcam permission.");
+  });
+}
+
+// ─── Core: Draw Frame ─────────────────────────────────────────────────────────
+
+/**
+ * Called on every frame by MediaPipe.
+ * Draws the webcam feed + glasses overlay onto the canvas.
+ */
+function onFaceMeshResults(results, canvasEl) {
+  const ctx = canvasEl.getContext("2d");
+  const { width, height } = results.image;
+
+  // Keep canvas resolution in sync with the video feed
+  canvasEl.width = width;
+  canvasEl.height = height;
+
+  // 1. Draw the raw webcam frame
+  ctx.save();
+  ctx.clearRect(0, 0, width, height);
+
+  // Mirror the canvas so it feels like looking in a mirror
+  ctx.translate(width, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(results.image, 0, 0, width, height);
+  ctx.restore();
+
+  // 2. If face detected, draw glasses
+  if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+    const landmarks = results.multiFaceLandmarks[0];
+    drawGlasses(ctx, landmarks, width, height);
+  }
+}
+
+// ─── Core: Glasses Overlay ───────────────────────────────────────────────────
+
+/**
+ * Calculates glasses position/size/rotation from landmarks and draws the PNG.
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Array} landmarks - Array of {x, y, z} objects (normalized 0–1)
+ * @param {number} W - Canvas width in px
+ * @param {number} H - Canvas height in px
+ */
+function drawGlasses(ctx, landmarks, W, H) {
+  if (!glassesImage || !glassesImage.complete) return;
+
+  // ── Step 1: Get key pixel coordinates ──────────────────────────────────────
+  // MediaPipe gives normalized coords (0–1). Multiply by canvas size.
+  // Because we mirrored the canvas with scale(-1,1), we must mirror X too.
+  const lm = (idx) => {
+    const pt = landmarks[idx];
+    return {
+      x: (1 - pt.x) * W,  // mirror X to match the flipped canvas
+      y: pt.y * H,
     };
-
-    // Construct matte black front frames via extrusion
-    const outerShape = createRoundedRect(w, h, r);
-    const innerShape = createRoundedRect(w - t*2, h - t*2, r - t/2);
-    outerShape.holes.push(innerShape);
-
-    const extrudeSettings = { depth: 0.02, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 0.004, bevelThickness: 0.004 };
-    const lensExtrudeSettings = { depth: 0.002, bevelEnabled: false };
-
-    const frameGeo = new THREE.ExtrudeGeometry(outerShape, extrudeSettings);
-    const lensGeo = new THREE.ExtrudeGeometry(innerShape, lensExtrudeSettings);
-
-    const lFrame = new THREE.Mesh(frameGeo, frameMat);
-    const rFrame = new THREE.Mesh(frameGeo, frameMat);
-    const lLens = new THREE.Mesh(lensGeo, lensMat);
-    const rLens = new THREE.Mesh(lensGeo, lensMat);
-
-    lFrame.position.set(-frameOffset, 0, 0);
-    rFrame.position.set(frameOffset, 0, 0);
-    lLens.position.set(-frameOffset, 0, 0.01);
-    rLens.position.set(frameOffset, 0, 0.01);
-    
-    modelBase.add(lFrame, rFrame, lLens, rLens);
-
-    // Bridge (Thin black metal)
-    const bridgeGeo = new THREE.CylinderGeometry(0.008, 0.008, gap + 0.02, 16);
-    bridgeGeo.rotateZ(Math.PI / 2);
-    const bridge = new THREE.Mesh(bridgeGeo, frameMat);
-    bridge.position.set(0, h/2 - 0.06, 0.01); // At top-center
-    modelBase.add(bridge);
-
-    // Ribbed Gold Hinges (Stack of thin blocks)
-    const hingeGroup = new THREE.Group();
-    const ribGeo = new THREE.BoxGeometry(0.02, 0.004, 0.025);
-    for (let i=0; i<4; i++) {
-      const rib = new THREE.Mesh(ribGeo, goldMat);
-      rib.position.y = (i - 1.5) * 0.006;
-      hingeGroup.add(rib);
-    }
-    const lHinge = hingeGroup.clone();
-    lHinge.position.set(-frameOffset - w/2 - 0.01, h/2 - 0.06, 0.01);
-    const rHinge = hingeGroup.clone();
-    rHinge.position.set(frameOffset + w/2 + 0.01, h/2 - 0.06, 0.01);
-    modelBase.add(lHinge, rHinge);
-
-    // Temples (Tapered matte black) extending further back
-    const templeLen = 1.0; 
-    const templeGeo = new THREE.BoxGeometry(0.015, 0.03, templeLen);
-    templeGeo.translate(0, 0, -templeLen/2); // Origin at hinge
-    const lTemple = new THREE.Mesh(templeGeo, frameMat);
-    lTemple.position.set(-frameOffset - w/2 - 0.015, h/2 - 0.06, 0.01);
-    // Slight outward angle so they don't dig into the temples
-    lTemple.rotation.y = -0.05; 
-    const rTemple = new THREE.Mesh(templeGeo, frameMat);
-    rTemple.position.set(frameOffset + w/2 + 0.015, h/2 - 0.06, 0.01);
-    rTemple.rotation.y = 0.05;
-    modelBase.add(lTemple, rTemple);
-
-    // NORMALIZE MODEL SCALE: Set inner group scale so physical width == 1.0
-    // This allows glassesModel.scale.setScalar(targetWidth) to be perfectly accurate in pixels!
-    modelBase.scale.setScalar(1 / totalPhysicalWidth);
-    
-    // Y-Axis shift: center the origin vertically precisely on the lenses
-    // Since lenses are symmetrically drawn around Y=0, no shift is needed.
-    // The model origin (0,0) natively represents the vertical center of the lenses.
-
-    glassesModel.add(modelBase);
-
-    // Hide initially
-    glassesModel.visible = false;
-    scene.add(glassesModel);
   };
 
-  // ---- Modal Logic ----
-  window.openTryOnModal = () => {
-    document.body.classList.add('modal-open');
-    tryonModal.classList.remove('hidden');
-    tryonPermission.classList.remove('hidden');
-    tryonLive.classList.add('hidden');
-    tryonResult.classList.add('hidden');
-    smooth = null;
-    faceDetected = false;
-  };
+  const leftEyeOuter  = lm(LM.LEFT_EYE_OUTER);
+  const rightEyeOuter = lm(LM.RIGHT_EYE_OUTER);
+  const noseBridge    = lm(LM.NOSE_BRIDGE);
 
-  const closeTryon = () => {
-    document.body.classList.remove('modal-open');
-    tryonModal.classList.add('hidden');
-    stopCamera();
-    smooth = null;
-    faceDetected = false;
-  };
-  if (closePermissionBtn) closePermissionBtn.addEventListener('click', closeTryon);
-  if (closeTryonBtn) closeTryonBtn.addEventListener('click', closeTryon);
-  if (closeResultBtn) closeResultBtn.addEventListener('click', closeTryon);
+  // ── Step 2: Calculate glasses center (nose bridge midpoint) ────────────────
+  const centerX = noseBridge.x;
+  const centerY = noseBridge.y;
 
-  // ---- Camera Setup ----
-  if (allowCameraBtn) {
-    allowCameraBtn.addEventListener('click', async () => {
-      tryonPermission.classList.add('hidden');
-      tryonLive.classList.remove('hidden');
-      tryonLoading.classList.remove('hidden');
-      tryonGuide.classList.remove('hidden');
-      initThreeJs();
-      await startCamera();
-    });
+  // ── Step 3: Calculate glasses width from eye span ──────────────────────────
+  const eyeSpan = Math.hypot(
+    rightEyeOuter.x - leftEyeOuter.x,
+    rightEyeOuter.y - leftEyeOuter.y
+  );
+  const glassesWidth = eyeSpan * GLASSES_WIDTH_SCALE;
+  const glassesHeight = glassesWidth / GLASSES_ASPECT_RATIO;
+
+  // ── Step 4: Calculate rotation (tilt of glasses to match head tilt) ────────
+  const angle = Math.atan2(
+    rightEyeOuter.y - leftEyeOuter.y,
+    rightEyeOuter.x - leftEyeOuter.x
+  );
+
+  // ── Step 5: Draw ───────────────────────────────────────────────────────────
+  ctx.save();
+
+  // Move to glasses center, rotate, then draw centered
+  ctx.translate(centerX, centerY);
+  ctx.rotate(angle);
+
+  // Shift glasses up so they sit on the eyes, not the nose
+  const verticalOffset = glassesHeight * GLASSES_VERTICAL_OFFSET_RATIO;
+
+  ctx.drawImage(
+    glassesImage,
+    -glassesWidth / 2,                  // x: center horizontally
+    -glassesHeight / 2 - verticalOffset, // y: shift up onto eyes
+    glassesWidth,
+    glassesHeight
+  );
+
+  ctx.restore();
+}
+
+// ─── Glasses Switcher ────────────────────────────────────────────────────────
+
+/**
+ * Swap the glasses PNG at runtime (e.g. when user clicks a different frame).
+ * @param {string} imageSrc - URL or path to the new glasses PNG
+ */
+function setGlasses(imageSrc) {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => { glassesImage = img; };
+  img.onerror = () => { console.error("[Lensmaker] Failed to load glasses image:", imageSrc); };
+  img.src = imageSrc;
+}
+
+// ─── Controls ────────────────────────────────────────────────────────────────
+
+/** Stop the webcam and face tracking. */
+function stopTryOn() {
+  if (camera) {
+    camera.stop();
+    isRunning = false;
+    console.log("[Lensmaker] Camera stopped.");
   }
+}
 
-  const startCamera = async () => {
-    if (stream) stopCamera();
-    try {
-      // Use higher ideal resolution; mobile browsers will automatically adapt to the best native aspect ratio (e.g. 9:16 portrait)
-      const constraints = { 
-        video: { 
-          facingMode: useFrontCamera ? 'user' : 'environment', 
-          width: { ideal: 1920 }, 
-          height: { ideal: 1080 } 
-        } 
-      };
-      stream = await navigator.mediaDevices.getUserMedia(constraints);
-      videoElement.srcObject = stream;
-
-      videoElement.onloadedmetadata = () => {
-        videoElement.play();
-        isVideoPlaying = true;
-        
-        // CSS Mirroring for selfie camera
-        if (useFrontCamera) {
-          videoElement.classList.add('mirrored');
-          canvasElement.classList.add('mirrored');
-          if (renderer) renderer.domElement.classList.add('mirrored');
-        } else {
-          videoElement.classList.remove('mirrored');
-          canvasElement.classList.remove('mirrored');
-          if (renderer) renderer.domElement.classList.remove('mirrored');
-        }
-        
-        initFaceMesh();
-      };
-    } catch (err) {
-      console.error('Camera failed:', err);
-      alert('Camera access is required for Virtual Try-On.');
-      closeTryon();
-    }
-  };
-
-  const stopCamera = () => {
-    if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
-    isVideoPlaying = false;
-    if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
-    // Do not destroy faceMesh so it opens instantly the next time without reloading the AI model!
-  };
-
-  if (flipCameraBtn) {
-    flipCameraBtn.addEventListener('click', async () => {
-      useFrontCamera = !useFrontCamera;
-      smooth = null;
-      tryonLoading.classList.remove('hidden');
-      await startCamera();
-    });
+/** Resume after stopping. */
+function resumeTryOn() {
+  if (camera && !isRunning) {
+    camera.start();
+    isRunning = true;
   }
+}
 
-  // ---- MediaPipe Initialization ----
-  const initFaceMesh = async () => {
-    if (!faceMesh) {
-      faceMesh = new FaceMesh({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}` });
-      faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-      faceMesh.onResults(onResults);
-    }
+// ─── Error display ───────────────────────────────────────────────────────────
 
-    const trackFrame = async () => {
-      if (!isVideoPlaying) return;
-      if (videoElement.readyState >= 2) {
-        try { await faceMesh.send({ image: videoElement }); } catch (e) {}
-      }
-      if (isVideoPlaying) animationFrameId = requestAnimationFrame(trackFrame);
-    };
-    trackFrame();
-  };
+function showError(canvasEl, message) {
+  const ctx = canvasEl.getContext("2d");
+  canvasEl.width = 640;
+  canvasEl.height = 360;
+  ctx.fillStyle = "#1a1a1a";
+  ctx.fillRect(0, 0, 640, 360);
+  ctx.fillStyle = "#ff6b6b";
+  ctx.font = "bold 18px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(message, 320, 180);
+}
 
-  // ---- 3D Math & Rendering ----
-  const onResults = (results) => {
-    // 1. Sync canvas and renderer size to video stream
-    const w = videoElement.videoWidth;
-    const h = videoElement.videoHeight;
-    
-    if (canvasElement.width !== w || canvasElement.height !== h) {
-      canvasElement.width = w;
-      canvasElement.height = h;
-      
-      // MUST pass false to prevent Three.js from overriding the CSS 100% width/height
-      renderer.setSize(w, h, false);
-      
-      // Update Orthographic Camera bounds (-W/2 to W/2, H/2 to -H/2)
-      camera.left = -w / 2;
-      camera.right = w / 2;
-      camera.top = h / 2;
-      camera.bottom = -h / 2;
-      camera.updateProjectionMatrix();
-    }
-
-    // 2. Draw Video to 2D Canvas (Background)
-    canvasCtx.save();
-    canvasCtx.clearRect(0, 0, w, h);
-    canvasCtx.drawImage(results.image, 0, 0, w, h);
-    canvasCtx.restore();
-
-    // 3. Process Face Landmarks for 3D Overlay
-    if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-      if (!faceDetected) {
-        faceDetected = true;
-        tryonGuide.style.opacity = '0';
-        setTimeout(() => tryonGuide.classList.add('hidden'), 500);
-      }
-      if (!tryonLoading.classList.contains('hidden')) tryonLoading.classList.add('hidden');
-
-      const lm = results.multiFaceLandmarks[0];
-
-      // Helper to convert normalized MediaPipe coords to Three.js coordinates
-      // Origin (0,0,0) is center of screen. +X is right, +Y is up, +Z is out of screen
-      const getV3 = (idx) => {
-        const p = lm[idx];
-        return new THREE.Vector3(
-          (p.x * w) - w/2,
-          -((p.y * h) - h/2),
-          -p.z * w // MediaPipe -z is closer to camera. Three.js +z is closer.
-        );
-      };
-
-      // Key Landmarks
-      const leftOuterEye = getV3(33);    // Outer corner of right eye (left side of screen)
-      const rightOuterEye = getV3(263);  // Outer corner of left eye (right side of screen)
-      const leftInnerEye = getV3(133);
-      const rightInnerEye = getV3(362);
-      const leftPupil = getV3(468);
-      const rightPupil = getV3(473);
-      const noseBridge = new THREE.Vector3().addVectors(leftInnerEye, rightInnerEye).multiplyScalar(0.5);
-      const chin = getV3(152);
-
-      // --- Calculate 3D Orientation Matrix ---
-      const eyeCenter = new THREE.Vector3().addVectors(leftPupil, rightPupil).multiplyScalar(0.5);
-      
-      const xAxis = new THREE.Vector3().subVectors(rightOuterEye, leftOuterEye).normalize();
-      const yAxisTemp = new THREE.Vector3().subVectors(eyeCenter, chin).normalize();
-      const zAxis = new THREE.Vector3().crossVectors(xAxis, yAxisTemp).normalize();
-      const yAxis = new THREE.Vector3().crossVectors(zAxis, xAxis).normalize();
-
-      const rotationMatrix = new THREE.Matrix4().makeBasis(xAxis, yAxis, zAxis);
-      const quaternion = new THREE.Quaternion().setFromRotationMatrix(rotationMatrix);
-
-      // --- Calculate Position & Scale ---
-      // 1. Live Frame Width Calculation
-      // Measure dynamic width from outer corners (continuously updated)
-      const eyeWidth = leftOuterEye.distanceTo(rightOuterEye);
-      
-      // Target Width: Using the global SCALE_MULTIPLIER
-      // Since modelBase is normalized to 1.0, setting the parent scale to targetWidth sets exact pixel size!
-      const targetWidth = eyeWidth * SCALE_MULTIPLIER;
-
-      // 2. Exact Vertical Alignment (Pupils)
-      // Pin position: 
-      // X and Z from the exact nose bridge (midpoint of inner eyes)
-      // Y from the precise pupil center height
-      const position = new THREE.Vector3(noseBridge.x, eyeCenter.y, noseBridge.z);
-      
-      // Push slightly forward along zAxis to prevent clipping into forehead/cheeks
-      position.add(zAxis.clone().multiplyScalar(targetWidth * 0.05));
-
-      // --- Smooth with EMA ---
-      const alpha = 0.35;
-      if (!smooth) {
-        smooth = { pos: position.clone(), quat: quaternion.clone(), scale: targetWidth };
-      } else {
-        smooth.pos.lerp(position, alpha);
-        smooth.quat.slerp(quaternion, alpha);
-        smooth.scale += (targetWidth - smooth.scale) * alpha;
-      }
-
-      // --- Apply to 3D Model ---
-      glassesModel.position.copy(smooth.pos);
-      glassesModel.quaternion.copy(smooth.quat);
-      glassesModel.scale.setScalar(smooth.scale);
-      glassesModel.visible = true;
-
-    } else {
-      faceDetected = false;
-      smooth = null;
-      glassesModel.visible = false;
-      if (tryonGuide.classList.contains('hidden')) {
-        tryonGuide.classList.remove('hidden');
-        tryonGuide.style.opacity = '1';
-      }
-    }
-
-    // 4. Render the 3D Scene
-    renderer.render(scene, camera);
-  };
-
-  // ---- Capture Photo ----
-  if (captureBtn) {
-    captureBtn.addEventListener('click', () => {
-      // Create a combined snapshot canvas
-      const snapCanvas = document.createElement('canvas');
-      snapCanvas.width = canvasElement.width;
-      snapCanvas.height = canvasElement.height;
-      const snapCtx = snapCanvas.getContext('2d');
-
-      // Draw background video canvas
-      if (useFrontCamera) {
-        snapCtx.translate(snapCanvas.width, 0);
-        snapCtx.scale(-1, 1);
-      }
-      snapCtx.drawImage(canvasElement, 0, 0);
-      
-      // Draw 3D overlay (WebGL renderer dom element)
-      snapCtx.drawImage(renderer.domElement, 0, 0);
-
-      const dataURL = snapCanvas.toDataURL('image/jpeg', 0.92);
-      snapshotImg.src = dataURL;
-
-      tryonLive.classList.add('hidden');
-      tryonResult.classList.remove('hidden');
-    });
-  }
-
-  // ---- Glasses Thumbnail Selection ----
-  // Since we are using a procedural 3D model for now, we just update the UI state.
-  // In a production environment, you would use a GLTFLoader to swap the 3D model here.
-  if (glassesThumbs) {
-    glassesThumbs.forEach(thumb => {
-      thumb.addEventListener('click', (e) => {
-        glassesThumbs.forEach(t => t.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        
-        const name = e.currentTarget.dataset.name;
-        const price = e.currentTarget.dataset.price;
-        if (liveFrameName) liveFrameName.textContent = `${name} — ${price}`;
-        
-        // Optional: Change the color of the procedural 3D glasses based on selection
-        if (glassesModel && glassesModel.children.length >= 4) {
-          const frameMat = glassesModel.children[2].material; // Left frame
-          if (name.includes('Aviator')) frameMat.color.setHex(0x111111);
-          else if (name.includes('Tortoise')) frameMat.color.setHex(0x5c4033);
-          else if (name.includes('Retro')) frameMat.color.setHex(0x333333);
-          else if (name.includes('Cat-Eye')) frameMat.color.setHex(0x800000);
-        }
-      });
-    });
-  }
-
-  // ---- Retake Photo ----
-  if (retakeBtn) {
-    retakeBtn.addEventListener('click', () => {
-      tryonResult.classList.add('hidden');
-      tryonLive.classList.remove('hidden');
-    });
-  }
-});
+// Auto-init removed. Controlled by app.js.
