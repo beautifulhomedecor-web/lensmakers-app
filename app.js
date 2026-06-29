@@ -277,14 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ---- Virtual Try-On trigger ---- */
-  const tryNowTrigger = document.getElementById('tryNowBtn');
-  if (tryNowTrigger) {
-    tryNowTrigger.addEventListener('click', () => {
-      if (window.openTryOnModal) window.openTryOnModal();
-    });
-  }
-
+  // Auto-init handled below in Lensmaker Unified block
 });
+
 // ─── Lensmaker Unified Camera & Modal Triggers ───────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
     const tryNowBtn = document.getElementById("tryNowBtn"); // Hero section button

@@ -36,7 +36,6 @@ const LM = {
 
 /**
  * How much wider than the eye-to-eye span to make the glasses frame.
- * 1.5 = glasses are 50% wider than the raw eye span. Tune to taste.
  */
 const GLASSES_WIDTH_SCALE = 1.28;
 
@@ -48,8 +47,6 @@ const GLASSES_VERTICAL_OFFSET_RATIO = 0.25;
 
 /**
  * Aspect ratio of your glasses PNG (width / height).
- * Update this to match your actual PNG so it doesn't stretch.
- * e.g. a 400x160 image → 400/160 = 2.5
  */
 const GLASSES_ASPECT_RATIO = 2.1;
 
@@ -58,6 +55,7 @@ const GLASSES_ASPECT_RATIO = 2.1;
 let glassesImage = null;
 let isRunning = false;
 let camera = null;
+let faceDetected = false;
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
@@ -66,12 +64,12 @@ let camera = null;
  * @param {string} [glassesImgId="glasses-img"] - ID of the <img> with the glasses PNG
  */
 function initTryOn(glassesImgId = "glasses-img") {
-  const videoEl = document.getElementById("input-video");
-  const canvasEl = document.getElementById("output-canvas");
+  const videoEl = document.getElementById("tryonVideo");
+  const canvasEl = document.getElementById("tryonCanvas");
   const imgEl = document.getElementById(glassesImgId);
 
   if (!videoEl || !canvasEl || !imgEl) {
-    console.error("[Lensmaker] Missing required elements: #input-video, #output-canvas, or #" + glassesImgId);
+    console.error("[Lensmaker] Missing required elements: #tryonVideo, #tryonCanvas, or #" + glassesImgId);
     return;
   }
 
@@ -136,6 +134,19 @@ function onFaceMeshResults(results, canvasEl) {
 
   // 2. If face detected, draw glasses
   if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+    if (!faceDetected) {
+      faceDetected = true;
+      const tryonGuide = document.getElementById("tryonGuide");
+      if (tryonGuide) {
+        tryonGuide.style.opacity = '0';
+        setTimeout(() => tryonGuide.classList.add('hidden'), 500);
+      }
+    }
+    const tryonLoading = document.getElementById("tryonLoading");
+    if (tryonLoading && !tryonLoading.classList.contains('hidden')) {
+      tryonLoading.classList.add('hidden');
+    }
+
     const landmarks = results.multiFaceLandmarks[0];
     drawGlasses(ctx, landmarks, width, height);
   }
@@ -181,11 +192,27 @@ function drawGlasses(ctx, landmarks, W, H) {
   const glassesWidth = eyeSpan * GLASSES_WIDTH_SCALE;
   const glassesHeight = glassesWidth / GLASSES_ASPECT_RATIO;
 
-  // ── Step 4: Calculate rotation (tilt of glasses to match head tilt) ────────
+  // ── Step 4: Calculate rotation & 360° Perspective Distortion ───────────────
   const angle = Math.atan2(
     rightEyeOuter.y - leftEyeOuter.y,
     rightEyeOuter.x - leftEyeOuter.x
   );
+
+  // Calculate Head Turn (Yaw) by comparing distance from eyes to nose bridge
+  const leftDist = noseBridge.x - leftEyeOuter.x;
+  const rightDist = rightEyeOuter.x - noseBridge.x;
+  const totalDist = leftDist + rightDist;
+  
+  // -1 (looking left) to +1 (looking right)
+  // Ensure we don't divide by zero
+  const yawRatio = totalDist > 0 ? (rightDist - leftDist) / totalDist : 0;
+  
+  // Dynamically compress width to fake 3D rotation (Max 35% compression at full profile)
+  const compression = Math.max(0.65, 1 - (Math.abs(yawRatio) * 0.35));
+  const finalGlassesWidth = glassesWidth * compression;
+  
+  // Nudge the glasses slightly toward the direction the face is turning (bridge depth)
+  const nudgeX = yawRatio * (glassesWidth * 0.15);
 
   // ── Step 5: Draw ───────────────────────────────────────────────────────────
   ctx.save();
@@ -199,10 +226,10 @@ function drawGlasses(ctx, landmarks, W, H) {
 
   ctx.drawImage(
     glassesImage,
-    -glassesWidth / 2,                  // x: center horizontally
+    (-finalGlassesWidth / 2) + nudgeX,   // x: apply perspective translation nudge
     -glassesHeight / 2 - verticalOffset, // y: shift up onto eyes
-    glassesWidth,
-    glassesHeight
+    finalGlassesWidth,                   // w: apply dynamic width compression
+    glassesHeight                        // h: keep height constant to simulate 3D rotation
   );
 
   ctx.restore();
