@@ -281,11 +281,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ─── Lensmaker Unified Camera & Modal Triggers ───────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-    const tryNowBtn = document.getElementById("tryNowBtn"); // Hero section button
-    const aiTryOnBtn = document.getElementById("navTryon");  // Bottom navigation icon
 
-    // Single master function to open layout and fire up MediaPipe tracking
+// Define modal toggle functions globally so they can be called by triggers
+window.openTryOnModal = () => {
+    const tryonModal = document.getElementById("tryonModal");
+    const tryonLive = document.getElementById("tryonLive");
+    const tryonPermission = document.getElementById("tryonPermission");
+    
+    if (tryonModal) tryonModal.classList.remove("hidden");
+    // Since we auto-start the camera, jump straight to the live view
+    if (tryonPermission) tryonPermission.classList.add("hidden");
+    if (tryonLive) tryonLive.classList.remove("hidden");
+};
+
+window.closeTryOnModal = () => {
+    const tryonModal = document.getElementById("tryonModal");
+    if (tryonModal) tryonModal.classList.add("hidden");
+    if (typeof stopTryOn === "function") stopTryOn();
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const tryNowBtn = document.getElementById("tryNowBtn"); 
+    const aiTryOnBtn = document.getElementById("navTryon");  
+    const closeTryonBtn = document.getElementById("closeTryonBtn");
+    const closePermissionBtn = document.getElementById("closePermissionBtn");
+
+    // Bind close buttons
+    if (closeTryonBtn) closeTryonBtn.addEventListener("click", window.closeTryOnModal);
+    if (closePermissionBtn) closePermissionBtn.addEventListener("click", window.closeTryOnModal);
+
     const startVirtualTryOn = () => {
         console.log("[Lensmaker] Launching UI Modal and Camera tracking...");
         
