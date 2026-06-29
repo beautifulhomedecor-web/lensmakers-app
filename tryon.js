@@ -3,6 +3,11 @@
    Real-time AR Glasses overlay using MediaPipe FaceMesh & Three.js
    ============================================ */
 
+// --- Configuration ---
+// Determines how wide the glasses render relative to the user's outer eye corners.
+// 1.6 = 160% of the distance between outer eye corners. Tune this to adjust overall fit!
+const SCALE_MULTIPLIER = 1.6;
+
 document.addEventListener('DOMContentLoaded', () => {
   // ---- DOM Elements ----
   const tryonModal    = document.getElementById('tryonModal');
@@ -79,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(directionalLight);
        // --- Procedural Premium 3D Glasses (Square Matte Black & Gold) ---
     glassesModel = new THREE.Group();
+    const modelBase = new THREE.Group(); // Inner group for normalization
 
     // Materials
     const frameMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1e, roughness: 0.9, metalness: 0.1 });
@@ -89,6 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const h = 0.38; // Lens height (1:1.37 ratio approx)
     const r = 0.08; // Corner radius
     const t = 0.025; // Frame thickness
+    const gap = w * 0.14; // Bridge gap = 14% of lens width
+    const frameOffset = (w + gap) / 2; // Center offset for left/right lenses
+
+    // Total physical width of the model from left edge to right edge
+    const totalPhysicalWidth = (frameOffset + w/2 + 0.01) * 2; 
 
     // Helper to draw rounded rectangle shape
     const createRoundedRect = (width, height, radius) => {
@@ -122,20 +133,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const lLens = new THREE.Mesh(lensGeo, lensMat);
     const rLens = new THREE.Mesh(lensGeo, lensMat);
 
-    const frameOffset = w/2 + 0.04;
     lFrame.position.set(-frameOffset, 0, 0);
     rFrame.position.set(frameOffset, 0, 0);
     lLens.position.set(-frameOffset, 0, 0.01);
     rLens.position.set(frameOffset, 0, 0.01);
     
-    glassesModel.add(lFrame, rFrame, lLens, rLens);
+    modelBase.add(lFrame, rFrame, lLens, rLens);
 
     // Bridge (Thin black metal)
-    const bridgeGeo = new THREE.CylinderGeometry(0.008, 0.008, 0.1, 16);
+    const bridgeGeo = new THREE.CylinderGeometry(0.008, 0.008, gap + 0.02, 16);
     bridgeGeo.rotateZ(Math.PI / 2);
     const bridge = new THREE.Mesh(bridgeGeo, frameMat);
     bridge.position.set(0, h/2 - 0.06, 0.01); // At top-center
-    glassesModel.add(bridge);
+    modelBase.add(bridge);
 
     // Ribbed Gold Hinges (Stack of thin blocks)
     const hingeGroup = new THREE.Group();
@@ -149,17 +159,30 @@ document.addEventListener('DOMContentLoaded', () => {
     lHinge.position.set(-frameOffset - w/2 - 0.01, h/2 - 0.06, 0.01);
     const rHinge = hingeGroup.clone();
     rHinge.position.set(frameOffset + w/2 + 0.01, h/2 - 0.06, 0.01);
-    glassesModel.add(lHinge, rHinge);
+    modelBase.add(lHinge, rHinge);
 
-    // Temples (Tapered matte black)
-    const templeLen = 0.7;
+    // Temples (Tapered matte black) extending further back
+    const templeLen = 1.0; 
     const templeGeo = new THREE.BoxGeometry(0.015, 0.03, templeLen);
     templeGeo.translate(0, 0, -templeLen/2); // Origin at hinge
     const lTemple = new THREE.Mesh(templeGeo, frameMat);
     lTemple.position.set(-frameOffset - w/2 - 0.015, h/2 - 0.06, 0.01);
+    // Slight outward angle so they don't dig into the temples
+    lTemple.rotation.y = -0.05; 
     const rTemple = new THREE.Mesh(templeGeo, frameMat);
     rTemple.position.set(frameOffset + w/2 + 0.015, h/2 - 0.06, 0.01);
-    glassesModel.add(lTemple, rTemple);
+    rTemple.rotation.y = 0.05;
+    modelBase.add(lTemple, rTemple);
+
+    // NORMALIZE MODEL SCALE: Set inner group scale so physical width == 1.0
+    // This allows glassesModel.scale.setScalar(targetWidth) to be perfectly accurate in pixels!
+    modelBase.scale.setScalar(1 / totalPhysicalWidth);
+    
+    // Y-Axis shift: center the origin vertically precisely on the lenses
+    // Since lenses are symmetrically drawn around Y=0, no shift is needed.
+    // The model origin (0,0) natively represents the vertical center of the lenses.
+
+    glassesModel.add(modelBase);
 
     // Hide initially
     glassesModel.visible = false;
@@ -343,26 +366,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const quaternion = new THREE.Quaternion().setFromRotationMatrix(rotationMatrix);
 
       // --- Calculate Position & Scale ---
-      // Measure dynamic width from outer corners
+      // 1. Live Frame Width Calculation
+      // Measure dynamic width from outer corners (continuously updated)
       const eyeWidth = leftOuterEye.distanceTo(rightOuterEye);
-      // Scale model so it extends slightly past outer corners
-      const glassesWidth = eyeWidth * 1.05; 
+      
+      // Target Width: Using the global SCALE_MULTIPLIER
+      // Since modelBase is normalized to 1.0, setting the parent scale to targetWidth sets exact pixel size!
+      const targetWidth = eyeWidth * SCALE_MULTIPLIER;
 
+      // 2. Exact Vertical Alignment (Pupils)
       // Pin position: 
       // X and Z from the exact nose bridge (midpoint of inner eyes)
-      // Y from the pupils (so lenses vertically center on the eyes)
+      // Y from the precise pupil center height
       const position = new THREE.Vector3(noseBridge.x, eyeCenter.y, noseBridge.z);
+      
       // Push slightly forward along zAxis to prevent clipping into forehead/cheeks
-      position.add(zAxis.clone().multiplyScalar(glassesWidth * 0.05));
+      position.add(zAxis.clone().multiplyScalar(targetWidth * 0.05));
 
       // --- Smooth with EMA ---
       const alpha = 0.35;
       if (!smooth) {
-        smooth = { pos: position.clone(), quat: quaternion.clone(), scale: glassesWidth };
+        smooth = { pos: position.clone(), quat: quaternion.clone(), scale: targetWidth };
       } else {
         smooth.pos.lerp(position, alpha);
         smooth.quat.slerp(quaternion, alpha);
-        smooth.scale += (glassesWidth - smooth.scale) * alpha;
+        smooth.scale += (targetWidth - smooth.scale) * alpha;
       }
 
       // --- Apply to 3D Model ---
