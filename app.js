@@ -285,3 +285,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+// ─── Lensmaker Unified Camera & Modal Triggers ───────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+    const tryNowBtn = document.getElementById("tryNowBtn"); // Hero section button
+    const aiTryOnBtn = document.getElementById("navTryon");  // Bottom navigation icon
+
+    // Single master function to open layout and fire up MediaPipe tracking
+    const startVirtualTryOn = () => {
+        console.log("[Lensmaker] Launching UI Modal and Camera tracking...");
+        
+        // 1. Open the visual modal window overlay
+        if (window.openTryOnModal) {
+            window.openTryOnModal();
+        }
+
+        // 2. Wait 300ms for layout transition to finish, then activate camera
+        setTimeout(() => {
+            if (typeof initTryOn === "function") {
+                initTryOn("glasses-img"); 
+            } else {
+                console.error("[Lensmaker] Tracking script 'initTryOn' was not found.");
+            }
+        }, 300);
+    };
+
+    // Attach the master function to BOTH user triggers
+    if (tryNowBtn) tryNowBtn.addEventListener("click", startVirtualTryOn);
+    if (aiTryOnBtn) aiTryOnBtn.addEventListener("click", startVirtualTryOn);
+});
