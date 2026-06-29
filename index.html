@@ -246,6 +246,21 @@
       </button>
     </section>
 
+    <!-- ========== AI FEATURES SECTION ========== -->
+    <section class="promo-section" id="aiSection" style="margin-bottom: 20px;">
+      <div class="promo-card" style="background: rgba(124, 77, 255, 0.1); border-color: rgba(124, 77, 255, 0.4);">
+        <div class="promo-card__bg-glow" style="background: rgba(124, 77, 255, 0.2);"></div>
+        <div class="promo-card__content">
+          <h3 class="promo-title">New AI Features</h3>
+          <p class="promo-desc">Test our new AI Scripts directly in the console.</p>
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn-primary-blue" style="font-size: 13px;" onclick="testPrescriptionAI()">Test Rx Scanner</button>
+            <button class="btn-primary" style="font-size: 13px;" onclick="testOutfitAI()">Test Outfit Match</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ========== PROMO / GUARANTEE SECTION ========== -->
     <section class="promo-section" id="promoSection">
       <div class="promo-card">
@@ -453,8 +468,32 @@
  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
-    <script src="tryon.js"></script>
+    <!-- AI Feature Scripts & Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <script src="ai-features.js"></script>
 
+    <script>
+      function testPrescriptionAI() {
+        alert("Testing Rx Scanner... check browser console.");
+        const mockText = "RX OD: +1.50 -0.50 x 180 OS: +1.25 -0.75 x 175 PD 62";
+        const result = window.LensmakersAI.PrescriptionScanner.parsePrescriptionData(mockText);
+        alert("Extracted Rx Data:\n" + JSON.stringify(result, null, 2));
+      }
+      
+      function testOutfitAI() {
+        alert("Testing Outfit Matcher... check browser console.");
+        const mockCollection = [
+          { name: "Tortoise Classic", colorCategory: "tortoise" },
+          { name: "Clear Acetate", colorCategory: "clear" },
+          { name: "Black Aviator", colorCategory: "black" }
+        ];
+        const result = window.LensmakersAI.OutfitMatcher.rankFramesByMatch('warm_tones', mockCollection);
+        alert("Recommended for Warm Tones:\n" + JSON.stringify(result, null, 2));
+      }
+    </script>
+
+    <script src="tryon.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

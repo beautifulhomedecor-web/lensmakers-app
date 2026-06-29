@@ -95,8 +95,8 @@ function initTryOn(glassesImgId = "glasses-img") {
     onFrame: async () => {
       await faceMesh.send({ image: videoEl });
     },
-    width: 1280,
-    height: 720,
+    width: 640,  // Lower resolution for much better mobile performance
+    height: 480,
   });
 
   camera.start().then(() => {
@@ -118,9 +118,10 @@ function onFaceMeshResults(results, canvasEl) {
   const ctx = canvasEl.getContext("2d");
   const { width, height } = results.image;
 
-  // Keep canvas resolution in sync with the video feed
-  canvasEl.width = width;
-  canvasEl.height = height;
+  if (canvasEl.width !== width) {
+    canvasEl.width = width;
+    canvasEl.height = height;
+  }
 
   // 1. Draw the raw webcam frame
   ctx.save();
@@ -223,6 +224,9 @@ function drawGlasses(ctx, landmarks, W, H) {
 
   // Shift glasses up so they sit on the eyes, not the nose
   const verticalOffset = glassesHeight * GLASSES_VERTICAL_OFFSET_RATIO;
+
+  // Fix white background on images by using multiply blending mode
+  ctx.globalCompositeOperation = 'multiply';
 
   ctx.drawImage(
     glassesImage,
