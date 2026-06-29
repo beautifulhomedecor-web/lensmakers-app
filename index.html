@@ -37,13 +37,10 @@
   <!-- ========== HEADER / TOP BAR ========== -->
   <header class="header" id="header">
     <div class="header__inner">
-      <div class="header__brand">
-        <!-- Logo: two overlapping circles -->
-        <svg class="header__logo" width="44" height="28" viewBox="0 0 44 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Lens Mart logo">
-          <circle cx="14" cy="14" r="11" stroke="#1E88E5" stroke-width="5" fill="none"/>
-          <circle cx="30" cy="14" r="11" stroke="#43A047" stroke-width="5" fill="none"/>
-        </svg>
-        <span class="header__wordmark">Lensmakers</span>
+      <div class="header__left">
+        <a href="#" class="header__brand" aria-label="Lensmakers Home">
+          <img src="images/logo.svg" alt="Lensmakers Logo" class="header__logo" style="height: 32px; width: auto;" />
+        </a>
       </div>
       <button class="header__profile" id="profileBtn" aria-label="Profile & Notifications">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A0A0A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -230,11 +227,10 @@
           </div>
         </div>
         <div class="tryon-card__right">
-          <!-- Small brand trust logo -->
-          <svg class="tryon-card__logo" width="28" height="16" viewBox="0 0 44 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="14" cy="14" r="10" stroke="#1E88E5" stroke-width="3.5" fill="none"/>
-            <circle cx="30" cy="14" r="10" stroke="#43A047" stroke-width="3.5" fill="none"/>
-          </svg>
+          <div class="tryon-card__header">
+            <img src="images/logo.svg" alt="Lensmakers Logo" class="tryon-card__logo" style="height: 24px; width: auto;" />
+            <span class="tryon-card__tag">AI Feature</span>
+          </div>
         </div>
       </div>
       <button class="tryon-cta" id="tryNowBtn">
@@ -420,7 +416,7 @@
       <div class="tryon-top-bar">
         <button id="closeTryonBtn" class="icon-btn" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         <div class="tryon-logo">
-          <svg width="28" height="16" viewBox="0 0 44 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#fff" stroke-width="3.5" fill="none"/><circle cx="30" cy="14" r="10" stroke="#fff" stroke-width="3.5" fill="none"/></svg>
+          <img src="images/logo.svg" alt="Lensmakers Logo" style="height: 24px; width: auto;" />
         </div>
         <button id="flipCameraBtn" class="icon-btn" aria-label="Flip Camera"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10"></path><path d="M3.51 15A9 9 0 0 0 18.36 18.36L23 14"></path></svg></button>
       </div>

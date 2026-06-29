@@ -83,7 +83,7 @@ function initTryOn(glassesImgId = "glasses-img") {
 
   faceMesh.setOptions({
     maxNumFaces: 1,
-    refineLandmarks: true,   // More accurate eye/lip landmarks
+    refineLandmarks: false, // Turned off to massively boost mobile performance
     minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5,
   });
@@ -95,8 +95,7 @@ function initTryOn(glassesImgId = "glasses-img") {
     onFrame: async () => {
       await faceMesh.send({ image: videoEl });
     },
-    width: 640,  // Lower resolution for much better mobile performance
-    height: 480,
+    facingMode: 'user' // Let device pick optimal mobile resolution to prevent rotation bugs
   });
 
   camera.start().then(() => {
@@ -194,10 +193,15 @@ function drawGlasses(ctx, landmarks, W, H) {
   const glassesHeight = glassesWidth / GLASSES_ASPECT_RATIO;
 
   // ── Step 4: Calculate rotation & 360° Perspective Distortion ───────────────
-  const angle = Math.atan2(
+  let angle = Math.atan2(
     rightEyeOuter.y - leftEyeOuter.y,
     rightEyeOuter.x - leftEyeOuter.x
   );
+
+  // Bulletproof fix: If the math flips 180-degrees due to mirroring, force it upright
+  if (Math.abs(angle) > Math.PI / 2) {
+    angle = angle > 0 ? angle - Math.PI : angle + Math.PI;
+  }
 
   // Calculate Head Turn (Yaw) by comparing distance from eyes to nose bridge
   const leftDist = noseBridge.x - leftEyeOuter.x;

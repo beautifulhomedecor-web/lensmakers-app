@@ -1,40 +1,50 @@
-<svg width="400" height="200" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Glow Filters -->
+<svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <filter id="glowBlue" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-    <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2CDCF6" />
-      <stop offset="100%" stop-color="#1976D2" />
+    <!-- Left Cyan Gradient -->
+    <linearGradient id="gradCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="100%" stop-color="#0080FF" />
     </linearGradient>
-    <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D4E157" />
-      <stop offset="100%" stop-color="#43A047" />
+    
+    <!-- Right Lime Gradient -->
+    <linearGradient id="gradLime" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E1FF00" />
+      <stop offset="100%" stop-color="#55CC00" />
     </linearGradient>
   </defs>
 
-  <!-- Left Loop (Blue) with Arrow -->
-  <path d="M200 80 C150 -20, 50 10, 80 80 C110 150, 150 120, 200 80 Z" 
-        stroke="url(#gradBlue)" stroke-width="18" fill="none" 
-        stroke-linecap="round" filter="url(#glowBlue)"/>
-  <!-- Left Arrow Head -->
-  <polygon points="65,35 105,45 80,75" fill="url(#gradBlue)" filter="url(#glowBlue)"/>
+  <!-- Left Lens (Cyan) -->
+  <!-- Flat top, horn pointing out-down, curved bottom -->
+  <path d="M 160 60 
+           C 180 60, 200 80, 220 100
+           C 180 150, 120 160, 80 140
+           C 50 120, 40 90, 40 80
+           C 25 80, 10 90, 10 100
+           C 10 80, 20 60, 40 60
+           C 80 60, 120 60, 160 60 Z
+           M 100 80
+           C 70 80, 60 110, 80 130
+           C 100 145, 140 140, 160 120
+           C 175 100, 150 80, 100 80 Z" 
+        fill="url(#gradCyan)" fill-rule="evenodd" />
 
-  <!-- Right Loop (Green) with Arrow -->
-  <path d="M200 80 C250 180, 350 150, 320 80 C290 10, 250 40, 200 80 Z" 
-        stroke="url(#gradGreen)" stroke-width="18" fill="none" 
-        stroke-linecap="round" filter="url(#glowGreen)"/>
-  <!-- Right Arrow Head -->
-  <polygon points="335,125 295,115 320,85" fill="url(#gradGreen)" filter="url(#glowGreen)"/>
+  <!-- Right Lens (Lime) -->
+  <!-- Overlaps the left lens at the bridge -->
+  <path d="M 220 60
+           C 260 60, 300 60, 340 60
+           C 360 60, 370 80, 370 100
+           C 370 90, 355 80, 340 80
+           C 340 90, 330 120, 300 140
+           C 260 160, 200 150, 160 100
+           C 180 80, 200 60, 220 60 Z
+           M 280 80
+           C 230 80, 205 100, 220 120
+           C 240 140, 280 145, 300 130
+           C 320 110, 310 80, 280 80 Z" 
+        fill="url(#gradLime)" fill-rule="evenodd" />
 
-  <!-- Text -->
-  <text x="200" y="160" font-family="Inter, sans-serif" font-weight="700" font-size="44" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">
+  <!-- "lensmakers" Text -->
+  <text x="390" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="64" fill="url(#gradLime)" letter-spacing="-2">
     lensmakers
   </text>
 </svg>

@@ -221,15 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   interactiveCards.forEach(card => {
-    // Mouse Events
+    // Mouse Events Only (Disabled Touch to fix severe mobile scrolling lag)
     card.addEventListener('mousemove', (e) => handleMove(e, card));
     card.addEventListener('mouseleave', () => handleLeave(card));
-    
-    // Touch Events (Mobile)
-    card.addEventListener('touchstart', (e) => handleMove(e, card), { passive: true });
-    card.addEventListener('touchmove', (e) => handleMove(e, card), { passive: true });
-    card.addEventListener('touchend', () => handleLeave(card));
-    card.addEventListener('touchcancel', () => handleLeave(card));
   });
 
   /* ---- Custom Cursor & Spotlight Hover ---- */
@@ -237,15 +231,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const cursorGlow = document.getElementById('cursorGlow');
   
   if (cursorDot && cursorGlow) {
+    // Use CSS for the magnetic delay instead of thousands of setTimeouts
+    cursorGlow.style.transition = 'left 0.08s ease-out, top 0.08s ease-out, width 0.2s, height 0.2s, background 0.2s';
+    
     document.addEventListener('mousemove', (e) => {
       cursorDot.style.left = `${e.clientX}px`;
       cursorDot.style.top = `${e.clientY}px`;
       
-      // Slight delay for the outer glow (magnetic feel)
-      setTimeout(() => {
-        cursorGlow.style.left = `${e.clientX}px`;
-        cursorGlow.style.top = `${e.clientY}px`;
-      }, 50);
+      cursorGlow.style.left = `${e.clientX}px`;
+      cursorGlow.style.top = `${e.clientY}px`;
     });
     
     // Magnetic snap on interactable elements
@@ -269,15 +263,35 @@ document.addEventListener('DOMContentLoaded', () => {
   glassCards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
+      card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
     });
   });
 
-  /* ---- Virtual Try-On trigger ---- */
-  // Auto-init handled below in Lensmaker Unified block
+  /* ---- Glasses Carousel Selection ---- */
+  const glassesThumbs = document.querySelectorAll('.glasses-thumb');
+  const liveFrameName = document.getElementById('liveFrameName');
+  
+  if (glassesThumbs.length > 0) {
+    glassesThumbs.forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        // Update active class
+        glassesThumbs.forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        
+        // Update Name and Price label
+        if (liveFrameName) {
+            liveFrameName.textContent = `${thumb.dataset.name} — ${thumb.dataset.price}`;
+        }
+        
+        // Push the new image to the tracking script
+        if (typeof setGlasses === 'function') {
+            setGlasses(thumb.dataset.model);
+        }
+      });
+    });
+  }
+
 });
 
 // ─── Lensmaker Unified Camera & Modal Triggers ───────────────────────────
