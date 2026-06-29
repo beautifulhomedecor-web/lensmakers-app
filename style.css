@@ -931,3 +931,40 @@ input:-webkit-autofill:active {
   /* Enhance Map Card Size */
   .map-card__illustration { height: 280px; }
 }
+
+/* ============================================
+   DESKTOP DASHBOARD LAYOUT (Image 2 Style)
+   ============================================ */
+@media (min-width: 1024px) {
+  .main-content {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 40px;
+    padding-top: 100px;
+    align-items: start;
+  }
+  
+  .header {
+    max-width: 1100px;
+  }
+  
+  /* Hide search bar for clean dashboard look */
+  .search-section { display: none; }
+  
+  /* Left Column Placement */
+  .map-section { grid-column: 1; grid-row: 1; padding-top: 0; }
+  .tryon-section { grid-column: 1; grid-row: 2; padding-top: 0; margin-top: -10px; }
+  .promo-section { grid-column: 1; grid-row: 3; padding-top: 0; }
+  
+  /* Right Column Placement */
+  .category-section { grid-column: 2; grid-row: 1; padding-top: 0; }
+  .premium-section { grid-column: 2; grid-row: 2 / span 2; padding-top: 0; }
+  .trending-section { grid-column: 2; grid-row: 4; padding-top: 0; }
+  
+  /* Tweak specific elements for dashboard */
+  .category-section .section-heading { display: none; }
+  .category-grid { gap: 16px; margin-top: 0; }
+  
+  .map-card__illustration { height: 200px; }
+}
