@@ -64,6 +64,12 @@ let faceDetected = false;
  * @param {string} [glassesImgId="glasses-img"] - ID of the <img> with the glasses PNG
  */
 function initTryOn(glassesImgId = "glasses-img") {
+  // Reuse existing camera instance to prevent leakages and multi-stream crashes
+  if (camera) {
+    resumeTryOn();
+    return;
+  }
+
   const videoEl = document.getElementById("tryonVideo");
   const canvasEl = document.getElementById("tryonCanvas");
   const imgEl = document.getElementById(glassesImgId);

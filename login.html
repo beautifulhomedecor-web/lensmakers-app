@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lensmakers - Log In / Sign Up</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <!-- Blurred glow blobs behind content -->
+  <div class="glow-container">
+    <div class="glow-blob glow-pink"></div>
+    <div class="glow-blob glow-blue"></div>
+  </div>
+
+  <div class="login-container">
+    <!-- Header/Logo Area -->
+    <header class="logo-header">
+      <div class="logo-wrap">
+        <svg class="logo-icon" width="48" height="28" viewBox="0 0 44 28" fill="none">
+          <circle cx="14" cy="14" r="10" stroke="#1E88E5" stroke-width="3.5" fill="none"/>
+          <circle cx="30" cy="14" r="10" stroke="#43A047" stroke-width="3.5" fill="none"/>
+        </svg>
+        <span class="logo-text">Lensmakers</span>
+      </div>
+      <h1 class="welcome-heading">Welcome to Lensmakers</h1>
+      <p class="welcome-subtext">See clearly. Look great.</p>
+    </header>
+
+    <!-- Tab Toggle -->
+    <div class="tab-toggle-pill">
+      <div class="active-indicator" id="activeIndicator"></div>
+      <button class="toggle-tab active" id="tabLoginBtn" onclick="switchTab('login')">Log In</button>
+      <button class="toggle-tab" id="tabSignupBtn" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Forms Wrapper (Slider) -->
+    <div class="forms-container">
+      <div class="forms-track" id="formsTrack">
+        <!-- 1. Log In Form -->
+        <form id="loginForm" class="auth-form active" onsubmit="handleAuthSubmit(event, 'login')">
+        <div class="input-group" id="loginEmailGroup">
+          <div class="input-wrapper">
+            <input type="text" id="loginEmail" placeholder="Email or Phone" oninput="validateLoginEmail()">
+            <span class="status-indicator"></span>
+          </div>
+          <span class="helper-text"></span>
+        </div>
+
+        <div class="input-group" id="loginPasswordGroup">
+          <div class="input-wrapper">
+            <input type="password" id="loginPassword" placeholder="Password" oninput="validateLoginPassword()">
+            <span class="status-indicator"></span>
+            <span class="toggle-password" onclick="togglePasswordVisibility('loginPassword', this)">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="eye-open"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+          </div>
+          <span class="helper-text"></span>
+        </div>
+
+        <div class="forgot-password-wrap">
+          <a href="#" class="forgot-password-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn" id="loginSubmitBtn">
+          <span class="btn-text">Log In</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+
+      <!-- 2. Sign Up Form -->
+      <form id="signupForm" class="auth-form" onsubmit="handleAuthSubmit(event, 'signup')">
+        <div class="input-group" id="signupNameGroup">
+          <div class="input-wrapper">
+            <input type="text" id="signupName" placeholder="Full Name" oninput="validateSignupName()">
+            <span class="status-indicator"></span>
+          </div>
+          <span class="helper-text"></span>
+        </div>
+
+        <div class="input-group" id="signupEmailGroup">
+          <div class="input-wrapper">
+            <input type="email" id="signupEmail" placeholder="Email Address" oninput="validateSignupEmail()">
+            <span class="status-indicator"></span>
+          </div>
+          <span class="helper-text"></span>
+        </div>
+
+        <div class="input-group" id="signupPhoneGroup">
+          <div class="input-wrapper">
+            <input type="tel" id="signupPhone" placeholder="Phone Number" oninput="validateSignupPhone()">
+            <span class="status-indicator"></span>
+          </div>
+          <span class="helper-text"></span>
+        </div>
+
+        <div class="input-group" id="signupPasswordGroup">
+          <div class="input-wrapper">
+            <input type="password" id="signupPassword" placeholder="Password" oninput="validateSignupPassword()">
+            <span class="status-indicator"></span>
+            <span class="toggle-password" onclick="togglePasswordVisibility('signupPassword', this)">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="eye-open"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+          </div>
+          <span class="helper-text"></span>
+        </div>
+
+        <div class="input-group" id="signupConfirmPasswordGroup">
+          <div class="input-wrapper">
+            <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" oninput="validateSignupConfirmPassword()">
+            <span class="status-indicator"></span>
+            <span class="toggle-password" onclick="togglePasswordVisibility('signupConfirmPassword', this)">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="eye-open"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+          </div>
+          <span class="helper-text"></span>
+        </div>
+
+        <div class="checkbox-row">
+          <label class="custom-checkbox">
+            <input type="checkbox" id="termsCheckbox" onchange="validateTerms()">
+            <span class="checkmark-box"></span>
+            <span class="checkbox-label">I agree to <a href="#" class="pink-link">Terms of Service</a> and <a href="#" class="pink-link">Privacy Policy</a></span>
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="signupSubmitBtn">
+          <span class="btn-text">Create Account</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+      </div> <!-- /forms-track -->
+    </div> <!-- /forms-container -->
+
+    <!-- Social Logins -->
+    <div class="social-login-wrap">
+      <div class="divider">
+        <span>or continue with</span>
+      </div>
+      <div class="social-buttons-row">
+        <!-- Google -->
+        <button class="social-btn" id="btnSocialGoogle" onclick="handleSocialLogin('google')" aria-label="Google">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12 5.04c1.64 0 3.12.56 4.28 1.67l3.2-3.2C17.52 1.63 14.96 1 12 1 7.36 1 3.4 3.66 1.56 7.56l3.86 3C6.34 7.56 8.96 5.04 12 5.04z"/>
+            <path fill="#4285F4" d="M23.5 12.25c0-.82-.07-1.6-.2-2.25H12v4.26h6.46c-.28 1.48-1.12 2.73-2.38 3.58l3.7 2.87c2.16-2 3.72-4.94 3.72-8.46z"/>
+            <path fill="#FBBC05" d="M5.42 14.44a6.94 6.94 0 0 1 0-4.88l-3.86-3a11.96 11.96 0 0 0 0 10.88l3.86-3z"/>
+            <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.7-2.87c-1.03.7-2.34 1.11-4.26 1.11-3.04 0-5.66-2.52-6.58-5.52l-3.86 3C3.4 20.34 7.36 23 12 23z"/>
+          </svg>
+        </button>
+        <!-- Apple -->
+        <button class="social-btn" id="btnSocialApple" onclick="handleSocialLogin('apple')" aria-label="Apple">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.1.09 2.23-.55 2.95-1.39z"/>
+          </svg>
+        </button>
+        <!-- Facebook -->
+        <button class="social-btn" id="btnSocialFacebook" onclick="handleSocialLogin('facebook')" aria-label="Facebook">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="12" fill="#1877F2"/>
+            <path d="M14 12h-2v7h-3v-7H7V9.5h2v-2c0-2 1.2-3 3.5-3 .8 0 1.5.1 1.5.1v2.4h-1.4c-1 0-1.1.5-1.1 1.2v1.3h2.5l-.5 2.5z" fill="#FFFFFF"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer Switcher -->
+    <footer class="auth-footer" id="authFooter">
+      Don't have an account? <span class="footer-action" onclick="switchTab('signup')">Sign Up</span>
+    </footer>
+  </div>
+
+  <!-- Google Account Chooser Modal (Real OAuth API Connection Simulation) -->
+  <div id="googleChooserModal" class="google-chooser-modal">
+    <div class="google-chooser-backdrop" onclick="closeGoogleChooser()"></div>
+    <div class="google-chooser-content">
+      <div class="google-header">
+        <svg width="32" height="32" viewBox="0 0 24 24" style="margin-bottom: 8px; display: inline-block;">
+          <path fill="#EA4335" d="M12 5.04c1.64 0 3.12.56 4.28 1.67l3.2-3.2C17.52 1.63 14.96 1 12 1 7.36 1 3.4 3.66 1.56 7.56l3.86 3C6.34 7.56 8.96 5.04 12 5.04z"/>
+          <path fill="#4285F4" d="M23.5 12.25c0-.82-.07-1.6-.2-2.25H12v4.26h6.46c-.28 1.48-1.12 2.73-2.38 3.58l3.7 2.87c2.16-2 3.72-4.94 3.72-8.46z"/>
+          <path fill="#FBBC05" d="M5.42 14.44a6.94 6.94 0 0 1 0-4.88l-3.86-3a11.96 11.96 0 0 0 0 10.88l3.86-3z"/>
+          <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.7-2.87c-1.03.7-2.34 1.11-4.26 1.11-3.04 0-5.66-2.52-6.58-5.52l-3.86 3C3.4 20.34 7.36 23 12 23z"/>
+        </svg>
+        <h3>Choose an account</h3>
+        <p>to continue to <span style="color: #FF4D8D; font-weight: 700;">Lensmakers</span></p>
+      </div>
+      <div class="google-accounts-list">
+        <div class="google-account-item" onclick="selectGoogleAccount('Demo User', 'demo@lensmakers.com', 'D')">
+          <div class="google-avatar" style="background: #C2185B;">D</div>
+          <div class="google-account-details">
+            <span class="google-account-name">Demo User</span>
+            <span class="google-account-email">demo@lensmakers.com</span>
+          </div>
+        </div>
+        <div class="google-account-item" onclick="selectGoogleAccount('Google User', 'user.google@gmail.com', 'G')">
+          <div class="google-avatar" style="background: #1E88E5;">G</div>
+          <div class="google-account-details">
+            <span class="google-account-name">Google User</span>
+            <span class="google-account-email">user.google@gmail.com</span>
+          </div>
+        </div>
+        <div class="google-account-item google-use-another" onclick="selectGoogleAccount('Custom User', 'custom.user@gmail.com', 'C')">
+          <div class="google-avatar-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="google-account-details">
+            <span class="google-account-name" style="color: #FF4D8D;">Use another account</span>
+          </div>
+        </div>
+      </div>
+      <div class="google-chooser-footer">
+        To continue, Google will share your name, email address, language preference, and profile picture with Lensmakers.
+      </div>
+    </div>
+  </div>
+
+  <!-- Google One Tap / Google Sign In API Platform SDK (Real OAuth API Connection) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

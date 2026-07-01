@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lensmakers - Payment Methods</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/payment.css">
+</head>
+<body>
+  <!-- Ambient background glow blobs -->
+  <div class="glow-container">
+    <div class="glow-blob glow-pink"></div>
+    <div class="glow-blob glow-blue"></div>
+  </div>
+
+  <!-- Checkout Flow Toggle Demo (Sticky floating controls for demo purposes) -->
+  <div class="demo-toggle-bar">
+    <label class="demo-switch">
+      <input type="checkbox" id="checkoutFlowToggle" onchange="toggleCheckoutFlow()">
+      <span class="switch-slider"></span>
+      <span class="switch-label">Toggle Checkout Flow Mode</span>
+    </label>
+  </div>
+
+  <div class="payment-screen">
+    <!-- Header Bar -->
+    <header class="payment-header">
+      <a href="index.html" class="back-btn" aria-label="Back">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <h1 class="header-title">Payment Methods</h1>
+      <div style="width: 24px;"></div> <!-- Spacer to center title -->
+    </header>
+
+    <!-- Order Summary (Visible only in Checkout Variant) -->
+    <div id="checkoutSummary" class="order-summary-card hidden">
+      <div class="summary-bg-glow"></div>
+      <div class="summary-content">
+        <div class="item-thumb-wrapper">
+          <img src="images/premium_frame_1.png" alt="Aviator Premium" class="item-thumb">
+        </div>
+        <div class="item-details">
+          <h2 class="item-name">Aviator Premium</h2>
+          <p class="item-meta">Size: Medium | Gold Rim</p>
+          <div class="total-row">
+            <span class="total-label">Total:</span>
+            <span class="total-price">₹1,499</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved Methods Section -->
+    <section class="payment-section">
+      <h2 class="section-label">Saved Cards & Methods</h2>
+      <div class="methods-list">
+        <!-- 1. Default Visa Card -->
+        <div class="method-card">
+          <div class="card-glow"></div>
+          <div class="method-left">
+            <div class="card-icon visa">
+              <span>VISA</span>
+            </div>
+          </div>
+          <div class="method-center">
+            <div class="method-title">•••• •••• •••• 4242</div>
+            <div class="method-subtitle">Jane Doe | Exp 12/28</div>
+          </div>
+          <div class="method-right">
+            <span class="badge badge-default">Default</span>
+          </div>
+        </div>
+
+        <!-- 2. Saved UPI ID -->
+        <div class="method-card">
+          <div class="card-glow"></div>
+          <div class="method-left">
+            <div class="card-icon upi">
+              <span>UPI</span>
+            </div>
+          </div>
+          <div class="method-center">
+            <div class="method-title">user@upi</div>
+            <div class="method-subtitle">Verified UPI Handle</div>
+          </div>
+          <div class="method-right">
+            <button class="menu-btn" aria-label="Options" onclick="openOptionsModal('user@upi')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add New Method Trigger -->
+    <button class="add-method-dashed-btn" onclick="toggleAddPaymentForm()">
+      <span class="add-icon">+</span>
+      <span>Add New Payment Method</span>
+    </button>
+
+    <!-- Add Payment Form Wrapper -->
+    <div id="addPaymentFormWrapper" class="form-expand-wrapper">
+      <!-- Form Segment Toggle -->
+      <div class="tab-toggle-pill">
+        <div class="active-indicator" id="activeIndicator"></div>
+        <button class="toggle-tab active" id="tabCardBtn" onclick="switchFormTab('card')">Card</button>
+        <button class="toggle-tab" id="tabUpiBtn" onclick="switchFormTab('upi')">UPI</button>
+        <button class="toggle-tab" id="tabNetBtn" onclick="switchFormTab('netbanking')">Net Banking</button>
+        <button class="toggle-tab" id="tabWalletBtn" onclick="switchFormTab('wallet')">Wallet</button>
+      </div>
+
+      <!-- Form Slider Container -->
+      <div class="forms-container">
+        <div class="forms-track" id="formsTrack">
+          <!-- A. Card Tab Form -->
+          <form id="cardForm" class="payment-form active" onsubmit="handlePaymentSubmit(event, 'card')">
+            <div class="input-group" id="cardNumGroup">
+              <div class="input-wrapper">
+                <input type="text" id="cardNumber" placeholder="Card Number" oninput="formatCardNumber(this)">
+                <span class="card-brand-icon" id="cardBrandIcon"></span>
+              </div>
+              <span class="helper-text"></span>
+            </div>
+
+            <div class="input-group" id="cardNameGroup">
+              <div class="input-wrapper">
+                <input type="text" id="cardName" placeholder="Cardholder Name" oninput="validateCardName()">
+                <span class="status-indicator"></span>
+              </div>
+              <span class="helper-text"></span>
+            </div>
+
+            <div class="input-row-half">
+              <div class="input-group half" id="cardExpiryGroup">
+                <div class="input-wrapper">
+                  <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)">
+                  <span class="status-indicator"></span>
+                </div>
+                <span class="helper-text"></span>
+              </div>
+
+              <div class="input-group half" id="cardCvvGroup">
+                <div class="input-wrapper">
+                  <input type="password" id="cardCvv" placeholder="CVV" maxlength="3" oninput="validateCvv()">
+                  <span class="input-icon-right">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  </span>
+                </div>
+                <span class="helper-text"></span>
+              </div>
+            </div>
+
+            <div class="checkbox-row">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="saveCardCheckbox" checked>
+                <span class="checkmark-box"></span>
+                <span class="checkbox-label">Save this card for future payments</span>
+              </label>
+            </div>
+          </form>
+
+          <!-- B. UPI Tab Form -->
+          <form id="upiForm" class="payment-form" onsubmit="handlePaymentSubmit(event, 'upi')">
+            <div class="input-group" id="upiIdGroup">
+              <div class="input-row-verify">
+                <div class="input-wrapper flex-fill">
+                  <input type="text" id="upiId" placeholder="Enter UPI ID (e.g. user@upi)" oninput="validateUpiInput()">
+                  <span class="status-indicator"></span>
+                </div>
+                <button type="button" class="btn-outline-verify" id="verifyUpiBtn" onclick="verifyUPI()">Verify</button>
+              </div>
+              <span class="helper-text"></span>
+            </div>
+          </form>
+
+          <!-- C. Net Banking Tab Form -->
+          <div class="payment-form bank-select-list">
+            <p class="section-subtext">Popular Banks</p>
+            <div class="bank-grid">
+              <button class="bank-pill" onclick="selectBank('SBI')">SBI</button>
+              <button class="bank-pill" onclick="selectBank('HDFC')">HDFC</button>
+              <button class="bank-pill" onclick="selectBank('ICICI')">ICICI</button>
+              <button class="bank-pill" onclick="selectBank('Axis')">Axis Bank</button>
+            </div>
+          </div>
+
+          <!-- D. Wallet Tab Form -->
+          <div class="payment-form wallet-select-list">
+            <p class="section-subtext">Select Wallet</p>
+            <div class="wallet-row" onclick="selectWallet('Paytm')">
+              <span>Paytm Wallet</span>
+              <span class="chevron-right">›</span>
+            </div>
+            <div class="wallet-row" onclick="selectWallet('PhonePe')">
+              <span>PhonePe Wallet</span>
+              <span class="chevron-right">›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button Area (Changes based on checkout variant) -->
+      <div class="action-btn-area">
+        <button class="submit-btn" id="paymentSubmitBtn" onclick="triggerSubmit()">
+          <span class="btn-text" id="btnTextLabel">Save Payment Method</span>
+          <div class="spinner"></div>
+        </button>
+      </div>
+
+      <!-- Security Trust Copy -->
+      <div class="trust-copy">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="lock-icon"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Your payment information is encrypted and securely stored. Lensmakers never stores your full card number.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options Sheet/Modal for saved list -->
+  <div id="optionsModal" class="options-sheet">
+    <div class="sheet-backdrop" onclick="closeOptionsModal()"></div>
+    <div class="sheet-content">
+      <h3 class="sheet-title" id="sheetTargetName">Payment Method Options</h3>
+      <button class="sheet-action-btn" onclick="setDefaultMethod()">Set as Default</button>
+      <button class="sheet-action-btn delete" onclick="removeMethod()">Remove</button>
+      <button class="sheet-cancel-btn" onclick="closeOptionsModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script src="js/payment.js"></script>
+</body>
+</html>

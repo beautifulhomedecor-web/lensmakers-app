@@ -9,6 +9,151 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Glassmorphic User Profile Modal */
+    .user-avatar-pill {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--cta-gradient, linear-gradient(90deg, #FF4D8D 0%, #C2185B 100%));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 10px rgba(255, 77, 141, 0.3);
+    }
+    
+    .profile-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    
+    .profile-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .profile-modal-backdrop {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 14, 38, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    
+    .profile-modal-content {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 360px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 32px 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 8px 32px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .profile-modal.open .profile-modal-content {
+      transform: scale(1);
+    }
+    
+    .profile-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+    
+    .profile-modal-close:hover {
+      color: #fff;
+    }
+    
+    .profile-modal-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF4D8D 0%, #C2185B 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 20px rgba(255, 77, 141, 0.4);
+    }
+    
+    .profile-modal-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    
+    .profile-modal-detail {
+      font-size: 13px;
+      color: #A0A4C8;
+      margin-bottom: 16px;
+    }
+    
+    .profile-modal-divider {
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+    
+    .btn-logout {
+      width: 100%;
+      background: linear-gradient(90deg, #FF4D8D 0%, #C2185B 100%);
+      color: #fff;
+      border: none;
+      padding: 14px 0;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255, 77, 141, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-logout:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 77, 141, 0.4);
+    }
+    
+    .btn-logout:active {
+      transform: translateY(1px);
+    }
+  </style>
   <!-- MediaPipe Face Mesh -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
   <!-- Three.js for true 3D rendering -->
@@ -37,32 +182,143 @@
   <!-- ========== HEADER / TOP BAR ========== -->
   <header class="header" id="header">
     <div class="header__inner">
-      <div class="header__left">
-        <a href="#" class="header__brand" aria-label="Lensmakers Home">
-          <img src="images/logo.svg" alt="Lensmakers Logo" class="header__logo" style="height: 32px; width: auto;" />
-        </a>
-      </div>
-      <button class="header__profile" id="profileBtn" aria-label="Profile & Notifications">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A0A0A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          <circle cx="18" cy="4" r="3" fill="#EF5350" stroke="none"/>
+      <div class="header__brand" onclick="window.location.href='index.html'">
+        <!-- Logo: two overlapping circles -->
+        <svg class="header__logo" width="44" height="28" viewBox="0 0 44 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Lens Mart logo">
+          <circle cx="14" cy="14" r="11" stroke="#1E88E5" stroke-width="5" fill="none"/>
+          <circle cx="30" cy="14" r="11" stroke="#43A047" stroke-width="5" fill="none"/>
         </svg>
-      </button>
+        <span class="header__wordmark">Lensmakers</span>
+      </div>
+
+      <!-- Expandable Search Bar System (Center) -->
+      <div class="header__search-container" id="headerSearchContainer">
+        <button class="search-trigger-btn" id="searchTriggerBtn" aria-label="Open search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF7A30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+        <div class="search-expanded-bar" id="searchExpandedBar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF7A30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" class="search-expanded-input" id="searchExpandedInput" placeholder="Search eyeglasses, sunglasses, brands..." aria-label="Search eyewear">
+          <button class="search-close-btn" id="searchCloseBtn" aria-label="Close search">&times;</button>
+        </div>
+        <div class="search-autocomplete-dropdown" id="searchAutocompleteDropdown"></div>
+      </div>
+
+      <!-- Right cluster of interactive icons -->
+      <div class="header__icons-cluster">
+        <!-- Location pin -->
+        <button class="header-icon-btn" id="headerPinBtn" aria-label="Store Locator">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </button>
+        <!-- Wishlist -->
+        <button class="header-icon-btn" id="headerWishlistBtn" aria-label="Wishlist">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="icon-badge badge-red" id="wishlistBadge">0</span>
+        </button>
+        <!-- Cart -->
+        <button class="header-icon-btn" id="headerCartBtn" aria-label="Cart" onclick="window.location.href='cart.html'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span class="icon-badge badge-pink" id="cartBadge">0</span>
+        </button>
+        <!-- Notifications bell -->
+        <button class="header-icon-btn" id="headerBellBtn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="icon-dot" id="bellDot"></span>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Location Selector Modal -->
+    <div class="location-dropdown-modal" id="locationDropdownModal">
+      <div class="location-dropdown-content">
+        <div class="loc-dropdown-section">
+          <span class="loc-dropdown-label">Current Saved Address</span>
+          <div class="loc-current-address">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-right: 6px; flex-shrink: 0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="locCurrentAddressText">No saved address found</span>
+          </div>
+        </div>
+        <button class="loc-use-current-btn" id="locUseCurrentBtn">
+          Use Current Location
+        </button>
+        <div class="loc-dropdown-section">
+          <span class="loc-dropdown-label">Recent Addresses</span>
+          <div class="loc-recent-list">
+            <div class="loc-recent-item" onclick="selectRecentAddress('Connaught Place, New Delhi, Delhi 110001')">Connaught Place, New Delhi, Delhi 110001</div>
+            <div class="loc-recent-item" onclick="selectRecentAddress('Indiranagar, Bengaluru, Karnataka 560038')">Indiranagar, Bengaluru, Karnataka 560038</div>
+            <div class="loc-recent-item" onclick="selectRecentAddress('Bandra West, Mumbai, Maharashtra 400050')">Bandra West, Mumbai, Maharashtra 400050</div>
+          </div>
+        </div>
+        <button class="loc-find-stores-btn" id="locFindStoresBtn" onclick="scrollToMapSection()">
+          Find Nearby Lens Mart Stores
+        </button>
+      </div>
     </div>
   </header>
 
   <!-- ========== MAIN CONTENT ========== -->
   <main class="main-content" id="mainContent">
 
-    <!-- ========== SEARCH BAR ========== -->
-    <section class="search-section" id="searchSection">
-      <div class="search-bar" id="searchBar">
-        <svg class="search-bar__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7A30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input type="text" class="search-bar__input" id="searchInput" placeholder="Search eyeglasses, sunglasses, brands..." aria-label="Search eyewear">
+    <!-- ========== HERO BANNER CAROUSEL ========== -->
+    <section class="hero-carousel-section" id="heroCarouselSection">
+      <div class="hero-carousel" id="heroCarousel">
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Slide 1 -->
+          <div class="carousel-slide active">
+            <img src="images/carousel_slide_1.png" alt="Contemporary Eyeglasses" class="slide-img">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+              <h2 class="slide-title">CONTEMPORARY.<br>GENUINE. CREATIVE.</h2>
+              <p class="slide-subtext">Premium eyeglasses tailored for you</p>
+              <button class="slide-cta" onclick="scrollToSection('premiumSection')">Shop Now</button>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide">
+            <img src="images/carousel_slide_2.png" alt="Designer Sunglasses" class="slide-img">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+              <h2 class="slide-title">ELEGANT. BOLD.<br>PROTECTIVE.</h2>
+              <p class="slide-subtext">Designer sunglasses for every sunshine</p>
+              <button class="slide-cta" onclick="scrollToSection('trendingSection')">Shop Now</button>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide">
+            <img src="images/carousel_slide_3.png" alt="Smart Eyewear" class="slide-img">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+              <h2 class="slide-title">SMART. DIGITAL.<br>SHIELDED.</h2>
+              <p class="slide-subtext">Blue-light filters for screen protectors</p>
+              <button class="slide-cta" onclick="scrollToSection('premiumSection')">Shop Now</button>
+            </div>
+          </div>
+        </div>
+        <!-- Dots indicators -->
+        <div class="carousel-dots" id="carouselDots">
+          <span class="carousel-dot active" data-slide="0"></span>
+          <span class="carousel-dot" data-slide="1"></span>
+          <span class="carousel-dot" data-slide="2"></span>
+        </div>
       </div>
     </section>
 
@@ -124,24 +380,76 @@
       </div>
     </section>
 
-    <!-- ========== CATEGORY SECTION — EYEGLASSES ========== -->
+    <!-- ========== EXPANDED CATEGORY GRID ========== -->
     <section class="category-section" id="categorySection">
-      <h1 class="section-heading">Eyeglasses</h1>
-      <div class="category-grid">
-        <div class="category-card category-card--men" id="catMen" tabindex="0" role="button" aria-label="Shop Men's Eyeglasses">
-          <img src="images/man_eyeglasses.png" alt="Man wearing eyeglasses" class="category-card__img" loading="lazy">
-          <div class="category-card__overlay"></div>
-          <span class="category-card__tag category-card__tag--men">Men</span>
+      <h2 class="section-heading">Shop Categories</h2>
+      <div class="category-grid-expanded">
+        <!-- 1. Eyeglasses -->
+        <div class="category-card-exp cat-eyeglasses" onclick="selectCategory('eyeglasses')" tabindex="0" role="button" aria-label="Shop Eyeglasses">
+          <img src="images/man_eyeglasses.png" alt="Eyeglasses" class="category-card-exp__img" loading="lazy">
+          <div class="category-card-exp__overlay"></div>
+          <span class="category-card-exp__label bg-red">Eyeglasses</span>
         </div>
-        <div class="category-card category-card--women" id="catWomen" tabindex="0" role="button" aria-label="Shop Women's Eyeglasses">
-          <img src="images/woman_eyeglasses.png" alt="Woman wearing eyeglasses" class="category-card__img" loading="lazy">
-          <div class="category-card__overlay"></div>
-          <span class="category-card__tag category-card__tag--women">Women</span>
+        <!-- 2. Sunglasses -->
+        <div class="category-card-exp cat-sunglasses" onclick="selectCategory('sunglasses')" tabindex="0" role="button" aria-label="Shop Sunglasses">
+          <img src="images/woman_eyeglasses.png" alt="Sunglasses" class="category-card-exp__img" loading="lazy">
+          <div class="category-card-exp__overlay"></div>
+          <span class="category-card-exp__label bg-orange">Sunglasses</span>
         </div>
-        <div class="category-card category-card--kids" id="catKids" tabindex="0" role="button" aria-label="Shop Kids' Eyeglasses">
-          <img src="images/kid_eyeglasses.png" alt="Child wearing eyeglasses" class="category-card__img" loading="lazy">
-          <div class="category-card__overlay"></div>
-          <span class="category-card__tag category-card__tag--kids">Kids</span>
+        <!-- 3. Blue-Light -->
+        <div class="category-card-exp cat-bluelight" onclick="selectCategory('eyeglasses')" tabindex="0" role="button" aria-label="Shop Blue Light Glasses">
+          <div class="category-card-exp__icon-wrap">
+            <svg class="category-svg-icon text-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              <path d="M2 12h20"/>
+            </svg>
+          </div>
+          <div class="category-card-exp__overlay"></div>
+          <span class="category-card-exp__label bg-cyan">Blue-Light</span>
+        </div>
+        <!-- 4. Contacts -->
+        <div class="category-card-exp cat-contacts" onclick="selectCategory('accessories')" tabindex="0" role="button" aria-label="Shop Contact Lenses">
+          <div class="category-card-exp__icon-wrap">
+            <svg class="category-svg-icon text-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a10 10 0 0 0-10 10 10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/>
+              <ellipse cx="12" cy="12" rx="4" ry="4"/>
+            </svg>
+          </div>
+          <div class="category-card-exp__overlay"></div>
+          <span class="category-card-exp__label bg-teal">Contacts</span>
+        </div>
+        <!-- 5. Kids -->
+        <div class="category-card-exp cat-kids" onclick="selectCategory('kids')" tabindex="0" role="button" aria-label="Shop Kids Glasses">
+          <img src="images/kid_eyeglasses.png" alt="Kids Glasses" class="category-card-exp__img" loading="lazy">
+          <div class="category-card-exp__overlay"></div>
+          <span class="category-card-exp__label bg-blue">Kids Glasses</span>
+        </div>
+        <!-- 6. Sale -->
+        <div class="category-card-exp cat-sale" onclick="selectCategory('specials')" tabindex="0" role="button" aria-label="Shop Clearance Sale">
+          <div class="sale-badge-ribbon">50% OFF</div>
+          <div class="category-card-exp__icon-wrap">
+            <svg class="category-svg-icon text-magenta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="19" y1="5" x2="5" y2="19"/>
+              <circle cx="6.5" cy="6.5" r="2.5"/>
+              <circle cx="17.5" cy="17.5" r="2.5"/>
+            </svg>
+          </div>
+          <div class="category-card-exp__overlay"></div>
+          <span class="category-card-exp__label bg-magenta">Mega Sale</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FREE SERVICES BANNER ========== -->
+    <section class="services-banner-section" id="servicesBannerSection">
+      <div class="services-banner">
+        <div class="services-banner__glow"></div>
+        <div class="services-banner__content">
+          <h2 class="services-banner__heading">FREE LENS REPLACEMENT</h2>
+          <p class="services-banner__subtext">Any Frame · Any Power · Any Reason</p>
+          <button class="services-banner__cta" onclick="scrollToSection('mapSection')">Find Nearby Stores</button>
+          <p class="services-banner__disclaimer">₹199 fitting charges apply on premium anti-glare lenses.</p>
         </div>
       </div>
     </section>
@@ -227,10 +535,11 @@
           </div>
         </div>
         <div class="tryon-card__right">
-          <div class="tryon-card__header">
-            <img src="images/logo.svg" alt="Lensmakers Logo" class="tryon-card__logo" style="height: 24px; width: auto;" />
-            <span class="tryon-card__tag">AI Feature</span>
-          </div>
+          <!-- Small brand trust logo -->
+          <svg class="tryon-card__logo" width="28" height="16" viewBox="0 0 44 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="14" cy="14" r="10" stroke="#1E88E5" stroke-width="3.5" fill="none"/>
+            <circle cx="30" cy="14" r="10" stroke="#43A047" stroke-width="3.5" fill="none"/>
+          </svg>
         </div>
       </div>
       <button class="tryon-cta" id="tryNowBtn">
@@ -416,7 +725,7 @@
       <div class="tryon-top-bar">
         <button id="closeTryonBtn" class="icon-btn" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         <div class="tryon-logo">
-          <img src="images/logo.svg" alt="Lensmakers Logo" style="height: 24px; width: auto;" />
+          <svg width="28" height="16" viewBox="0 0 44 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#fff" stroke-width="3.5" fill="none"/><circle cx="30" cy="14" r="10" stroke="#fff" stroke-width="3.5" fill="none"/></svg>
         </div>
         <button id="flipCameraBtn" class="icon-btn" aria-label="Flip Camera"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10"></path><path d="M3.51 15A9 9 0 0 0 18.36 18.36L23 14"></path></svg></button>
       </div>
@@ -488,6 +797,20 @@
         alert("Recommended for Warm Tones:\n" + JSON.stringify(result, null, 2));
       }
     </script>
+
+    <!-- Glassmorphic User Profile Modal (Real Auth System) -->
+    <div id="profileModal" class="profile-modal">
+      <div class="profile-modal-backdrop" onclick="closeProfileModal()"></div>
+      <div class="profile-modal-content">
+        <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
+        <div class="profile-modal-avatar" id="modalUserAvatar">U</div>
+        <h3 class="profile-modal-name" id="modalUserName">User Name</h3>
+        <p class="profile-modal-detail" id="modalUserEmail">email@domain.com</p>
+        <p class="profile-modal-detail" id="modalUserPhone" style="margin-top:-10px; margin-bottom: 20px;">+91 99999 99999</p>
+        <div class="profile-modal-divider"></div>
+        <button class="btn-logout" onclick="handleLogout()">Log Out</button>
+      </div>
+    </div>
 
     <script src="tryon.js"></script>
     <script src="app.js"></script>
