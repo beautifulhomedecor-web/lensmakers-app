@@ -2031,8 +2031,10 @@ input:-webkit-autofill:active {
   font-weight: 700;
   font-size: 12px;
   font-style: italic;
-  opacity: 0.5;
+  opacity: 0.65;
 }
+
+
 .security-text {
   display: flex;
   align-items: flex-start;
@@ -2232,18 +2234,18 @@ input:-webkit-autofill:active {
 }
 
 .category-card-exp.show {
-  animation: staggerFadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: staggerFadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.category-card-exp:nth-child(1) { animation-delay: 50ms; }
-.category-card-exp:nth-child(2) { animation-delay: 100ms; }
-.category-card-exp:nth-child(3) { animation-delay: 150ms; }
-.category-card-exp:nth-child(4) { animation-delay: 200ms; }
-.category-card-exp:nth-child(5) { animation-delay: 250ms; }
-.category-card-exp:nth-child(6) { animation-delay: 300ms; }
+.category-card-exp:nth-child(1) { animation-delay: 100ms; }
+.category-card-exp:nth-child(2) { animation-delay: 200ms; }
+.category-card-exp:nth-child(3) { animation-delay: 300ms; }
+.category-card-exp:nth-child(4) { animation-delay: 400ms; }
+.category-card-exp:nth-child(5) { animation-delay: 500ms; }
+.category-card-exp:nth-child(6) { animation-delay: 600ms; }
 
 .category-card-exp:hover, .category-card-exp:active {
-  transform: scale(1.04) translateY(-2px);
+  transform: scale(1.08) translateY(-4px);
 }
 
 /* Glow themes */
@@ -2442,4 +2444,34 @@ input:-webkit-autofill:active {
   font-size: 9px;
   color: var(--text-muted);
   opacity: 0.65;
+}
+
+/* -------------------------------------
+   MOBILE OPTIMIZATIONS
+   ------------------------------------- */
+@media (max-width: 400px) {
+  .header {
+    width: calc(100% - 16px);
+  }
+  .header__wordmark {
+    display: none; /* Hide brand name on small screens to save space */
+  }
+  .header__inner {
+    padding: 8px 12px 8px 12px;
+  }
+  .category-grid-expanded {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .category-card-exp {
+    height: 120px;
+  }
+  .search-expanded-bar.active {
+    width: 250px;
+  }
+  .hero-carousel {
+    height: 200px;
+  }
+  .slide-text h2 {
+    font-size: 20px;
+  }
 }
