@@ -2,143 +2,623 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lensmakers - Your Cart</title>
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/cart.css">
 </head>
-<body>
+<body class="dark-theme">
   <!-- Ambient background glow blobs -->
   <div class="glow-container">
     <div class="glow-blob glow-pink"></div>
     <div class="glow-blob glow-blue"></div>
   </div>
 
-  <div class="cart-screen">
-    <!-- Header Bar -->
-    <header class="cart-header">
-      <a href="index.html" class="back-btn" aria-label="Back">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </a>
-      <h1 class="header-title">Your Cart</h1>
-      <div style="width: 24px;"></div>
-    </header>
-
-    <!-- Cart Items Section -->
-    <section class="cart-items-section" id="cartItemsList">
-      <!-- Item 1: Aviator Premium -->
-      <div class="cart-item-card" id="item-1">
-        <div class="card-glow"></div>
-        <div class="item-left">
-          <div class="item-thumb-wrapper">
-            <img src="images/premium_frame_1.png" alt="Aviator Premium" class="item-thumb">
-          </div>
+  <div class="app-container">
+    
+    <!-- Step Indicator Progress Bar (Hidden on Cart page & Order Confirmation page) -->
+    <div class="checkout-progress-bar hidden" id="checkoutProgressBar">
+      <div class="progress-track-bg">
+        <div class="progress-track-fill" id="progressTrackFill"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="step-node active" data-step="1">
+          <span class="step-dot"></span>
+          <span class="step-label">Address</span>
         </div>
-        <div class="item-center">
-          <h3 class="item-name">Aviator Premium</h3>
-          <p class="item-meta">Frame Style: Classic Gold | Rimless</p>
-          <div class="item-price" data-base-price="1499">₹1,499</div>
+        <div class="step-node" data-step="2">
+          <span class="step-dot"></span>
+          <span class="step-label">Lenses</span>
         </div>
-        <div class="item-right">
-          <!-- Quantity Selector -->
-          <div class="quantity-selector">
-            <button class="qty-btn minus" onclick="updateQuantity('item-1', -1)">−</button>
-            <span class="qty-val">1</span>
-            <button class="qty-btn plus" onclick="updateQuantity('item-1', 1)">+</button>
-          </div>
-          <!-- Trash btn -->
-          <button class="trash-btn" onclick="removeItem('item-1')" aria-label="Remove Item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-          </button>
+        <div class="step-node" data-step="3">
+          <span class="step-dot"></span>
+          <span class="step-label">Payment</span>
+        </div>
+        <div class="step-node" data-step="4">
+          <span class="step-dot"></span>
+          <span class="step-label">Review</span>
         </div>
       </div>
-
-      <!-- Item 2: Tortoise Classic -->
-      <div class="cart-item-card" id="item-2">
-        <div class="card-glow"></div>
-        <div class="item-left">
-          <div class="item-thumb-wrapper">
-            <img src="images/premium_frame_2.png" alt="Tortoise Classic" class="item-thumb">
-          </div>
-        </div>
-        <div class="item-center">
-          <h3 class="item-name">Tortoise Classic</h3>
-          <p class="item-meta">Frame Style: Vintage | Full Rim</p>
-          <div class="item-price" data-base-price="3899">₹3,899</div>
-        </div>
-        <div class="item-right">
-          <div class="quantity-selector">
-            <button class="qty-btn minus" onclick="updateQuantity('item-2', -1)">−</button>
-            <span class="qty-val">1</span>
-            <button class="qty-btn plus" onclick="updateQuantity('item-2', 1)">+</button>
-          </div>
-          <button class="trash-btn" onclick="removeItem('item-2')" aria-label="Remove Item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Empty State Container (Hidden by default) -->
-    <div id="emptyCartState" class="empty-cart-state hidden">
-      <div class="empty-icon-wrapper">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      </div>
-      <h2>Your Cart is Empty</h2>
-      <p>Looks like you haven't added any premium frames to your cart yet.</p>
-      <a href="index.html" class="btn-shop-now">Explore Collection</a>
     </div>
 
-    <!-- Promo Coupon Section -->
-    <section class="coupon-section" id="couponSection">
-      <div class="input-row-coupon">
-        <div class="input-wrapper flex-fill">
-          <input type="text" id="couponCode" placeholder="Enter Coupon Code (e.g. CLEAR20)">
+    <!-- MAIN PANEL SLIDER TRACK -->
+    <div class="slider-track" id="sliderTrack">
+      
+      <!-- ==================== PANEL 1: CART ==================== -->
+      <div class="slider-panel" id="panelCart">
+        <!-- Header Bar -->
+        <header class="cart-header">
+          <a href="index.html" class="back-btn" aria-label="Back">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </a>
+          <h1 class="header-title" id="cartHeaderTitle">My Cart (2 items)</h1>
+          <div style="width: 24px;"></div>
+        </header>
+
+        <!-- Active Cart Items -->
+        <section class="cart-items-section" id="activeCartList">
+          
+          <!-- Item 1 -->
+          <div class="cart-item-card" id="item-1" data-price="1499">
+            <div class="swipe-background-delete">Remove</div>
+            <div class="card-content-wrapper">
+              <div class="item-left">
+                <div class="item-thumb-wrapper">
+                  <img src="images/glasses-1.png" alt="Aviator Premium" class="item-thumb">
+                </div>
+              </div>
+              <div class="item-center">
+                <h3 class="item-name">Aviator Premium</h3>
+                <span class="item-brand">Lens Mart Air</span>
+                <p class="item-meta">Gold / Medium / Single Vision</p>
+                <div class="item-price-info">
+                  <span class="unit-price">₹1,499</span>
+                  <span class="line-total" id="total-item-1">₹1,499</span>
+                </div>
+              </div>
+              <div class="item-right">
+                <div class="quantity-selector">
+                  <button class="qty-btn minus" onclick="changeQty('item-1', -1)">−</button>
+                  <span class="qty-val">1</span>
+                  <button class="qty-btn plus" onclick="changeQty('item-1', 1)">+</button>
+                </div>
+                <div class="item-actions">
+                  <button class="save-later-link" onclick="saveForLater('item-1')">Save for Later</button>
+                  <button class="trash-btn" onclick="confirmDelete('item-1')" aria-label="Remove Item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    <span class="trash-text">Remove?</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="cart-item-card" id="item-2" data-price="3899">
+            <div class="swipe-background-delete">Remove</div>
+            <div class="card-content-wrapper">
+              <div class="item-left">
+                <div class="item-thumb-wrapper">
+                  <img src="images/glasses-2.png" alt="Tortoise Classic" class="item-thumb">
+                </div>
+              </div>
+              <div class="item-center">
+                <h3 class="item-name">Tortoise Classic</h3>
+                <span class="item-brand">Vincent Chase</span>
+                <p class="item-meta">Tortoise / Average / Blue Light</p>
+                <div class="item-price-info">
+                  <span class="unit-price">₹3,899</span>
+                  <span class="line-total" id="total-item-2">₹3,899</span>
+                </div>
+              </div>
+              <div class="item-right">
+                <div class="quantity-selector">
+                  <button class="qty-btn minus" onclick="changeQty('item-2', -1)">−</button>
+                  <span class="qty-val">1</span>
+                  <button class="qty-btn plus" onclick="changeQty('item-2', 1)">+</button>
+                </div>
+                <div class="item-actions">
+                  <button class="save-later-link" onclick="saveForLater('item-2')">Save for Later</button>
+                  <button class="trash-btn" onclick="confirmDelete('item-2')" aria-label="Remove Item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    <span class="trash-text">Remove?</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Empty State Container (Hidden by default) -->
+        <div id="emptyCartState" class="empty-cart-state hidden">
+          <div class="empty-icon-wrapper">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <h2>Your Cart is Empty</h2>
+          <p>Explore our premium collections and add your customized lenses.</p>
+          <a href="category.html" class="btn-shop-now">Shop Eyewear</a>
         </div>
-        <button type="button" class="btn-apply-coupon" onclick="applyCoupon()">Apply</button>
+
+        <!-- Collapsible Saved Items Section -->
+        <section class="saved-items-section" id="savedItemsSection">
+          <button class="accordion-header" id="savedAccordionBtn" onclick="toggleSavedAccordion()">
+            <span>Saved Items (<span id="savedCount">0</span>)</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="accordion-body" id="savedItemsList">
+            <!-- Saved items populated dynamically by script -->
+          </div>
+        </section>
+
+        <!-- Promo Coupon Section -->
+        <section class="coupon-section" id="couponSection">
+          <div class="input-row-coupon">
+            <div class="input-wrapper flex-fill">
+              <input type="text" id="couponCode" placeholder="Enter promo code (e.g., CLEAR20)">
+            </div>
+            <button type="button" class="btn-apply-coupon" onclick="applyCouponCode()">Apply</button>
+          </div>
+          <div id="couponStatus" class="coupon-status-text"></div>
+        </section>
+
+        <!-- Order Pricing Summary -->
+        <section class="pricing-summary-section" id="pricingSummary">
+          <h2 class="section-label">Order Details</h2>
+          <div class="price-details-card">
+            <div class="price-row">
+              <span class="price-label">Subtotal</span>
+              <span class="price-value" id="subtotalVal">₹5,398</span>
+            </div>
+            <div class="price-row">
+              <span class="price-label">GST (18% Goods Tax)</span>
+              <span class="price-value" id="taxVal">₹971</span>
+            </div>
+            <div class="price-row">
+              <span class="price-label">Shipping</span>
+              <span class="price-value success-green">FREE</span>
+            </div>
+            <div class="price-row hidden" id="couponRow">
+              <span class="price-label" id="couponLabel">Discount (CLEAR20)</span>
+              <span class="price-value success-green" id="couponDiscountVal">-₹1,080</span>
+            </div>
+            <div class="price-row hidden" id="tradeInRow">
+              <span class="price-label">Trade-In Credit</span>
+              <span class="price-value success-green" id="tradeInVal">-₹1,200</span>
+            </div>
+            <div class="divider"></div>
+            <div class="price-row grand-total">
+              <span class="price-label font-bold">Total</span>
+              <span class="price-value font-bold" id="totalVal">₹6,369</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sticky Cart Footer -->
+        <div class="checkout-footer" id="checkoutFooter">
+          <button class="submit-btn" onclick="goToStep('address')">
+            <span class="btn-text">Proceed to Checkout</span>
+          </button>
+        </div>
       </div>
-      <div id="couponStatus" class="coupon-status-text"></div>
-    </section>
 
-    <!-- Order Pricing Summary -->
-    <section class="pricing-summary-section" id="pricingSummary">
-      <h2 class="section-label">Order Details</h2>
-      <div class="price-details-card">
-        <div class="price-row">
-          <span class="price-label">Subtotal</span>
-          <span class="price-value" id="subtotalVal">₹5,398</span>
-        </div>
-        <div class="price-row">
-          <span class="price-label">GST (18% Goods Tax)</span>
-          <span class="price-value" id="taxVal">₹971</span>
-        </div>
-        <div class="price-row">
-          <span class="price-label">Shipping</span>
-          <span class="price-value success-green">FREE</span>
-        </div>
-        <div class="price-row hidden" id="couponRow">
-          <span class="price-label" id="couponLabel">Discount (CLEAR20)</span>
-          <span class="price-value success-green" id="couponDiscountVal">-₹1,080</span>
-        </div>
-        <div class="divider"></div>
-        <div class="price-row grand-total">
-          <span class="price-label font-bold">Grand Total</span>
-          <span class="price-value font-bold" id="totalVal">₹6,369</span>
+      <!-- ==================== PANEL 2: STEP A - ADDRESS ==================== -->
+      <div class="slider-panel" id="panelAddress">
+        <header class="cart-header">
+          <button class="back-btn" onclick="goToStep('cart')" aria-label="Back">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h1 class="header-title">Delivery Address</h1>
+          <div style="width: 24px;"></div>
+        </header>
+
+        <section class="checkout-section">
+          <div class="address-options">
+            
+            <!-- Default Address -->
+            <label class="address-card">
+              <input type="radio" name="delivery_address" value="home" checked>
+              <div class="address-details">
+                <div class="address-tag-row">
+                  <span class="address-tag">Home</span>
+                  <span class="address-badge">Default</span>
+                </div>
+                <p class="address-text">Jane Doe, 9876543210<br>Plot 42, Galaxy Heights, City Center, Sector 5, Bangalore - 560001</p>
+              </div>
+            </label>
+
+            <!-- Work Address -->
+            <label class="address-card">
+              <input type="radio" name="delivery_address" value="work">
+              <div class="address-details">
+                <div class="address-tag-row">
+                  <span class="address-tag">Work</span>
+                </div>
+                <p class="address-text">Jane Doe, 9876543211<br>Building B3, Tech Park Square, Outer Ring Road, Bangalore - 560103</p>
+              </div>
+            </label>
+
+            <!-- Add Address dashed btn -->
+            <button class="add-address-dashed-btn" onclick="toggleNewAddressForm()">
+              <span>+ Add New Address</span>
+            </button>
+
+            <!-- Expandable Add New Address Form -->
+            <div id="newAddressFormWrapper" class="form-expand-wrapper">
+              <form class="checkout-form" id="newAddressForm" onsubmit="saveNewAddress(event)">
+                <div class="input-group">
+                  <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="input-group">
+                  <input type="tel" placeholder="Phone Number" required>
+                </div>
+                <div class="input-row-half">
+                  <div class="input-group half">
+                    <input type="text" placeholder="Pincode" required>
+                  </div>
+                  <div class="input-group half">
+                    <input type="text" placeholder="City" required>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <input type="text" placeholder="Address Line 1" required>
+                </div>
+                <div class="input-group">
+                  <input type="text" placeholder="Address Line 2">
+                </div>
+                <div class="input-row-half">
+                  <div class="input-group half">
+                    <input type="text" placeholder="State" required>
+                  </div>
+                  <div class="input-group half">
+                    <input type="text" placeholder="Landmark">
+                  </div>
+                </div>
+                <button type="submit" class="primary-form-btn">Add Address</button>
+              </form>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Sticky Progress Continue -->
+        <div class="checkout-footer">
+          <button class="submit-btn" onclick="goToStep('lens')">
+            <span class="btn-text">Continue</span>
+          </button>
         </div>
       </div>
-    </section>
 
-  </div>
+      <!-- ==================== PANEL 3: STEP B - LENS CONFIRMATION ==================== -->
+      <div class="slider-panel" id="panelLens">
+        <header class="cart-header">
+          <button class="back-btn" onclick="goToStep('address')" aria-label="Back">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h1 class="header-title">Prescription Details</h1>
+          <div style="width: 24px;"></div>
+        </header>
 
-  <!-- Bottom Sticky Checkout CTA -->
-  <div class="checkout-footer" id="checkoutFooter">
-    <button class="submit-btn" onclick="proceedToCheckout()">
-      <span class="btn-text">Proceed to Checkout</span>
-      <div class="spinner"></div>
-    </button>
+        <section class="checkout-section">
+          <div class="lens-confirm-list">
+            
+            <div class="lens-summary-card">
+              <div class="lens-summary-header">
+                <span class="lens-item-title">Aviator Premium</span>
+                <button class="edit-link" onclick="goToStep('cart')">Edit</button>
+              </div>
+              <p class="lens-summary-meta">Selected: Single Vision (+₹500)</p>
+              
+              <!-- Dashed Upload Dropzone -->
+              <div class="prescription-dropzone" onclick="triggerFileUpload('file-upload-1')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <p class="dropzone-text">Upload Prescription Photo/PDF</p>
+                <span class="dropzone-subtext">Click or drag files here</span>
+                <input type="file" id="file-upload-1" class="hidden-file-input" onchange="handleFileSelected(this, 'file-name-1')">
+                <div class="uploaded-file-name" id="file-name-1"></div>
+              </div>
+            </div>
+
+            <div class="lens-summary-card">
+              <div class="lens-summary-header">
+                <span class="lens-item-title">Tortoise Classic</span>
+                <button class="edit-link" onclick="goToStep('cart')">Edit</button>
+              </div>
+              <p class="lens-summary-meta">Selected: Blue Light Blocking (+₹1,200)</p>
+              
+              <div class="prescription-dropzone" onclick="triggerFileUpload('file-upload-2')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <p class="dropzone-text">Upload Prescription Photo/PDF</p>
+                <span class="dropzone-subtext">Click or drag files here</span>
+                <input type="file" id="file-upload-2" class="hidden-file-input" onchange="handleFileSelected(this, 'file-name-2')">
+                <div class="uploaded-file-name" id="file-name-2"></div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <div class="checkout-footer">
+          <button class="submit-btn" onclick="goToStep('payment')">
+            <span class="btn-text">Continue</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== PANEL 4: STEP C - PAYMENT ==================== -->
+      <div class="slider-panel" id="panelPayment">
+        <header class="cart-header">
+          <button class="back-btn" onclick="goToStep('lens')" aria-label="Back">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h1 class="header-title">Payment</h1>
+          <div style="width: 24px;"></div>
+        </header>
+
+        <!-- Mini Order Summary (Expandable) -->
+        <div class="mini-summary-card">
+          <button class="mini-summary-toggle" onclick="toggleMiniSummary()">
+            <span>Order Summary</span>
+            <span id="miniSummaryTotal">₹6,369</span>
+          </button>
+          <div class="mini-summary-details hidden" id="miniSummaryDetails">
+            <!-- Details filled by script -->
+          </div>
+        </div>
+
+        <section class="checkout-section">
+          <!-- Saved payment options -->
+          <div class="methods-list">
+            
+            <label class="method-card">
+              <input type="radio" name="payment_method" value="visa" checked>
+              <div class="method-left">
+                <div class="card-icon visa"><span>VISA</span></div>
+              </div>
+              <div class="method-center">
+                <div class="method-title">•••• •••• •••• 4242</div>
+                <div class="method-subtitle">Jane Doe | Exp 12/28</div>
+              </div>
+              <div class="method-right">
+                <span class="badge badge-default">Default</span>
+              </div>
+            </label>
+
+            <label class="method-card">
+              <input type="radio" name="payment_method" value="upi">
+              <div class="method-left">
+                <div class="card-icon upi"><span>UPI</span></div>
+              </div>
+              <div class="method-center">
+                <div class="method-title">jane@okhdfc</div>
+                <div class="method-subtitle">Verified UPI ID</div>
+              </div>
+            </label>
+
+          </div>
+
+          <!-- Add New Payment Option -->
+          <button class="add-method-dashed-btn" onclick="toggleAddPaymentForm()">
+            <span>+ Add New Payment Method</span>
+          </button>
+
+          <!-- Expandable Payment Form Wrapper -->
+          <div id="addPaymentFormWrapper" class="form-expand-wrapper">
+            <div class="tab-toggle-pill">
+              <div class="active-indicator" id="activeIndicator"></div>
+              <button class="toggle-tab active" id="tabCardBtn" onclick="switchFormTab('card')">Card</button>
+              <button class="toggle-tab" id="tabUpiBtn" onclick="switchFormTab('upi')">UPI</button>
+              <button class="toggle-tab" id="tabNetBtn" onclick="switchFormTab('net')">Net Banking</button>
+              <button class="toggle-tab" id="tabWalletBtn" onclick="switchFormTab('wallet')">Wallet</button>
+            </div>
+
+            <!-- Tab Contents Track -->
+            <div class="forms-container">
+              <div class="forms-track" id="formsTrack">
+                <!-- Card form -->
+                <form id="cardForm" class="payment-form active" onsubmit="event.preventDefault()">
+                  <div class="input-group" id="cardNumGroup">
+                    <input type="text" id="cardNumber" placeholder="Card Number" oninput="formatCardNum(this)">
+                    <span class="card-brand-icon" id="cardBrandIcon"></span>
+                  </div>
+                  <div class="input-group">
+                    <input type="text" id="cardName" placeholder="Cardholder Name">
+                  </div>
+                  <div class="input-row-half">
+                    <div class="input-group half">
+                      <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExp(this)">
+                    </div>
+                    <div class="input-group half">
+                      <input type="password" id="cardCvv" placeholder="CVV" maxlength="3">
+                    </div>
+                  </div>
+                </form>
+
+                <!-- UPI form -->
+                <form id="upiForm" class="payment-form" onsubmit="event.preventDefault()">
+                  <div class="input-row-verify">
+                    <input type="text" id="upiId" placeholder="Enter UPI ID (e.g. user@upi)">
+                    <button type="button" class="btn-outline-verify" onclick="verifyUPI()">Verify</button>
+                  </div>
+                </form>
+
+                <!-- Net Banking -->
+                <div class="payment-form bank-select-list">
+                  <p class="section-subtext">Popular Banks</p>
+                  <div class="bank-grid">
+                    <button class="bank-pill" onclick="selectBank('SBI')">SBI</button>
+                    <button class="bank-pill" onclick="selectBank('HDFC')">HDFC</button>
+                    <button class="bank-pill" onclick="selectBank('ICICI')">ICICI</button>
+                    <button class="bank-pill" onclick="selectBank('Axis')">Axis Bank</button>
+                  </div>
+                </div>
+
+                <!-- Wallet -->
+                <div class="payment-form wallet-select-list">
+                  <p class="section-subtext">Select Wallet</p>
+                  <div class="wallet-row" onclick="selectWallet('Paytm')"><span>Paytm Wallet</span><span>›</span></div>
+                  <div class="wallet-row" onclick="selectWallet('PhonePe')"><span>PhonePe Wallet</span><span>›</span></div>
+                </div>
+              </div>
+            </div>
+            
+            <button class="primary-form-btn" id="savePaymentBtn" onclick="saveNewPayment()">Save Payment Method</button>
+          </div>
+
+        </section>
+
+        <div class="checkout-footer">
+          <button class="submit-btn" onclick="goToStep('review')">
+            <span class="btn-text">Continue</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== PANEL 5: STEP D - REVIEW & PLACE ORDER ==================== -->
+      <div class="slider-panel" id="panelReview">
+        <header class="cart-header">
+          <button class="back-btn" onclick="goToStep('payment')" aria-label="Back">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h1 class="header-title">Review Order</h1>
+          <div style="width: 24px;"></div>
+        </header>
+
+        <section class="checkout-section">
+          
+          <!-- Delivery Address Summary -->
+          <div class="review-summary-card">
+            <div class="card-summary-header">
+              <h3>Shipping Address</h3>
+              <button class="edit-link" onclick="goToStep('address')">Edit</button>
+            </div>
+            <p id="reviewAddress">Plot 42, Galaxy Heights, City Center, Sector 5, Bangalore - 560001</p>
+          </div>
+
+          <!-- Items list Summary -->
+          <div class="review-summary-card">
+            <div class="card-summary-header">
+              <h3>Items</h3>
+              <button class="edit-link" onclick="goToStep('cart')">Edit</button>
+            </div>
+            <div class="review-items-list" id="reviewItemsList">
+              <!-- Dynamically populated by script -->
+            </div>
+          </div>
+
+          <!-- Payment Method Summary -->
+          <div class="review-summary-card">
+            <div class="card-summary-header">
+              <h3>Payment Method</h3>
+              <button class="edit-link" onclick="goToStep('payment')">Edit</button>
+            </div>
+            <p id="reviewPayment">Visa ending in 4242</p>
+          </div>
+
+          <!-- Terms checkbox -->
+          <label class="custom-checkbox terms-checkbox">
+            <input type="checkbox" id="termsCheckbox" checked>
+            <span class="checkmark-box"></span>
+            <span class="checkbox-label">I agree to the Terms of Service & Privacy Policy.</span>
+          </label>
+
+        </section>
+
+        <div class="checkout-footer">
+          <button class="submit-btn final-place-btn" onclick="placeOrder()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lock-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span class="btn-text" id="finalPayBtnLabel">Place Order — ₹6,369</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== PANEL 6: ORDER CONFIRMATION ==================== -->
+      <div class="slider-panel" id="panelSuccess">
+        <section class="success-screen-wrapper">
+          
+          <div class="success-glass-card">
+            
+            <!-- glowing draw-in checkmark -->
+            <div class="checkmark-circle">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle class="checkmark-circle-bg" cx="40" cy="40" r="36" />
+                <path class="checkmark-path" d="M23 41 l11 11 l24 -24" />
+              </svg>
+            </div>
+
+            <h2>Order Placed Successfully!</h2>
+            <p class="success-subtext">Thank you for shopping with Lensmakers. Your virtual try-on glasses are on their way!</p>
+            
+            <div class="order-details-summary">
+              <div class="order-detail-row">
+                <span>Order Number:</span>
+                <span class="order-value" id="successOrderNum">LNS-987251</span>
+              </div>
+              <div class="order-detail-row">
+                <span>Estimated Delivery:</span>
+                <span class="order-value">Oct 10, 2025</span>
+              </div>
+            </div>
+
+            <div class="success-actions">
+              <button class="primary-btn" onclick="trackOrder()">Track Order</button>
+              <a href="index.html" class="outline-btn">Continue Shopping</a>
+            </div>
+
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="cartBottomNav">
+      <div class="bottom-nav__inner">
+        <a href="index.html" class="bottom-nav__item">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="category.html" class="bottom-nav__item">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="nav-label">Shop</span>
+        </a>
+        <a href="tryon.html" class="bottom-nav__item" id="navTryon">
+          <div class="nav-scan-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </div>
+          <span class="nav-label">AI Try-On</span>
+        </a>
+        <a href="cart.html" class="bottom-nav__item active">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="nav-label">Cart</span>
+        </a>
+        <a href="profile.html" class="bottom-nav__item">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span class="nav-label">Profile</span>
+        </a>
+      </div>
+    </nav>
+
   </div>
 
   <script src="js/cart.js"></script>

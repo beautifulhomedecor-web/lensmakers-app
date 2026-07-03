@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lens Mart - Help & Support</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <style>
+    .support-wrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px 16px 80px 16px;
+    }
+
+    /* FAQ accordion styling */
+    .faq-category {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .faq-category-title {
+      font-size: 13px;
+      color: var(--primary-pink);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 800;
+      margin-top: 10px;
+    }
+    
+    .faq-item {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s var(--ease-spring);
+    }
+    .faq-header {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .faq-header svg {
+      transition: transform 0.25s;
+      color: var(--text-lavender);
+    }
+    .faq-item.expanded .faq-header svg {
+      transform: rotate(180deg);
+    }
+    .faq-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0 16px;
+    }
+    .faq-item.expanded .faq-content {
+      max-height: 120px;
+      padding-bottom: 14px;
+    }
+    .faq-answer {
+      font-size: 12px;
+      color: var(--text-lavender);
+      line-height: 1.5;
+    }
+
+    /* Testimonials Horizontal Carousel */
+    .testimonial-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .testimonial-scroll::-webkit-scrollbar { display: none; }
+    
+    .testimonial-card {
+      flex: 0 0 220px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .testi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .testi-user {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .testi-stars {
+      color: #FFEE58;
+      font-size: 10px;
+    }
+    .testi-quote {
+      font-size: 11px;
+      color: var(--text-lavender);
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    /* Live Chat Support Card */
+    .chat-section-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(25px);
+    }
+    .chat-display-window {
+      height: 160px;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.15);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-bubble {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .chat-bubble.agent {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+    .chat-bubble.user {
+      background: var(--cta-gradient);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input-row input {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      outline: none;
+      font-size: 12px;
+    }
+    .chat-input-row button {
+      background: var(--primary-pink);
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Footer policy items styling */
+    .app-policy-footer {
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+      text-align: center;
+    }
+    .footer-desc {
+      font-size: 11px;
+      color: var(--text-lavender);
+      line-height: 1.5;
+    }
+    .footer-links-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 20px;
+      width: 100%;
+      text-align: left;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer-link-item {
+      font-size: 11px;
+      color: var(--text-lavender);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link-item:hover {
+      color: var(--primary-pink);
+    }
+
+    .social-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .social-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-lavender);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .social-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Glow background spheres -->
+  <div class="glow-container">
+    <div class="glow-blob glow-pink"></div>
+    <div class="glow-blob glow-blue"></div>
+  </div>
+
+  <div class="app-wrapper support-wrapper">
+    
+    <!-- HEADER -->
+    <header class="plp-header" style="position: relative; top: 0; transform: none; width: 100%; max-width: none;">
+      <div class="plp-header__inner" style="padding: 8px 10px;">
+        <button class="plp-back-btn" onclick="window.history.back()" aria-label="Go back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="plp-header__title-area">
+          <h1 class="plp-header__title">Help Center</h1>
+          <span class="plp-header__subtitle">Support & FAQs</span>
+        </div>
+        <div style="width:32px;"></div>
+      </div>
+    </header>
+
+    <!-- SEARCH BAR -->
+    <div class="input-group">
+      <input type="text" id="helpSearch" placeholder="Search for help topics..." oninput="filterHelpTopics(this.value)">
+    </div>
+
+    <!-- FAQ LIST -->
+    <div class="faq-category" id="faqGroup">
+      
+      <!-- Category 1: Orders -->
+      <span class="faq-category-title">Orders & Shipping</span>
+      
+      <div class="faq-item" data-q="how do i track my order">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span>How do I track my order?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-content">
+          <p class="faq-answer">Once shipped, order tracking links are sent to your registered email. You can also track from your profile orders tab.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-q="what is the delivery timeline">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span>What is the delivery timeline?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-content">
+          <p class="faq-answer">Standard glasses require 3-5 business days for prescription lens fitting and shipping. Custom high-power lenses take 5-7 days.</p>
+        </div>
+      </div>
+
+      <!-- Category 2: Returns -->
+      <span class="faq-category-title">Returns & Refunds</span>
+
+      <div class="faq-item" data-q="what is the return policy">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span>What is the return policy?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-content">
+          <p class="faq-answer">Lens Mart offers a 14-day zero-questions-asked return policy. We cover return shipping costs for your convenience.</p>
+        </div>
+      </div>
+
+      <!-- Category 3: Eye Tests -->
+      <span class="faq-category-title">Eye Tests</span>
+
+      <div class="faq-item" data-q="how do i cancel my eye test booking">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span>How do I cancel my eye test booking?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-content">
+          <p class="faq-answer">You can reschedule or cancel booked checkups for free up to 2 hours before the scheduled time slot from prescriptions page.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TESTIMONIALS CAROUSEL -->
+    <div>
+      <h3 style="font-size:14px; color:#fff; font-weight:800; margin-bottom:10px;">What Our Customers Say</h3>
+      <div class="testimonial-scroll">
+        
+        <div class="testimonial-card">
+          <div class="testi-header">
+            <span class="testi-user">Aarav K.</span>
+            <span class="testi-stars">★★★★★</span>
+          </div>
+          <p class="testi-quote">"The At-Home eye test was incredibly seamless. Professional optometrist."</p>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testi-header">
+            <span class="testi-user">Neha S.</span>
+            <span class="testi-stars">★★★★★</span>
+          </div>
+          <p class="testi-quote">"Traded in my old damaged spectacles and got ₹1,200 instantly. Applied directly!"</p>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testi-header">
+            <span class="testi-user">Vikram R.</span>
+            <span class="testi-stars">★★★★☆</span>
+          </div>
+          <p class="testi-quote">"Wishlist undo notification helped me save a frame I accidentally tapped off."</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LIVE CHAT UI -->
+    <div class="chat-section-card">
+      <h3 style="font-size:14px; color:#fff; font-weight:800; display:flex; align-items:center; gap:8px;">
+        <span style="width:8px; height:8px; border-radius:50%; background:#4CAF50;"></span>
+        <span>Chat With Us (Online)</span>
+      </h3>
+      <div class="chat-display-window" id="chatWindow">
+        <div class="chat-bubble agent">Hello! I'm your Lens Mart agent. Ask me anything about prescription fits, orders or exchanges!</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Type your message..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()">Send</button>
+      </div>
+    </div>
+
+    <!-- POLICY FOOTER -->
+    <footer class="app-policy-footer">
+      <h4 style="font-size: 14px; font-weight:800; color:#fff;">About Lens Mart</h4>
+      <p class="footer-desc">Clear vision, wellness, and style crafted with precision. We combine premium glass design with AI-powered try-on fits and certified optometrist service to deliver wellbeing.</p>
+      
+      <div class="footer-links-grid">
+        <a href="javascript:void(0)" onclick="alert('About Us page placeholder')" class="footer-link-item">About Us</a>
+        <a href="javascript:void(0)" onclick="alert('Careers page placeholder')" class="footer-link-item">Careers</a>
+        <a href="javascript:void(0)" onclick="alert('Press page placeholder')" class="footer-link-item">Press Releases</a>
+        <a href="javascript:void(0)" onclick="alert('Help & Support page placeholder')" class="footer-link-item">FAQ Help</a>
+        <a href="javascript:void(0)" onclick="alert('Terms of Service page')" class="footer-link-item">Terms of Service</a>
+        <a href="javascript:void(0)" onclick="alert('Privacy Policy page')" class="footer-link-item">Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="alert('Shipping Policy page')" class="footer-link-item">Shipping Policy</a>
+        <a href="javascript:void(0)" onclick="alert('Return & Refund Policy page')" class="footer-link-item">Returns & Refunds</a>
+      </div>
+
+      <div class="social-row">
+        <div class="social-btn" onclick="alert('Instagram link clicked')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+        </div>
+        <div class="social-btn" onclick="alert('Facebook link clicked')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </div>
+        <div class="social-btn" onclick="alert('Twitter link clicked')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+        </div>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <p style="font-size:9px; color:rgba(255,255,255,0.25);">App Version 1.0.4 · Made with care for clear eyes</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    function toggleFaq(header) {
+      const item = header.parentElement;
+      item.classList.toggle('expanded');
+    }
+
+    function filterHelpTopics(query) {
+      const q = query.toLowerCase().trim();
+      const items = document.querySelectorAll('.faq-item');
+      const titles = document.querySelectorAll('.faq-category-title');
+
+      items.forEach(item => {
+        const text = item.dataset.q;
+        if (text.includes(q)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      
+      // Hide category headings if empty
+      if (q.length > 0) {
+        titles.forEach(t => t.style.display = 'none');
+      } else {
+        titles.forEach(t => t.style.display = 'block');
+      }
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (text.length === 0) return;
+
+      const windowEl = document.getElementById('chatWindow');
+
+      // 1. Append User Bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble user';
+      userBubble.textContent = text;
+      windowEl.appendChild(userBubble);
+      
+      input.value = '';
+      windowEl.scrollTop = windowEl.scrollHeight;
+
+      // 2. Mock Agent Reply
+      setTimeout(() => {
+        const agentBubble = document.createElement('div');
+        agentBubble.className = 'chat-bubble agent';
+        agentBubble.textContent = `Thanks for asking! That is a great question. Let me check the details for "${text}" and reply to you shortly.`;
+        windowEl.appendChild(agentBubble);
+        windowEl.scrollTop = windowEl.scrollHeight;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

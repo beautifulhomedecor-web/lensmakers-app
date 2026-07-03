@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Lens Mart — Browse Eyeglasses, Sunglasses, and more.">
+  <title>Category - Lensmakers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Animated Background -->
+  <div class="animated-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- App Wrapper for Mobile Constrain -->
+  <div class="app-wrapper">
+
+    <!-- PLP Page Header -->
+    <header class="plp-header" id="plpHeader">
+      <div class="plp-header__inner">
+        <button class="plp-back-btn" onclick="window.history.back()" aria-label="Go back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="plp-header__title-area">
+          <h1 class="plp-header__title" id="plpTitle">Eyeglasses</h1>
+          <span class="plp-header__subtitle" id="plpCount">1,248 frames found</span>
+        </div>
+        <div class="plp-header__actions">
+          <button class="plp-icon-btn active" id="btnGridView" aria-label="Grid View">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+          </button>
+          <button class="plp-icon-btn" id="btnFilter" aria-label="Filter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="plp-main">
+      
+      <!-- Shape Selector Row -->
+      <section class="shape-selector-section">
+        <h2 class="section-heading plp-section-heading">Shop by Shape</h2>
+        <div class="shape-row" id="shapeRow">
+          <!-- Populated by products.js -->
+        </div>
+      </section>
+
+      <!-- Product Grid -->
+      <section class="plp-grid-section">
+        <div class="plp-grid" id="plpGrid">
+          <!-- Populated by products.js -->
+        </div>
+        <!-- Infinite Scroll Skeletons -->
+        <div class="plp-grid skeletons" id="plpSkeletons" style="display: none;">
+          <div class="plp-skeleton plp-card"></div>
+          <div class="plp-skeleton plp-card"></div>
+          <div class="plp-skeleton plp-card"></div>
+          <div class="plp-skeleton plp-card"></div>
+        </div>
+        <div id="infiniteScrollTrigger" style="height: 20px;"></div>
+      </section>
+
+    </main>
+
+    <!-- Slide-Up Filter & Sort Panel -->
+    <div class="filter-sheet-overlay" id="filterOverlay"></div>
+    <aside class="filter-sheet" id="filterSheet">
+      <div class="filter-sheet__drag-handle-wrap"><div class="filter-sheet__drag-handle"></div></div>
+      <div class="filter-sheet__header">
+        <h3>Filter & Sort</h3>
+        <button class="close-filter-btn" id="btnCloseFilter">&times;</button>
+      </div>
+      <div class="filter-sheet__content">
+        
+        <!-- Sort Section -->
+        <div class="filter-group">
+          <h4>Sort By</h4>
+          <div class="sort-options">
+            <label class="sort-radio"><input type="radio" name="sort" value="popular" checked> <span>Popularity</span></label>
+            <label class="sort-radio"><input type="radio" name="sort" value="price_asc"> <span>Price: Low to High</span></label>
+            <label class="sort-radio"><input type="radio" name="sort" value="price_desc"> <span>Price: High to Low</span></label>
+            <label class="sort-radio"><input type="radio" name="sort" value="newest"> <span>Newest</span></label>
+          </div>
+        </div>
+
+        <!-- Filter Accordions -->
+        <div class="filter-accordion">
+          <button class="filter-accordion__header">
+            <span>Price Range</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="filter-accordion__body">
+            <div class="price-slider-container">
+              <input type="range" min="10" max="200" value="10" class="price-slider" id="priceMin">
+              <input type="range" min="10" max="200" value="200" class="price-slider" id="priceMax">
+              <div class="price-display">
+                <span id="priceMinDisplay">$10</span> - <span id="priceMaxDisplay">$200</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-accordion">
+          <button class="filter-accordion__header">
+            <span>Gender</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="filter-accordion__body">
+            <div class="gender-chips">
+              <button class="gender-chip gender-men">Men</button>
+              <button class="gender-chip gender-women">Women</button>
+              <button class="gender-chip gender-unisex">Unisex</button>
+              <button class="gender-chip gender-kids">Kids</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-accordion">
+          <button class="filter-accordion__header">
+            <span>Frame Material</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="filter-accordion__body">
+            <label class="filter-checkbox"><input type="checkbox" value="Acetate"> <span>Acetate</span></label>
+            <label class="filter-checkbox"><input type="checkbox" value="TR90"> <span>TR90</span></label>
+            <label class="filter-checkbox"><input type="checkbox" value="Stainless Steel"> <span>Stainless Steel</span></label>
+          </div>
+        </div>
+
+        <div class="filter-accordion">
+          <button class="filter-accordion__header">
+            <span>Frame Type</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="filter-accordion__body">
+            <label class="filter-checkbox"><input type="checkbox" value="Full Rim"> <span>Full Rim</span></label>
+            <label class="filter-checkbox"><input type="checkbox" value="Half Rim"> <span>Half Rim</span></label>
+            <label class="filter-checkbox"><input type="checkbox" value="Rimless"> <span>Rimless</span></label>
+          </div>
+        </div>
+
+      </div>
+      <div class="filter-sheet__footer">
+        <button class="filter-clear-btn" id="btnClearFilters">Clear All</button>
+        <button class="filter-apply-btn" id="btnApplyFilters">Apply Filters (24)</button>
+      </div>
+    </aside>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="bottom-nav__inner">
+        <a href="index.html" class="bottom-nav__item">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="category.html" class="bottom-nav__item active">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="nav-label">Discover</span>
+        </a>
+        <a href="#" class="bottom-nav__item" id="navTryonBtn">
+          <div class="nav-scan-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </div>
+          <span class="nav-label">3D Try-On</span>
+        </a>
+        <a href="wishlist.html" class="bottom-nav__item">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="nav-label">Saved</span>
+        </a>
+        <a href="profile.html" class="bottom-nav__item">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span class="nav-label">Profile</span>
+        </a>
+      </div>
+    </nav>
+
+  </div>
+
+  <script src="products.js"></script>
+</body>
+</html>

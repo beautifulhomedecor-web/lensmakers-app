@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lensmakers - Book Eye Test</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Premium Glassmorphic Styles based on Design Mockup */
+    .eyetest-wrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 20px 16px;
+    }
+    .eyetest-slider-track {
+      display: flex;
+      width: 400%;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .eyetest-slider-panel {
+      width: 25%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      box-sizing: border-box;
+    }
+    
+    /* Type Selectors with gradient glow borders */
+    .test-type-row {
+      display: flex;
+      gap: 16px;
+    }
+    .test-type-card {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 22px 16px;
+      text-align: center;
+      cursor: pointer;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .test-type-card.active {
+      border-color: #00e5ff;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    .test-type-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(0, 229, 255, 0.06);
+      border: 1px solid rgba(0, 229, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00e5ff;
+      transition: all 0.3s;
+    }
+    .test-type-card.active .test-type-icon {
+      background: #00e5ff;
+      color: #0c102a;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    }
+    .test-type-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+    .test-type-card p {
+      font-size: 11px;
+      color: var(--text-lavender);
+      line-height: 1.4;
+    }
+    
+    /* check pincode card */
+    .pincode-check-card {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .pincode-check-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .pincode-row {
+      display: flex;
+      gap: 10px;
+    }
+    .pincode-row input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: 0.2s;
+    }
+    .pincode-row input:focus {
+      border-color: #00e5ff;
+    }
+    .pincode-row button {
+      background: linear-gradient(135deg, #00e5ff, #00b0ff);
+      border: none;
+      color: #0c102a;
+      border-radius: 12px;
+      padding: 0 20px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 229, 255, 0.2);
+    }
+    .pincode-status {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .pincode-status.success { color: var(--text-success); }
+    .pincode-status.error { color: var(--text-error); }
+
+    /* Date scroll select */
+    .date-scroll-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+    }
+    .date-scroll-row::-webkit-scrollbar { display: none; }
+    .date-chip {
+      flex: 0 0 68px;
+      padding: 12px 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-lavender);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+    .date-chip.active {
+      background: var(--primary-pink);
+      border-color: var(--primary-pink);
+      color: #fff;
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 77, 141, 0.4), inset 0 1px 1px rgba(255,255,255,0.2);
+    }
+    .date-day { font-size: 10px; text-transform: uppercase; font-weight: 700; opacity: 0.8; }
+    .date-num { font-size: 18px; font-weight: 800; }
+
+    /* Time Slots grid with custom textures */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .slot-btn {
+      padding: 14px 0;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+    .slot-btn.active {
+      border-color: var(--primary-pink);
+      box-shadow: 0 0 12px rgba(255, 77, 141, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      transform: scale(1.04);
+    }
+    .slot-btn.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 6px,
+        rgba(255, 255, 255, 0.08) 6px,
+        rgba(255, 255, 255, 0.08) 12px
+      );
+    }
+
+    /* SVG draw checkmark confirmation */
+    .success-glass-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 32px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      backdrop-filter: blur(25px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+    }
+    .checkmark-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(102, 187, 106, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(102, 187, 106, 0.2);
+    }
+    .checkmark-circle-bg { fill: none; stroke: rgba(102, 187, 106, 0.15); stroke-width: 4; }
+    .checkmark-path {
+      fill: none; stroke: var(--text-success); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 60; stroke-dashoffset: 60;
+    }
+    .eyetest-slider-panel.active-state .checkmark-path {
+      animation: drawCheckmark 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    }
+    @keyframes drawCheckmark { to { stroke-dashoffset: 0; } }
+
+    .eyetest-footer {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 388px;
+      z-index: 100;
+      background: rgba(15, 21, 53, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    .eyetest-submit-btn {
+      width: 100%;
+      background: var(--cta-gradient);
+      color: #fff;
+      border: none;
+      padding: 16px 0;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255, 77, 141, 0.4);
+      transition: all 0.3s;
+    }
+    .eyetest-submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 77, 141, 0.5);
+    }
+    .eyetest-submit-btn:active {
+      transform: translateY(1px);
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Animated Background -->
+  <div class="animated-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="app-wrapper eyetest-wrapper">
+    
+    <header class="plp-header" style="position: relative; top: 0; transform: none; width: 100%; max-width: none; margin-bottom: 10px;">
+      <div class="plp-header__inner" style="padding: 8px 10px;">
+        <button class="plp-back-btn" onclick="window.history.back()" aria-label="Go back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="plp-header__title-area">
+          <h1 class="plp-header__title" id="bookingTitle">Book Eye Test</h1>
+          <span class="plp-header__subtitle">Step 1 of 3</span>
+        </div>
+        <div style="width: 32px;"></div>
+      </div>
+    </header>
+
+    <!-- STEP PANEL SLIDER -->
+    <div class="eyetest-slider-track" id="bookingTrack">
+      
+      <!-- STEP 1: CHOOSE TEST TYPE -->
+      <div class="eyetest-slider-panel" id="step1Panel">
+        <h2 class="section-label">Select Test Location</h2>
+        <div class="test-type-row">
+          <div class="test-type-card active" onclick="selectTestType('store', this)">
+            <div class="test-type-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <h3>In-Store</h3>
+            <p>At nearby Lensmakers center. Certified gear.</p>
+          </div>
+          <div class="test-type-card" onclick="selectTestType('home', this)">
+            <div class="test-type-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <h3>At-Home</h3>
+            <p>Certified optometrist visits your home.</p>
+          </div>
+        </div>
+
+        <div class="pincode-check-card hidden" id="pincodeCard">
+          <h4>Check Availability</h4>
+          <div class="pincode-row">
+            <input type="text" id="pincodeInput" placeholder="Enter Pincode (e.g. 560001)">
+            <button onclick="checkPincode()">Check</button>
+          </div>
+          <div id="pincodeStatus" class="pincode-status"></div>
+        </div>
+
+        <div class="eyetest-footer">
+          <button class="eyetest-submit-btn" id="btnNext1" onclick="goToStep(2)">Next</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: DATE & SLOT PICKER -->
+      <div class="eyetest-slider-panel" id="step2Panel">
+        <h2 class="section-label">Select Date</h2>
+        <div class="date-scroll-row" id="dateScrollRow">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <h2 class="section-label" style="margin-top: 10px;">Select Time Slot</h2>
+        <div class="slots-grid" id="slotsGrid">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="eyetest-footer">
+          <button class="eyetest-submit-btn" onclick="goToStep(3)">Next</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: CONTACT INFORMATION -->
+      <div class="eyetest-slider-panel" id="step3Panel">
+        <h2 class="section-label">Confirm Contact Details</h2>
+        <form class="checkout-form" onsubmit="confirmBooking(event)" style="background: var(--glass-bg); border: 1px solid var(--glass-border);">
+          <div class="input-group">
+            <input type="text" id="contactName" placeholder="Full Name" value="Jane Doe" required>
+          </div>
+          <div class="input-group">
+            <input type="tel" id="contactPhone" placeholder="Phone Number" value="9876543210" required>
+          </div>
+          <div class="input-group">
+            <input type="email" id="contactEmail" placeholder="Email Address" value="jane@lensmakers.com" required>
+          </div>
+          <button type="submit" class="primary-form-btn" style="margin-top: 10px;">Confirm Booking</button>
+        </form>
+      </div>
+
+      <!-- SUCCESS / CONFIRMATION -->
+      <div class="eyetest-slider-panel" id="stepSuccessPanel">
+        <div class="success-glass-card">
+          <div class="checkmark-circle">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle class="checkmark-circle-bg" cx="40" cy="40" r="36" />
+              <path class="checkmark-path" d="M23 41 l11 11 l24 -24" />
+            </svg>
+          </div>
+          <h2>Booking Confirmed!</h2>
+          <p class="success-subtext">Certified optometrist slot reserved. A SMS receipt has been sent.</p>
+          
+          <div class="order-details-summary" style="width: 100%;">
+            <div class="order-detail-row">
+              <span>Booking Reference:</span>
+              <span class="order-value" id="refNum">TX-9827A</span>
+            </div>
+            <div class="order-detail-row">
+              <span>Date & Time:</span>
+              <span class="order-value" id="successSlot">Oct 5, 2025 at 10:00 AM</span>
+            </div>
+          </div>
+
+          <div class="success-actions">
+            <button class="primary-btn" onclick="addToCalendar()">Add to Calendar</button>
+            <a href="index.html" class="outline-btn">Return Home</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let selectedType = 'store';
+    let selectedDate = null;
+    let selectedSlot = null;
+
+    // Type selection
+    function selectTestType(type, element) {
+      selectedType = type;
+      document.querySelectorAll('.test-type-card').forEach(card => card.classList.remove('active'));
+      element.classList.add('active');
+
+      const pinCard = document.getElementById('pincodeCard');
+      const nextBtn = document.getElementById('btnNext1');
+      if (type === 'home') {
+        pinCard.classList.remove('hidden');
+        nextBtn.disabled = true;
+      } else {
+        pinCard.classList.add('hidden');
+        nextBtn.disabled = false;
+      }
+    }
+
+    function checkPincode() {
+      const pin = document.getElementById('pincodeInput').value.trim();
+      const status = document.getElementById('pincodeStatus');
+      const nextBtn = document.getElementById('btnNext1');
+
+      if (pin.length === 6 && pin.startsWith('5')) {
+        status.textContent = 'Service available in your area!';
+        status.className = 'pincode-status success';
+        nextBtn.disabled = false;
+      } else {
+        status.textContent = 'Service unavailable. Try store booking.';
+        status.className = 'pincode-status error';
+        nextBtn.disabled = true;
+      }
+    }
+
+    // Step Sliding Navigation
+    function goToStep(stepNum) {
+      const track = document.getElementById('bookingTrack');
+      const subtitle = document.querySelector('.plp-header__subtitle');
+      
+      const translateAmount = -((stepNum - 1) * 25);
+      track.style.transform = `translateX(${translateAmount}%)`;
+      
+      if (stepNum <= 3) {
+        subtitle.textContent = `Step ${stepNum} of 3`;
+      } else {
+        subtitle.textContent = `Success`;
+        const successPanel = document.getElementById('stepSuccessPanel');
+        successPanel.classList.add('active-state');
+        // Set success slot text
+        document.getElementById('successSlot').textContent = `${selectedDate} at ${selectedSlot}`;
+      }
+    }
+
+    // Render Dates
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dateRow = document.getElementById('dateScrollRow');
+    
+    let dateList = [];
+    for (let i = 0; i < 14; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      dateList.push(d);
+    }
+
+    dateRow.innerHTML = dateList.map((d, index) => {
+      const dayName = days[d.getDay()];
+      const dayNum = d.getDate();
+      const dateString = `${dayName}, ${months[d.getMonth()]} ${dayNum}`;
+      return `
+        <button class="date-chip ${index === 0 ? 'active' : ''}" onclick="selectDate('${dateString}', this)">
+          <span class="date-day">${dayName}</span>
+          <span class="date-num">${dayNum}</span>
+        </button>
+      `;
+    }).join('');
+    selectedDate = `${days[dateList[0].getDay()]}, ${months[dateList[0].getMonth()]} ${dateList[0].getDate()}`;
+
+    function selectDate(dateString, element) {
+      selectedDate = dateString;
+      document.querySelectorAll('.date-chip').forEach(chip => chip.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    // Render Slots
+    const timeSlots = ['09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM'];
+    const slotsGrid = document.getElementById('slotsGrid');
+    
+    slotsGrid.innerHTML = timeSlots.map((slot, index) => {
+      // Disable every 3rd slot for realism
+      const isDisabled = index % 3 === 2;
+      return `
+        <button class="slot-btn ${isDisabled ? 'disabled' : ''} ${index === 0 ? 'active' : ''}" onclick="selectSlot('${slot}', this)">
+          ${slot}
+        </button>
+      `;
+    }).join('');
+    selectedSlot = timeSlots[0];
+
+    function selectSlot(slot, element) {
+      selectedSlot = slot;
+      document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    function confirmBooking(e) {
+      e.preventDefault();
+      // Generate mock booking ref
+      const ref = 'TX-' + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('refNum').textContent = ref;
+      goToStep(4);
+    }
+
+    function addToCalendar() {
+      alert('Booking added to your device calendar!');
+    }
+  </script>
+</body>
+</html>

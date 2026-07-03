@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Lens Mart — Product Details">
+  <title>Vagabond Full-Rim - Lensmakers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- MediaPipe dependencies for Try-On -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Animated Background -->
+  <div class="animated-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="app-wrapper pdp-wrapper">
+
+    <!-- IMAGE GALLERY SECTION -->
+    <section class="pdp-gallery">
+      <!-- Floating Action Buttons -->
+      <div class="pdp-gallery-actions top-left">
+        <button class="pdp-glass-btn" onclick="window.history.back()" aria-label="Go back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+      </div>
+      <div class="pdp-gallery-actions top-right">
+        <button class="pdp-glass-btn" aria-label="Share">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+        <button class="pdp-glass-btn" id="pdpWishlistBtn" aria-label="Add to Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </button>
+      </div>
+
+      <!-- Main Image Display -->
+      <div class="pdp-main-image-container" id="pdpMainImageContainer">
+        <img src="images/glasses-1.png" alt="Product Image" id="pdpMainImg">
+        <!-- Try in 3D Action -->
+        <button class="pdp-tryon-btn pulse-glow" id="navTryon" aria-label="Try in 3D">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <span>Try in 3D</span>
+        </button>
+      </div>
+
+      <!-- Thumbnails -->
+      <div class="pdp-thumbnails">
+        <button class="pdp-thumb active" data-img="images/glasses-1.png"><img src="images/glasses-1.png" alt="Front"></button>
+        <button class="pdp-thumb" data-img="images/glasses-2.png"><img src="images/glasses-2.png" alt="Angled"></button>
+        <button class="pdp-thumb" data-img="images/glasses-3.png"><img src="images/glasses-3.png" alt="Side"></button>
+        <button class="pdp-thumb" data-img="images/glasses-4.png"><img src="images/glasses-4.png" alt="Model"></button>
+      </div>
+    </section>
+
+    <!-- PRODUCT INFO SECTION -->
+    <section class="pdp-section pdp-info">
+      <div class="pdp-info-header">
+        <span class="pdp-brand">Vincent Chase</span>
+        <span class="pdp-premium-badge">PREMIUM</span>
+      </div>
+      <h1 class="pdp-title">Vagabond Full-Rim Rectangle</h1>
+      
+      <div class="pdp-rating-row" onclick="document.getElementById('pdpReviews').scrollIntoView({behavior:'smooth'})">
+        <div class="stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24" class="half-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span class="review-count">4.3 (1,204 reviews)</span>
+      </div>
+
+      <div class="pdp-price-row">
+        <span class="pdp-current-price" id="pdpTotalPrice">$65</span>
+        <span class="pdp-old-price">$120</span>
+        <span class="pdp-discount-badge">45% OFF</span>
+      </div>
+    </section>
+
+    <!-- COLOR / VARIANT SELECTOR -->
+    <section class="pdp-section pdp-colors">
+      <h3 class="section-label">Select Color</h3>
+      <div class="color-swatch-row">
+        <button class="pdp-color-swatch active" style="background-color: #000;" aria-label="Black"></button>
+        <button class="pdp-color-swatch" style="background-color: #e0b162;" aria-label="Gold"></button>
+        <button class="pdp-color-swatch" style="background-color: #555;" aria-label="Gunmetal"></button>
+      </div>
+    </section>
+
+    <!-- SIZE / FIT SELECTOR -->
+    <section class="pdp-section pdp-size">
+      <div class="size-header">
+        <h3 class="section-label">Size / Fit</h3>
+        <button class="find-size-link">Find My Size</button>
+      </div>
+      <div class="size-pills">
+        <button class="size-pill">Narrow</button>
+        <button class="size-pill active">Average</button>
+        <button class="size-pill">Wide</button>
+      </div>
+    </section>
+
+    <!-- KEY SPECS GRID -->
+    <section class="pdp-section pdp-specs">
+      <h3 class="section-label">Key Specifications</h3>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <span class="spec-icon">M</span>
+          <span class="spec-label">Material</span>
+          <span class="spec-value">Acetate</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-icon">O</span>
+          <span class="spec-label">Frame Type</span>
+          <span class="spec-value">Full Rim</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-icon">⬭</span>
+          <span class="spec-label">Shape</span>
+          <span class="spec-value">Rectangle</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-icon">⚖</span>
+          <span class="spec-label">Weight</span>
+          <span class="spec-value">18g</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LENS CUSTOMIZATION SECTION -->
+    <section class="pdp-section pdp-lenses">
+      <h3 class="section-label">Choose Your Lenses</h3>
+      <div class="lens-options">
+        <label class="lens-option active">
+          <input type="radio" name="lens_type" value="0" checked>
+          <div class="lens-info">
+            <span class="lens-name">Frame Only</span>
+            <span class="lens-desc">No prescription</span>
+          </div>
+          <span class="lens-price">+$0</span>
+        </label>
+        <label class="lens-option">
+          <input type="radio" name="lens_type" value="30">
+          <div class="lens-info">
+            <span class="lens-name">Single Vision</span>
+            <span class="lens-desc">For distance or reading</span>
+          </div>
+          <span class="lens-price">+$30</span>
+        </label>
+        <label class="lens-option">
+          <input type="radio" name="lens_type" value="80">
+          <div class="lens-info">
+            <span class="lens-name">Blue Light Blocking</span>
+            <span class="lens-desc">Protect eyes from screens</span>
+          </div>
+          <span class="lens-price">+$80</span>
+        </label>
+        <label class="lens-option">
+          <input type="radio" name="lens_type" value="150">
+          <div class="lens-info">
+            <span class="lens-name">Premium Progressive</span>
+            <span class="lens-desc">Multifocal lenses</span>
+          </div>
+          <span class="lens-price">+$150</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- EXPANDABLE ACCORDIONS -->
+    <section class="pdp-section pdp-accordions">
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Product Description</span>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="accordion-body">
+          <p class="accordion-content">Crafted with lightweight, durable acetate, the Vagabond Full-Rim Rectangle frames offer a timeless intellectual look. Designed for all-day comfort with ergonomic temple arms and a tailored bridge fit.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Material & Care</span>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="accordion-body">
+          <ul class="accordion-content">
+            <li>Hand-polished Italian Acetate</li>
+            <li>Anti-scratch coating on lenses</li>
+            <li>Clean with provided microfiber cloth</li>
+            <li>Avoid excessive heat exposure</li>
+          </ul>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Shipping & Returns</span>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="accordion-body">
+          <p class="accordion-content">Free standard shipping on all orders over $50. Enjoy a 14-day no-questions-asked return policy. All frames come with a 1-year warranty against manufacturing defects.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS SECTION -->
+    <section class="pdp-section pdp-reviews" id="pdpReviews">
+      <h3 class="section-label">Customer Reviews</h3>
+      
+      <div class="review-summary">
+        <div class="review-score">
+          <span class="big-score">4.3</span>
+          <div class="stars">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg viewBox="0 0 24 24" class="half-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <span class="review-total-count">1,204 reviews</span>
+        </div>
+        <div class="review-chart">
+          <div class="bar-row"><span class="star-num">5</span><div class="bar-bg"><div class="bar-fill" style="width: 70%"></div></div></div>
+          <div class="bar-row"><span class="star-num">4</span><div class="bar-bg"><div class="bar-fill" style="width: 20%"></div></div></div>
+          <div class="bar-row"><span class="star-num">3</span><div class="bar-bg"><div class="bar-fill" style="width: 5%"></div></div></div>
+          <div class="bar-row"><span class="star-num">2</span><div class="bar-bg"><div class="bar-fill" style="width: 2%"></div></div></div>
+          <div class="bar-row"><span class="star-num">1</span><div class="bar-bg"><div class="bar-fill" style="width: 3%"></div></div></div>
+        </div>
+      </div>
+
+      <div class="review-list">
+        <!-- Review Item -->
+        <div class="review-card">
+          <div class="review-card-header">
+            <div class="reviewer-avatar">S</div>
+            <div class="reviewer-meta">
+              <span class="reviewer-name">Sarah Jenkins</span>
+              <span class="review-date">Oct 12, 2025</span>
+            </div>
+            <div class="stars small">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+          </div>
+          <p class="review-text">Absolutely love these! The virtual try-on was super accurate. They fit perfectly and are very lightweight.</p>
+        </div>
+      </div>
+      
+      <button class="write-review-btn">Write a Review</button>
+    </section>
+
+    <!-- RELATED PRODUCTS -->
+    <section class="pdp-section pdp-related">
+      <h3 class="section-label">You May Also Like</h3>
+      <div class="related-scroll-row">
+        <!-- Reusing PLP card styles for related items -->
+        <div class="plp-card">
+          <div class="plp-card__img-wrap">
+            <img src="images/glasses-3.png" alt="Glasses" class="plp-card__img">
+          </div>
+          <div class="plp-card__info">
+            <div class="plp-card__brand">Vogue</div>
+            <div class="plp-card__name">Glamour Cat</div>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">$85</span>
+            </div>
+          </div>
+        </div>
+        <div class="plp-card">
+          <div class="plp-card__img-wrap">
+            <img src="images/glasses-5.png" alt="Glasses" class="plp-card__img">
+          </div>
+          <div class="plp-card__info">
+            <div class="plp-card__brand">John Jacobs</div>
+            <div class="plp-card__name">Sky Pilot</div>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">$75</span>
+            </div>
+          </div>
+        </div>
+        <div class="plp-card">
+          <div class="plp-card__img-wrap">
+            <img src="images/glasses-6.png" alt="Glasses" class="plp-card__img">
+          </div>
+          <div class="plp-card__info">
+            <div class="plp-card__brand">Lens Mart Air</div>
+            <div class="plp-card__name">Hexa Pro</div>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">$55</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- STICKY BOTTOM ACTION BAR -->
+  <div class="pdp-sticky-bar">
+    <button class="btn-add-cart" id="btnAddToCart">
+      <span class="btn-text">Add to Cart</span>
+      <svg class="check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </button>
+    <button class="btn-buy-now">Buy Now</button>
+  </div>
+  <div class="flying-cart-icon" id="flyingCartIcon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+  </div>
+
+  <!-- VIRTUAL TRY-ON MODAL (Hidden by default, triggered by Try in 3D button) -->
+  <div id="tryonModal" class="tryon-modal hidden">
+    <!-- Close Button -->
+    <button id="closeTryonBtn" class="tryon-close-btn" aria-label="Close Try-on">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <!-- State 1: Permission Prompt -->
+    <div id="tryonPermission" class="tryon-state active">
+      <div class="glass-prompt">
+        <div class="prompt-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF4D8D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+        </div>
+        <h2>Allow Camera Access</h2>
+        <p>We need your camera to let you try on these glasses virtually in real-time.</p>
+        <button id="allowCameraBtn" class="primary-btn">Allow Camera</button>
+      </div>
+    </div>
+    <!-- State 2: Live Try-On Camera View -->
+    <div id="tryonLive" class="tryon-state hidden">
+      <!-- MediaPipe Video/Canvas -->
+      <video id="input-video" class="tryon-video" playsinline autoplay></video>
+      <canvas id="output-canvas" class="tryon-canvas"></canvas>
+      <img id="glasses-img" src="images/glasses-1.png" style="display:none;" crossorigin="anonymous">
+      <!-- Bottom Controls -->
+      <div class="tryon-controls">
+        <div class="tryon-product-info">
+          <p class="tryon-brand">Vincent Chase</p>
+          <p class="tryon-name">Vagabond Rectangle</p>
+        </div>
+        <button class="tryon-capture-btn" aria-label="Take Photo">
+          <div class="capture-inner"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="tryon.js"></script>
+  <script src="product.js"></script>
+</body>
+</html>

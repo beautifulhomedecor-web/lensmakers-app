@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lens Mart - My Wishlist</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <style>
+    .wishlist-wrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px 16px 80px 16px;
+    }
+    
+    .wishlist-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    /* Wishlist Card specific layout animations */
+    .wishlist-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .wishlist-card-wrap {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: center;
+    }
+
+    /* Height collapse animation */
+    .wishlist-card-wrap.collapsing-state {
+      opacity: 0;
+      transform: scale(0.85);
+      max-height: 0;
+      margin-bottom: -14px;
+      padding-top: 0;
+      padding-bottom: 0;
+      overflow: hidden;
+    }
+
+    /* Heart drain/fade animation */
+    .plp-card__heart.unfilling svg {
+      animation: drainHeart 0.25s forwards ease-in-out;
+    }
+
+    @keyframes drainHeart {
+      0% { fill: #FF4D8D; transform: scale(1.2); }
+      100% { fill: none; transform: scale(0.9); }
+    }
+
+    /* Bottom slide up Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      width: calc(100% - 32px);
+      max-width: 388px;
+      background: rgba(15, 21, 53, 0.95);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 9999;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .toast-container.active {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-text {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .toast-undo {
+      font-size: 13px;
+      color: var(--primary-pink);
+      font-weight: 700;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .empty-icon {
+      color: var(--text-muted);
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.02));
+      animation: floatIcon 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatIcon {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Glow background spheres -->
+  <div class="glow-container">
+    <div class="glow-blob glow-pink"></div>
+    <div class="glow-blob glow-blue"></div>
+  </div>
+
+  <div class="app-wrapper wishlist-wrapper">
+    
+    <!-- HEADER -->
+    <header class="plp-header" style="position: relative; top: 0; transform: none; width: 100%; max-width: none;">
+      <div class="plp-header__inner" style="padding: 8px 10px;">
+        <button class="plp-back-btn" onclick="window.history.back()" aria-label="Go back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="plp-header__title-area">
+          <h1 class="plp-header__title" id="wishlistTitle">My Wishlist</h1>
+          <span class="plp-header__subtitle" id="wishlistCount">3 items</span>
+        </div>
+        <button class="plp-filter-btn" onclick="shareWishlist()" aria-label="Share Wishlist" style="margin-left:auto; display:flex; align-items:center; justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- BULK ACTIONS -->
+    <div class="wishlist-actions-bar" id="actionsBar">
+      <div style="flex:1;"></div>
+      <button class="primary-form-btn" onclick="addAllToCart()" style="padding: 8px 20px; font-size:12px; width:auto; border-radius:999px;">Add All to Cart</button>
+    </div>
+
+    <!-- WISHLIST GRID -->
+    <div class="wishlist-grid" id="wishlistGrid">
+      
+      <!-- Card 1 -->
+      <div class="wishlist-card-wrap" id="item-w1" data-id="1" data-name="Air Flex Zero" data-brand="Lens Mart Air" data-price="49">
+        <div class="plp-card" style="width: 100%; margin: 0; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);">
+          <div class="plp-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=400&h=400" alt="Air Flex Zero" class="plp-card__img">
+            <button class="plp-card__heart saved" aria-label="Remove" onclick="removeFromWishlist('item-w1')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+          </div>
+          <div class="plp-card__info" style="padding: 12px;">
+            <div class="plp-card__brand">Lens Mart Air</div>
+            <div class="plp-card__name">Air Flex Zero</div>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">$49</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="wishlist-card-wrap" id="item-w2" data-id="2" data-name="Retro Classic" data-brand="Vincent Chase" data-price="65">
+        <div class="plp-card" style="width: 100%; margin: 0; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);">
+          <div class="plp-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=400&h=400" alt="Retro Classic" class="plp-card__img">
+            <button class="plp-card__heart saved" aria-label="Remove" onclick="removeFromWishlist('item-w2')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+          </div>
+          <div class="plp-card__info" style="padding: 12px;">
+            <div class="plp-card__brand">Vincent Chase</div>
+            <div class="plp-card__name">Retro Classic</div>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">$65</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="wishlist-card-wrap" id="item-w3" data-id="4" data-name="Wayfarer Core" data-brand="Ray-Ban" data-price="120">
+        <div class="plp-card" style="width: 100%; margin: 0; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);">
+          <div class="plp-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=400&h=400" alt="Wayfarer Core" class="plp-card__img">
+            <button class="plp-card__heart saved" aria-label="Remove" onclick="removeFromWishlist('item-w3')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+          </div>
+          <div class="plp-card__info" style="padding: 12px;">
+            <div class="plp-card__brand">Ray-Ban</div>
+            <div class="plp-card__name">Wayfarer Core</div>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">$120</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState">
+      <svg class="empty-icon" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="10" y1="12" x2="14" y2="12"/><path d="M6 8a6 6 0 0 1 12 0"/>
+      </svg>
+      <h2 style="font-size:18px; color:#fff;">Your wishlist is empty</h2>
+      <p style="font-size:12px; color:var(--text-lavender); line-height:1.4;">Add items to your wishlist while shopping to view or compare them later here.</p>
+      <button class="primary-form-btn" onclick="window.location.href='category.html'" style="width:auto; padding: 12px 30px; border-radius:999px; margin-top:10px;">Browse Eyeglasses</button>
+    </div>
+
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-container" id="wishlistToast">
+    <span class="toast-text">Removed from Wishlist</span>
+    <button class="toast-undo" onclick="undoRemoval()">Undo</button>
+  </div>
+
+  <script>
+    let recentlyRemovedId = null;
+    let recentlyRemovedData = null;
+    let toastTimeout = null;
+
+    function updateCount() {
+      const activeItems = document.querySelectorAll('.wishlist-card-wrap:not(.collapsing-state)');
+      const countLabel = document.getElementById('wishlistCount');
+      const actionsBar = document.getElementById('actionsBar');
+      const grid = document.getElementById('wishlistGrid');
+      const empty = document.getElementById('emptyState');
+
+      countLabel.textContent = `${activeItems.length} items`;
+
+      if (activeItems.length === 0) {
+        actionsBar.style.display = 'none';
+        grid.style.display = 'none';
+        empty.style.display = 'flex';
+      } else {
+        actionsBar.style.display = 'flex';
+        grid.style.display = 'grid';
+        empty.style.display = 'none';
+      }
+    }
+
+    function removeFromWishlist(id) {
+      const wrapper = document.getElementById(id);
+      if (!wrapper) return;
+
+      const heart = wrapper.querySelector('.plp-card__heart');
+      heart.classList.add('unfilling');
+
+      // Save removal data for undo
+      recentlyRemovedId = id;
+      recentlyRemovedData = {
+        html: wrapper.innerHTML,
+        dataset: { ...wrapper.dataset }
+      };
+
+      // Transition fade and collapse height after 250ms
+      setTimeout(() => {
+        wrapper.classList.add('collapsing-state');
+        
+        // Final DOM remove check after transition
+        setTimeout(() => {
+          if (wrapper.classList.contains('collapsing-state')) {
+            wrapper.style.display = 'none';
+            updateCount();
+          }
+        }, 300);
+
+        showToast();
+      }, 250);
+    }
+
+    function showToast() {
+      const toast = document.getElementById('wishlistToast');
+      toast.classList.add('active');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('active');
+      }, 2500);
+    }
+
+    function undoRemoval() {
+      const toast = document.getElementById('wishlistToast');
+      toast.classList.remove('active');
+
+      if (recentlyRemovedId && recentlyRemovedData) {
+        const wrapper = document.getElementById(recentlyRemovedId);
+        wrapper.style.display = 'block';
+        
+        // Remove collapse class and unfilling
+        setTimeout(() => {
+          wrapper.classList.remove('collapsing-state');
+          const heart = wrapper.querySelector('.plp-card__heart');
+          heart.classList.remove('unfilling');
+          updateCount();
+        }, 10);
+      }
+    }
+
+    function addAllToCart() {
+      alert('All items from wishlist added to cart successfully!');
+    }
+
+    function shareWishlist() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'My Lens Mart Wishlist',
+          text: 'Check out my favorite frames on Lens Mart!',
+          url: window.location.href
+        }).catch(err => console.log(err));
+      } else {
+        alert('Shareable wishlist link copied to clipboard!');
+      }
+    }
+
+    // Init
+    updateCount();
+  </script>
+</body>
+</html>

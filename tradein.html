@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lens Mart - Trade-In Program</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <style>
+    .tradein-wrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px 16px 80px 16px;
+      overflow: hidden;
+    }
+
+    .tradein-slider-track {
+      display: flex;
+      width: 500%; /* 5 Panels: Landing, Step 1, Step 2, Step 3 (Quote), Success */
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tradein-slider-panel {
+      width: 20%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-sizing: border-box;
+    }
+
+    /* Diagram card design */
+    .diagram-step {
+      display: flex;
+      gap: 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px;
+      align-items: center;
+    }
+    .diagram-step__num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 77, 141, 0.12);
+      border: 1px solid rgba(255, 77, 141, 0.25);
+      color: var(--primary-pink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .diagram-step__text h4 {
+      font-size: 13px;
+      color: #fff;
+      margin-bottom: 2px;
+      font-weight: 700;
+    }
+    .diagram-step__text p {
+      font-size: 11px;
+      color: var(--text-lavender);
+    }
+
+    /* Photo Upload Grid */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .preview-thumb {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+    }
+    .preview-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .preview-remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      border: none;
+      color: #fff;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Condition questionnaire pill row */
+    .pills-select-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pill-select-btn {
+      flex: 1;
+      min-width: 80px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-lavender);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .pill-select-btn.active {
+      border-color: var(--primary-pink);
+      color: #fff;
+      background: rgba(255, 77, 141, 0.05);
+      box-shadow: 0 0 10px rgba(255,77,141,0.15);
+    }
+
+    /* Radial glow for quote reveal */
+    .quote-glow-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 77, 141, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .quote-glow-bg.pulse-active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    /* Pickers */
+    .date-scroll-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .date-scroll-row::-webkit-scrollbar { display: none; }
+    .date-chip {
+      flex: 0 0 64px;
+      padding: 10px 0;
+      border-radius: 12px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-lavender);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .date-chip.active {
+      background: var(--primary-pink);
+      border-color: var(--primary-pink);
+      color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(255, 77, 141, 0.3);
+    }
+    .date-day { font-size: 10px; text-transform: uppercase; font-weight: 600; }
+    .date-num { font-size: 16px; font-weight: 800; }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .slot-btn {
+      padding: 12px 0;
+      border-radius: 10px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .slot-btn.active {
+      border-color: var(--primary-pink);
+      box-shadow: 0 0 10px rgba(255, 77, 141, 0.2);
+    }
+    .slot-btn.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 6px,
+        rgba(255, 255, 255, 0.08) 6px,
+        rgba(255, 255, 255, 0.08) 12px
+      );
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Glow background spheres -->
+  <div class="glow-container">
+    <div class="glow-blob glow-pink"></div>
+    <div class="glow-blob glow-blue"></div>
+  </div>
+
+  <div class="app-wrapper tradein-wrapper">
+    
+    <!-- HEADER -->
+    <header class="plp-header" style="position: relative; top: 0; transform: none; width: 100%; max-width: none;">
+      <div class="plp-header__inner" style="padding: 8px 10px;">
+        <button class="plp-back-btn" onclick="handleBack()" aria-label="Go back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="plp-header__title-area">
+          <h1 class="plp-header__title" id="tradeTitle">Trade-In Program</h1>
+          <span class="plp-header__subtitle" id="tradeStep">Exchange old glasses</span>
+        </div>
+        <div style="width:32px;"></div>
+      </div>
+    </header>
+
+    <!-- STEP PANEL SLIDER -->
+    <div class="tradein-slider-track" id="tradeTrack">
+      
+      <!-- PANEL 1: LANDING PAGE -->
+      <div class="tradein-slider-panel" id="panelLanding">
+        
+        <div class="promo-card" style="background: rgba(255, 77, 141, 0.05); border-color: rgba(255, 77, 141, 0.2); padding: 18px;">
+          <div class="promo-card__bg-glow" style="background: rgba(255, 77, 141, 0.15);"></div>
+          <h3 style="font-size: 16px; color:#fff; font-weight:800; line-height:1.3;">Trade In Your Old Glasses,<br>Get Up To 60% Off Your Next Pair</h3>
+          <p style="font-size:12px; color:var(--text-lavender); line-height:1.4; margin-top:6px;">Exchange any old eyeglasses or sunglasses. Submit details online and unlock instant cart credit up to ₹1,500.</p>
+        </div>
+
+        <h3 style="font-size:14px; color:#fff; font-weight:700; margin-top:8px;">How It Works</h3>
+        <div class="diagram-step">
+          <div class="diagram-step__num">1</div>
+          <div class="diagram-step__text">
+            <h4>Submit Photos</h4>
+            <p>Upload clean snapshots of your old frames.</p>
+          </div>
+        </div>
+        <div class="diagram-step">
+          <div class="diagram-step__num">2</div>
+          <div class="diagram-step__text">
+            <h4>Get Instant Quote</h4>
+            <p>Our algorithm values your frames instantly.</p>
+          </div>
+        </div>
+        <div class="diagram-step">
+          <div class="diagram-step__num">3</div>
+          <div class="diagram-step__text">
+            <h4>Apply Credit at Checkout</h4>
+            <p>Deduct value directly from your next order total.</p>
+          </div>
+        </div>
+
+        <button class="primary-form-btn" onclick="goToStep(2)" style="margin-top:16px;">Start Trade-In</button>
+      </div>
+
+      <!-- PANEL 2: STEP 1 - UPLOAD PHOTOS -->
+      <div class="tradein-slider-panel" id="panelPhotos">
+        <h2 style="font-size:16px; color:#fff; font-weight:700;">Step 1: Upload Snapshots</h2>
+        <p style="font-size:12px; color:var(--text-lavender); line-height:1.4;">Provide clear front and side snapshots of your old spectacles for quick valuation.</p>
+        
+        <div class="prescription-dropzone" onclick="triggerPhotoSelect()">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p class="dropzone-text" style="font-size:14px; margin-top:6px;">Upload Old Glass Snapshots</p>
+          <span class="dropzone-subtext">Supports JPEG, PNG</span>
+          <input type="file" id="photoSelect" class="hidden-file-input" style="display:none;" onchange="handlePhotoUpload(this)" multiple>
+        </div>
+
+        <div class="preview-grid" id="previewGrid">
+          <!-- Thumbnail previews populated by script -->
+        </div>
+
+        <button class="primary-form-btn" id="btnNextStep1" onclick="goToStep(3)" style="margin-top:16px;" disabled>Continue</button>
+      </div>
+
+      <!-- PANEL 3: STEP 2 - CONDITION QUESTIONNAIRE -->
+      <div class="tradein-slider-panel" id="panelQuestions">
+        <h2 style="font-size:16px; color:#fff; font-weight:700;">Step 2: Condition Questionnaire</h2>
+        
+        <div class="checkout-form" style="margin-top:0; background:rgba(255,255,255,0.01); display:flex; flex-direction:column; gap:16px; padding:16px;">
+          
+          <div>
+            <h4 style="font-size:12px; color:var(--text-lavender); margin-bottom:8px; font-weight:700;">Frame Condition</h4>
+            <div class="pills-select-row" id="conditionRow">
+              <button class="pill-select-btn active" onclick="selectCondition('like-new', this)">Like New</button>
+              <button class="pill-select-btn" onclick="selectCondition('good', this)">Good</button>
+              <button class="pill-select-btn" onclick="selectCondition('worn', this)">Worn</button>
+              <button class="pill-select-btn" onclick="selectCondition('damaged', this)">Damaged</button>
+            </div>
+          </div>
+
+          <div>
+            <h4 style="font-size:12px; color:var(--text-lavender); margin-bottom:8px; font-weight:700;">Rim Type</h4>
+            <div class="pills-select-row" id="rimRow">
+              <button class="pill-select-btn active" onclick="selectRim('full', this)">Full Rim</button>
+              <button class="pill-select-btn" onclick="selectRim('half', this)">Half Rim</button>
+              <button class="pill-select-btn" onclick="selectRim('rimless', this)">Rimless</button>
+            </div>
+          </div>
+
+          <div>
+            <h4 style="font-size:12px; color:var(--text-lavender); margin-bottom:8px; font-weight:700;">Approximate Age (Years)</h4>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <input type="range" min="1" max="5" value="2" id="ageSlider" style="flex:1;" oninput="updateAgeValue(this.value)">
+              <span id="ageLabel" style="color:#fff; font-size:14px; font-weight:800; min-width:40px;">2 Yrs</span>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="primary-form-btn" onclick="goToStep(4)" style="margin-top:16px;">Get Instant Quote</button>
+      </div>
+
+      <!-- PANEL 4: STEP 3 - INSTANT QUOTE REVEAL -->
+      <div class="tradein-slider-panel" id="panelQuote" style="position:relative;">
+        <h2 style="font-size:16px; color:#fff; font-weight:700; text-align:center;">Your Instant Valuation</h2>
+        
+        <!-- Glowing background indicator -->
+        <div class="quote-glow-bg" id="quoteGlow"></div>
+
+        <div class="success-glass-card" style="padding: 40px 20px; min-height: 180px; justify-content:center;">
+          <p style="font-size:12px; color:var(--text-lavender); text-transform:uppercase; letter-spacing:1px; font-weight:800;">Estimated Exchange Credit</p>
+          <span style="font-size: 48px; font-weight: 800; color:#fff;" id="quoteNumber">₹0</span>
+          <p style="font-size:11px; color:#FFB300; margin-top:10px; line-height:1.4;">Final value confirmed upon physical inspection at store/pickup.</p>
+        </div>
+
+        <!-- Date slot picker for pickup -->
+        <h3 style="font-size:13px; color:#fff; font-weight:700; margin-top:8px;">Schedule Old-Glasses Pickup</h3>
+        
+        <div class="date-scroll-row" id="dateScrollRow">
+          <!-- Populated by script -->
+        </div>
+
+        <div class="slots-grid" id="slotsGrid">
+          <!-- Populated by script -->
+        </div>
+
+        <button class="primary-form-btn" onclick="applyCredit()" style="margin-top:16px;">Apply Credit & Book Pickup</button>
+      </div>
+
+      <!-- PANEL 5: SUCCESS & CONFIRMATION -->
+      <div class="tradein-slider-panel" id="panelSuccess">
+        <div class="success-glass-card" style="padding: 40px 20px;">
+          <div class="checkmark-circle">
+            <svg class="checkmark-svg" width="40" height="40" viewBox="0 0 24 24">
+              <circle class="checkmark-circle-bg" cx="12" cy="12" r="10" />
+              <path class="checkmark-path" d="M6 12l4 4 8-8" />
+            </svg>
+          </div>
+          <h2 style="font-size:18px; color:#fff; font-weight:800; margin-top:12px;">Credit Applied!</h2>
+          <p style="font-size:12px; color:var(--text-lavender); line-height:1.4;">₹1,200 has been credited to your Lens Wallet. This credit will be auto-applied at your next checkout.</p>
+          
+          <div class="order-details-summary" style="width: 100%; margin-top:10px;">
+            <div class="order-detail-row">
+              <span>Pickup Date:</span>
+              <span class="order-value" id="successDate">Thu, Oct 5</span>
+            </div>
+            <div class="order-detail-row">
+              <span>Pickup Slot:</span>
+              <span class="order-value" id="successSlot">10:00 AM</span>
+            </div>
+          </div>
+
+          <div class="success-actions" style="margin-top:14px; width:100%;">
+            <a href="index.html" class="primary-btn" style="text-align:center;">Back to Store</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let activeStep = 1;
+    
+    // Mock Data State
+    let condition = 'like-new';
+    let rimType = 'full';
+    let age = 2;
+    let imagesCount = 0;
+    
+    let selectedDate = null;
+    let selectedSlot = null;
+
+    function handleBack() {
+      if (activeStep === 1) {
+        window.history.back();
+      } else if (activeStep <= 4) {
+        goToStep(activeStep - 1);
+      }
+    }
+
+    function goToStep(stepNum) {
+      activeStep = stepNum;
+      const track = document.getElementById('tradeTrack');
+      const subtitle = document.getElementById('tradeStep');
+      
+      const translateAmount = -((stepNum - 1) * 20);
+      track.style.transform = `translateX(${translateAmount}%)`;
+
+      if (stepNum === 1) {
+        subtitle.textContent = "Exchange old glasses";
+      } else if (stepNum <= 4) {
+        subtitle.textContent = `Step ${stepNum - 1} of 3`;
+      } else {
+        subtitle.textContent = "Success";
+        // Apply success active state
+        document.getElementById('panelSuccess').classList.add('active-state');
+        document.getElementById('successDate').textContent = selectedDate;
+        document.getElementById('successSlot').textContent = selectedSlot;
+      }
+
+      // Quote Animation trigger
+      if (stepNum === 4) {
+        triggerQuoteReveal();
+      }
+    }
+
+    // Photo uploads
+    function triggerPhotoSelect() {
+      document.getElementById('photoSelect').click();
+    }
+
+    function handlePhotoUpload(input) {
+      const grid = document.getElementById('previewGrid');
+      const nextBtn = document.getElementById('btnNextStep1');
+
+      if (input.files.length > 0) {
+        for (let file of input.files) {
+          imagesCount++;
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const thumbId = 'thumb-' + Math.floor(Math.random() * 1000);
+            const thumb = document.createElement('div');
+            thumb.className = 'preview-thumb';
+            thumb.id = thumbId;
+            thumb.innerHTML = `
+              <img src="${e.target.result}" alt="Preview">
+              <button class="preview-remove-btn" onclick="removeThumb('${thumbId}')">&times;</button>
+            `;
+            grid.appendChild(thumb);
+          };
+          reader.readAsDataURL(file);
+        }
+        nextBtn.disabled = false;
+      }
+    }
+
+    function removeThumb(id) {
+      document.getElementById(id).remove();
+      imagesCount--;
+      if (imagesCount <= 0) {
+        document.getElementById('btnNextStep1').disabled = true;
+      }
+    }
+
+    // Questionnaire selects
+    function selectCondition(val, element) {
+      condition = val;
+      const row = document.getElementById('conditionRow');
+      row.querySelectorAll('.pill-select-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    function selectRim(val, element) {
+      rimType = val;
+      const row = document.getElementById('rimRow');
+      row.querySelectorAll('.pill-select-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    function updateAgeValue(val) {
+      age = val;
+      document.getElementById('ageLabel').textContent = `${val} Yrs`;
+    }
+
+    // Quote Count up Reveal
+    function triggerQuoteReveal() {
+      // Calculate credit base value depending on selections
+      let baseVal = 1500;
+      if (condition === 'good') baseVal -= 300;
+      if (condition === 'worn') baseVal -= 600;
+      if (condition === 'damaged') baseVal -= 1000;
+      
+      if (rimType === 'half') baseVal -= 100;
+      if (rimType === 'rimless') baseVal += 200;
+
+      if (age > 2) baseVal -= 200;
+
+      // Ensure minimum credit ₹200
+      const finalQuote = Math.max(baseVal, 200);
+
+      const quoteNum = document.getElementById('quoteNumber');
+      const glow = document.getElementById('quoteGlow');
+
+      let current = 0;
+      const duration = 800; // ms
+      const startTime = performance.now();
+
+      function update(time) {
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // easeOutQuad
+        const easeProgress = progress * (2 - progress);
+        current = Math.floor(finalQuote * easeProgress);
+        quoteNum.textContent = `₹${current}`;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          quoteNum.textContent = `₹${finalQuote}`;
+          // Glow pulse burst animation on complete
+          glow.classList.add('pulse-active');
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    // Dates Scheduler
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dateRow = document.getElementById('dateScrollRow');
+    
+    let dateList = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      dateList.push(d);
+    }
+
+    dateRow.innerHTML = dateList.map((d, index) => {
+      const dayName = days[d.getDay()];
+      const dayNum = d.getDate();
+      const dateString = `${dayName}, ${months[d.getMonth()]} ${dayNum}`;
+      return `
+        <button class="date-chip ${index === 0 ? 'active' : ''}" onclick="selectDate('${dateString}', this)">
+          <span class="date-day">${dayName}</span>
+          <span class="date-num">${dayNum}</span>
+        </button>
+      `;
+    }).join('');
+    selectedDate = `${days[dateList[0].getDay()]}, ${months[dateList[0].getMonth()]} ${dateList[0].getDate()}`;
+
+    function selectDate(dateString, element) {
+      selectedDate = dateString;
+      document.querySelectorAll('.date-chip').forEach(chip => chip.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    const timeSlots = ['10:00 AM', '12:00 PM', '02:00 PM', '04:00 PM', '06:00 PM'];
+    const slotsGrid = document.getElementById('slotsGrid');
+    
+    slotsGrid.innerHTML = timeSlots.map((slot, index) => {
+      return `
+        <button class="slot-btn ${index === 0 ? 'active' : ''}" onclick="selectSlot('${slot}', this)">
+          ${slot}
+        </button>
+      `;
+    }).join('');
+    selectedSlot = timeSlots[0];
+
+    function selectSlot(slot, element) {
+      selectedSlot = slot;
+      document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    function applyCredit() {
+      // Store in Wallet credit
+      localStorage.setItem('tradein_credit', '1200');
+      goToStep(5);
+    }
+  </script>
+</body>
+</html>

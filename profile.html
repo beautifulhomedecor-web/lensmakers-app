@@ -2,15 +2,333 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lensmakers - Profile</title>
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Loyalty & Rewards CSS styles localized to Profile screen */
+    .rewards-section {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    
+    .rewards-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .points-display {
+      display: flex;
+      flex-direction: column;
+    }
+    .points-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .points-label {
+      font-size: 11px;
+      color: var(--text-lavender);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .tier-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 77, 141, 0.12);
+      border: 1px solid rgba(255, 77, 141, 0.25);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-pink);
+    }
+    
+    /* Progress bar */
+    .progress-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .progress-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-lavender);
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%; /* Fills dynamically with onload script */
+      background: linear-gradient(90deg, var(--primary-pink) 0%, var(--primary-purple) 100%);
+      border-radius: 999px;
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Celebrating sparkle glow animation */
+    .rewards-glow-burst {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(255, 77, 141, 0.3) 0%, transparent 70%);
+      filter: blur(20px);
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .rewards-glow-burst.celebrate {
+      opacity: 1;
+      transform: scale(1.5);
+    }
+
+    /* Expandable earn points accordion */
+    .earn-accordion {
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.01);
+      overflow: hidden;
+    }
+    .earn-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .earn-header svg {
+      transition: transform 0.25s;
+      color: var(--text-lavender);
+    }
+    .earn-accordion.expanded .earn-header svg {
+      transform: rotate(180deg);
+    }
+    .earn-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0 16px;
+    }
+    .earn-accordion.expanded .earn-content {
+      max-height: 180px;
+      padding-bottom: 14px;
+    }
+    .earn-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-lavender);
+    }
+    .earn-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .earn-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary-pink);
+    }
+
+    /* Horizontal scrollable redeem rewards */
+    .redeem-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .redeem-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .redeem-scroll::-webkit-scrollbar { display: none; }
+    
+    .reward-card {
+      flex: 0 0 180px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+    }
+    .reward-card.locked {
+      opacity: 0.6;
+    }
+    .reward-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .reward-points {
+      font-size: 11px;
+      color: var(--primary-pink);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .reward-lock-helper {
+      font-size: 10px;
+      color: var(--text-error);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Redeem loading states */
+    .redeem-btn {
+      width: 100%;
+      border-radius: 8px;
+      padding: 8px 0;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      background: var(--cta-gradient);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .reward-card.locked .redeem-btn {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.2);
+      cursor: not-allowed;
+      border: 1px solid var(--glass-border);
+    }
+    .redeem-btn.loading {
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .redeem-btn.success {
+      background: rgba(76, 175, 80, 0.15) !important;
+      border: 1px solid #4CAF50;
+      color: #4CAF50;
+    }
+
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Referral Block */
+    .referral-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .referral-code-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .referral-code-box {
+      flex: 1;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+    .btn-copy-code {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .btn-copy-code:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    /* Copied Tooltip */
+    .copied-tooltip {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      background: #4CAF50;
+      color: #fff;
+      font-size: 9px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s;
+    }
+    .copied-tooltip.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
-<body>
+<body class="dark-theme" onload="initRewards()">
   <!-- Ambient background glow blobs inside container -->
   <div class="glow-container">
     <div class="glow-blob glow-pink"></div>
@@ -48,34 +366,124 @@
         </button>
       </div>
 
-      <h2 class="profile-name" id="userDisplayName">Guest User</h2>
-      <p class="profile-meta" id="userDisplayMeta">guest@lensmakers.com</p>
+      <h2 class="profile-name" id="userDisplayName">Jane Doe</h2>
+      <p class="profile-meta" id="userDisplayMeta">jane.doe@gmail.com</p>
       
-      <!-- Premium Badge (or Log In CTA) -->
       <div id="badgeContainer" style="margin-top: 10px;">
-        <span class="premium-badge" id="premiumBadge">Premium Member</span>
-        <button class="btn-login-cta hidden" id="loginCtaBtn" onclick="redirectToLogin()">Log In / Sign Up</button>
+        <span class="premium-badge" id="premiumBadge">Gold Member</span>
       </div>
     </section>
 
     <!-- Stats Strip -->
     <section class="stats-strip-section">
       <div class="stats-strip">
-        <div class="stats-col">
+        <div class="stats-col" style="cursor:pointer;" onclick="alert('Navigating to orders...')">
           <span class="stats-num">3</span>
           <span class="stats-label">Orders</span>
         </div>
         <div class="stats-col-divider"></div>
-        <div class="stats-col">
-          <span class="stats-num">12</span>
+        <div class="stats-col" style="cursor:pointer;" onclick="window.location.href='wishlist.html'">
+          <span class="stats-num" id="wishlistStatCount">3</span>
           <span class="stats-label">Wishlist</span>
         </div>
         <div class="stats-col-divider"></div>
-        <div class="stats-col">
+        <div class="stats-col" style="cursor:pointer;" onclick="alert('Navigating to reviews...')">
           <span class="stats-num">5</span>
           <span class="stats-label">Reviews</span>
         </div>
       </div>
+    </section>
+
+    <!-- LOYALTY & REWARDS SECTION -->
+    <section class="rewards-section" id="rewardsSection">
+      <!-- Glow burst for celebrating next tier -->
+      <div class="rewards-glow-burst" id="rewardsBurst"></div>
+
+      <div class="rewards-header">
+        <div class="points-display">
+          <span class="points-value">2,450</span>
+          <span class="points-label">Lens Points</span>
+        </div>
+        <div class="tier-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span>Gold Status</span>
+        </div>
+      </div>
+
+      <!-- Tier Progress -->
+      <div class="progress-container">
+        <div class="progress-bar-labels">
+          <span>Silver Tier</span>
+          <span>Next: Platinum (3,000 pts)</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <!-- How to Earn accordion -->
+      <div class="earn-accordion" id="earnAccordion">
+        <div class="earn-header" onclick="toggleEarnAccordion()">
+          <span>How to Earn Points</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="earn-content">
+          <ul class="earn-list">
+            <li><span class="earn-bullet"></span><span>₹1 spent = 1 point earned</span></li>
+            <li><span class="earn-bullet"></span><span>Refer a friend = 500 points</span></li>
+            <li><span class="earn-bullet"></span><span>Write a frame review = 50 points</span></li>
+            <li><span class="earn-bullet"></span><span>Complete in-store eye test = 100 points</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Redeem rewards row -->
+      <div class="redeem-section">
+        <h4 style="font-size:12px; color:#fff; font-weight:700;">Redeem Rewards</h4>
+        
+        <div class="redeem-scroll">
+          
+          <!-- Reward 1: Redeemable -->
+          <div class="reward-card" id="reward-1">
+            <span class="reward-title">₹200 Off Coupon</span>
+            <span class="reward-points">2,000 Points</span>
+            <button class="redeem-btn" onclick="redeemReward('reward-1')">
+              <span class="btn-text">Redeem</span>
+            </button>
+          </div>
+
+          <!-- Reward 2: Locked -->
+          <div class="reward-card locked" id="reward-2">
+            <span class="reward-title">Free Lens Upgrade</span>
+            <span class="reward-points">3,500 Points</span>
+            <span class="reward-lock-helper">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Need 1,050 more</span>
+            </span>
+            <button class="redeem-btn" disabled>Redeem</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Referral Block -->
+      <div class="referral-section">
+        <h4 style="font-size:12px; color:#fff; font-weight:700; margin-bottom:8px;">Refer a Friend & Earn 500 Pts</h4>
+        <div class="referral-card">
+          <p style="font-size:11px; color:var(--text-lavender); line-height:1.4;">Share your code. They get 15% off their first purchase, and you unlock 500 points.</p>
+          <div class="referral-code-row">
+            <div class="referral-code-box" id="refCodeText">LENS-REF-5021</div>
+            <button class="btn-copy-code" onclick="copyReferralCode(this)">
+              <span>Copy</span>
+              <span class="copied-tooltip">Copied!</span>
+            </button>
+            <button class="btn-copy-code" onclick="shareReferralCode()" style="padding: 10px 10px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- Menu List -->
@@ -90,12 +498,12 @@
           <span class="menu-chevron">›</span>
         </div>
 
-        <!-- 2. Saved Frames -->
-        <div class="menu-row" onclick="alert('Navigating to Saved Frames...')">
+        <!-- 2. Saved Frames (Wishlist Link) -->
+        <div class="menu-row" onclick="window.location.href='wishlist.html'">
           <div class="menu-icon-bg bg-red">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </div>
-          <span class="menu-label">Saved Frames</span>
+          <span class="menu-label">Saved Frames (Wishlist)</span>
           <span class="menu-chevron">›</span>
         </div>
 
@@ -109,7 +517,7 @@
         </div>
 
         <!-- 4. Payment Methods -->
-        <div class="menu-row" onclick="navigateToPayment()">
+        <div class="menu-row" onclick="alert('Navigating to payments...')">
           <div class="menu-icon-bg bg-purple">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           </div>
@@ -118,7 +526,7 @@
         </div>
 
         <!-- 5. Prescriptions & Eye Records -->
-        <div class="menu-row" onclick="alert('Navigating to Prescriptions & Eye Records...')">
+        <div class="menu-row" onclick="window.location.href='prescriptions.html'">
           <div class="menu-icon-bg bg-cyan">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </div>
@@ -145,20 +553,11 @@
         </div>
 
         <!-- 8. Help & Support -->
-        <div class="menu-row" onclick="alert('Connecting to Help & Support chat...')">
+        <div class="menu-row" onclick="window.location.href='support.html'">
           <div class="menu-icon-bg bg-gray">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <span class="menu-label">Help & Support</span>
-          <span class="menu-chevron">›</span>
-        </div>
-
-        <!-- 9. Settings -->
-        <div class="menu-row" onclick="alert('Navigating to Settings...')">
-          <div class="menu-icon-bg bg-gray">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          </div>
-          <span class="menu-label">Settings</span>
           <span class="menu-chevron">›</span>
         </div>
       </div>
@@ -171,9 +570,6 @@
           <svg class="logout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           <span class="menu-label text-red">Log Out</span>
         </div>
-      </div>
-      <div class="delete-account-wrap">
-        <button class="btn-delete-account" onclick="confirmDeleteAccount()">Delete Account</button>
       </div>
     </section>
   </div>
@@ -191,6 +587,92 @@
     </div>
   </div>
 
-  <script src="js/profile.js"></script>
+  <script>
+    function openLogoutModal() {
+      document.getElementById('logoutModal').style.display = 'block';
+    }
+    function closeLogoutModal() {
+      document.getElementById('logoutModal').style.display = 'none';
+    }
+    function confirmLogout() {
+      alert('Logged out successfully.');
+      closeLogoutModal();
+    }
+
+    // Rewards Page Load Init
+    function initRewards() {
+      // 1. Progress bar sweep animation
+      setTimeout(() => {
+        const fill = document.getElementById('progressFill');
+        // Points progress: 2,450 out of 3,000 -> approx 81.6%
+        fill.style.width = '81.6%';
+      }, 300);
+
+      // 2. Play celebratory glow burst since user just crossed Silver -> Gold
+      setTimeout(() => {
+        const burst = document.getElementById('rewardsBurst');
+        burst.classList.add('celebrate');
+        setTimeout(() => {
+          burst.classList.remove('celebrate');
+        }, 1500);
+      }, 1000);
+    }
+
+    // Accordion Toggle
+    function toggleEarnAccordion() {
+      const wrapper = document.getElementById('earnAccordion');
+      wrapper.classList.toggle('expanded');
+    }
+
+    // Redeem reward with loading & checkmark transitions
+    function redeemReward(rewardCardId) {
+      const card = document.getElementById(rewardCardId);
+      const btn = card.querySelector('.redeem-btn');
+      const text = btn.querySelector('.btn-text');
+
+      btn.classList.add('loading');
+      btn.innerHTML = `<span class="spinner"></span> <span>Redeeming...</span>`;
+
+      // 1.5s delay
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        btn.classList.add('success');
+        btn.innerHTML = `✓ Redeemed!`;
+
+        alert('Reward coupon generated and saved in your account coupons section!');
+
+        // Revert button after 2s
+        setTimeout(() => {
+          btn.classList.remove('success');
+          btn.innerHTML = `<span class="btn-text">Redeem</span>`;
+        }, 2000);
+
+      }, 1500);
+    }
+
+    // Copy Referral
+    function copyReferralCode(btn) {
+      const code = document.getElementById('refCodeText').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const tooltip = btn.querySelector('.copied-tooltip');
+        tooltip.classList.add('active');
+        setTimeout(() => {
+          tooltip.classList.remove('active');
+        }, 1500);
+      });
+    }
+
+    function shareReferralCode() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Join Lens Mart',
+          text: 'Use my code LENS-REF-5021 and get 15% off your first purchase!',
+          url: window.location.origin
+        });
+      } else {
+        alert('Referral share link generated and copied!');
+      }
+    }
+  </script>
 </body>
 </html>

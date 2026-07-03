@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lensmakers - Prescriptions</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <style>
+    .presc-wrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px 16px;
+    }
+    
+    /* Prescription Card styling */
+    .presc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .presc-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      transition: all 0.2s;
+      position: relative;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .presc-card:hover {
+      border-color: rgba(255, 77, 141, 0.3);
+    }
+    .presc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .presc-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    
+    /* Validity Badges */
+    .badge-presc {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .badge-valid {
+      background: rgba(102, 187, 106, 0.12);
+      color: var(--text-success);
+    }
+    .badge-expiring {
+      background: rgba(255, 179, 0, 0.12);
+      color: #FFB300;
+      animation: amberPulse 2s infinite ease-in-out;
+    }
+    .badge-expired {
+      background: rgba(239, 83, 80, 0.12);
+      color: var(--text-error);
+    }
+    
+    @keyframes amberPulse {
+      0%, 100% { opacity: 0.7; box-shadow: 0 0 0 0 rgba(255, 179, 0, 0.2); }
+      50% { opacity: 1; box-shadow: 0 0 10px 2px rgba(255, 179, 0, 0.1); }
+    }
+
+    .presc-meta {
+      font-size: 12px;
+      color: var(--text-lavender);
+      line-height: 1.4;
+    }
+
+    /* Modal / Detail View */
+    .detail-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+      z-index: 2000; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .detail-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .detail-sheet {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
+      width: 100%; max-width: 420px;
+      background: rgba(15, 21, 53, 0.98);
+      border-top: 1px solid var(--glass-border); border-radius: 24px 24px 0 0;
+      z-index: 2001; box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; padding: 20px; gap: 20px;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .detail-sheet.active { transform: translateX(-50%) translateY(0); }
+    
+    .detail-sheet h3 { font-size: 18px; color: #fff; margin: 0; }
+    .close-detail-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+
+    /* Prescription Table Layout */
+    .presc-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .presc-table th, .presc-table td {
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .presc-table th {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-lavender);
+      font-weight: 700;
+    }
+    .presc-table td {
+      color: #fff;
+    }
+    .presc-table tr:last-child td { border-bottom: none; }
+
+    .detail-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    /* Structured Entry Form Table */
+    .form-table-input {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 16px 0;
+    }
+    .form-table-input th {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-lavender);
+      padding: 6px;
+      font-weight: 700;
+    }
+    .form-table-input td {
+      padding: 6px;
+      text-align: center;
+    }
+    .form-table-input input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 10px;
+      color: #fff;
+      text-align: center;
+      outline: none;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .form-table-input input:focus {
+      border-color: var(--primary-pink);
+    }
+    .form-table-input input.warning {
+      border-color: #FFB300;
+      box-shadow: 0 0 8px rgba(255, 179, 0, 0.3);
+    }
+    .warning-tooltip {
+      color: #FFB300;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 4px;
+      display: none;
+      background: rgba(255, 179, 0, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 179, 0, 0.2);
+    }
+    .hidden-file-input {
+      display: none;
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient background glow blobs -->
+  <div class="glow-container">
+    <div class="glow-blob glow-pink"></div>
+    <div class="glow-blob glow-blue"></div>
+  </div>
+
+  <div class="app-wrapper presc-wrapper">
+    
+    <header class="plp-header" style="position: relative; top: 0; transform: none; width: 100%; max-width: none; margin-bottom: 10px;">
+      <div class="plp-header__inner" style="padding: 8px 10px;">
+        <button class="plp-back-btn" onclick="window.history.back()" aria-label="Go back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="plp-header__title-area">
+          <h1 class="plp-header__title">Prescriptions</h1>
+          <span class="plp-header__subtitle">Manage health records</span>
+        </div>
+        <div style="width: 32px;"></div>
+      </div>
+    </header>
+
+    <!-- PRESCRIPTION RECORDS LIST -->
+    <div class="presc-list" id="prescList">
+      
+      <!-- Card 1 -->
+      <div class="presc-card" onclick="openDetail('presc-1')" id="presc-1" data-label="Primary Eyeglasses" data-sph-r="-2.50" data-cyl-r="-0.50" data-axis-r="90" data-sph-l="-2.00" data-cyl-l="-0.75" data-axis-l="95" data-pd="63" data-doctor="Dr. Alan Miller" data-date="May 12, 2025" data-validity="valid">
+        <div class="presc-header">
+          <span class="presc-title">Primary Eyeglasses</span>
+          <span class="badge-presc badge-valid">Valid</span>
+        </div>
+        <div class="presc-meta">
+          Issued: May 12, 2025 · Dr. Alan Miller<br>
+          <span style="font-size: 11px; color: var(--text-lavender);">RE: -2.50 SPH | LE: -2.00 SPH</span>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="presc-card" onclick="openDetail('presc-2')" id="presc-2" data-label="Reading Glasses" data-sph-r="+1.50" data-cyl-r="0.00" data-axis-r="0" data-sph-l="+1.50" data-cyl-l="0.00" data-axis-l="0" data-pd="61" data-doctor="Dr. Alan Miller" data-date="Dec 20, 2024" data-validity="expiring">
+        <div class="presc-header">
+          <span class="presc-title">Reading Glasses</span>
+          <span class="badge-presc badge-expiring">Expiring Soon</span>
+        </div>
+        <div class="presc-meta">
+          Issued: Dec 20, 2024 · Dr. Alan Miller<br>
+          <span style="font-size: 11px; color: var(--text-lavender);">RE: +1.50 SPH | LE: +1.50 SPH</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Dashed Add Card -->
+    <button class="add-method-dashed-btn" onclick="toggleAddPrescForm()">
+      <span>+ Add New Prescription</span>
+    </button>
+
+    <!-- Expandable Add Prescription Form -->
+    <div id="addPrescFormWrapper" class="form-expand-wrapper">
+      <div class="tab-toggle-pill" style="margin-top: 10px;">
+        <div class="active-indicator" id="prescActiveIndicator" style="width: calc(50% - 2px);"></div>
+        <button class="toggle-tab active" style="flex: 1;" id="tabManualBtn" onclick="switchPrescTab('manual')">Manual Entry</button>
+        <button class="toggle-tab" style="flex: 1;" id="tabPhotoBtn" onclick="switchPrescTab('photo')">Upload PDF/Photo</button>
+      </div>
+
+      <div class="forms-container" style="margin-top: 16px;">
+        <div class="forms-track" id="prescFormsTrack" style="width: 200%; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+          
+          <!-- Tab 1: Manual Input -->
+          <div class="payment-form" style="width: 50%;">
+            <form onsubmit="saveManualPresc(event)" class="checkout-form" style="margin-top: 0; background: rgba(255,255,255,0.01);">
+              <div class="input-group">
+                <input type="text" id="prescNameInput" placeholder="Prescription Label (e.g. Work Glasses)" required>
+              </div>
+              <div class="input-group" style="margin-top: 10px;">
+                <input type="text" id="prescDocInput" placeholder="Optometrist/Doctor Name">
+              </div>
+
+              <table class="form-table-input">
+                <thead>
+                  <tr>
+                    <th>Eye</th>
+                    <th>SPH</th>
+                    <th>CYL</th>
+                    <th>AXIS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 700; color: #fff; font-size:12px;">Right (RE)</td>
+                    <td><input type="number" step="0.25" id="sphR" placeholder="-2.00" oninput="validateSph(this)" required></td>
+                    <td><input type="number" step="0.25" id="cylR" placeholder="0.00"></td>
+                    <td><input type="number" id="axisR" placeholder="0"></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 700; color: #fff; font-size:12px;">Left (LE)</td>
+                    <td><input type="number" step="0.25" id="sphL" placeholder="-2.00" oninput="validateSph(this)" required></td>
+                    <td><input type="number" step="0.25" id="cylL" placeholder="0.00"></td>
+                    <td><input type="number" id="axisL" placeholder="0"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="input-group" style="margin-bottom: 8px;">
+                <input type="number" id="pdInput" placeholder="Pupillary Distance (PD) e.g. 62" required>
+              </div>
+
+              <div class="warning-tooltip" id="sphWarning">Warning: Entered SPH power is unusually high. Please verify.</div>
+
+              <button type="submit" class="primary-form-btn" style="width:100%; margin-top: 12px;">Save Prescription</button>
+            </form>
+          </div>
+
+          <!-- Tab 2: Upload dropzone -->
+          <div class="payment-form" style="width: 50%;">
+            <div class="prescription-dropzone" onclick="triggerPrescUpload()">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <p class="dropzone-text" style="font-size: 14px; margin-top: 6px;">Select Prescription File</p>
+              <span class="dropzone-subtext">JPEG, PNG or PDF formats supported</span>
+              <input type="file" id="prescFileSelect" class="hidden-file-input" onchange="handlePrescFile(this)">
+              <div class="uploaded-file-name" id="prescFileName"></div>
+            </div>
+            <button type="button" class="primary-form-btn" onclick="savePhotoPresc()" style="margin-top: 12px; width: 100%;">Upload Prescription</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DETAILS SHEET OVERLAY -->
+  <div class="detail-overlay" id="detailOverlay" onclick="closeDetail()"></div>
+  <aside class="detail-sheet" id="detailSheet">
+    <div class="filter-sheet__drag-handle-wrap" style="padding:0; margin-bottom: 8px;"><div class="filter-sheet__drag-handle"></div></div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 id="detailLabel">Primary Eyeglasses</h3>
+      <button class="close-detail-btn" onclick="closeDetail()">&times;</button>
+    </div>
+    
+    <div class="presc-meta" id="detailDocDate">
+      Issued: May 12, 2025 · Doctor Name
+    </div>
+
+    <table class="presc-table">
+      <thead>
+        <tr>
+          <th>Eye</th>
+          <th>SPH</th>
+          <th>CYL</th>
+          <th>AXIS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;">Right (RE)</td>
+          <td id="tableSphR">-2.50</td>
+          <td id="tableCylR">-0.50</td>
+          <td id="tableAxisR">90</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">Left (LE)</td>
+          <td id="tableSphL">-2.00</td>
+          <td id="tableCylL">-0.75</td>
+          <td id="tableAxisL">95</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="presc-meta" style="font-weight:700; color:#fff; font-size:13px; margin-top: 8px;">
+      Pupillary Distance (PD): <span id="tablePd" style="font-weight:400; color:var(--text-lavender);">63mm</span>
+    </div>
+
+    <div class="detail-actions">
+      <button class="btn-primary-blue" style="flex: 1.5; padding: 14px; border: none; border-radius: 12px; font-weight: 700; color: #fff; cursor: pointer;" onclick="useForOrder()">Use for New Order</button>
+      <button class="outline-btn" style="flex: 1; border-color: var(--text-error); color: var(--text-error); padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer;" onclick="deletePrescription()">Delete</button>
+    </div>
+  </aside>
+
+  <script>
+    let activeTab = 'manual';
+    let currentDetailId = null;
+
+    function toggleAddPrescForm() {
+      const wrapper = document.getElementById('addPrescFormWrapper');
+      wrapper.classList.toggle('expanded');
+    }
+
+    function switchPrescTab(tab) {
+      activeTab = tab;
+      const track = document.getElementById('prescFormsTrack');
+      const indicator = document.getElementById('prescActiveIndicator');
+      
+      const manualBtn = document.getElementById('tabManualBtn');
+      const photoBtn = document.getElementById('tabPhotoBtn');
+
+      if (tab === 'manual') {
+        track.style.transform = 'translateX(0%)';
+        indicator.style.transform = 'translateX(0%)';
+        manualBtn.classList.add('active');
+        photoBtn.classList.remove('active');
+      } else {
+        track.style.transform = 'translateX(-50%)';
+        indicator.style.transform = 'translateX(100%)';
+        photoBtn.classList.add('active');
+        manualBtn.classList.remove('active');
+      }
+    }
+
+    function validateSph(input) {
+      const val = parseFloat(input.value);
+      const tooltip = document.getElementById('sphWarning');
+      if (val > 8 || val < -8) {
+        input.classList.add('warning');
+        tooltip.style.display = 'block';
+      } else {
+        input.classList.remove('warning');
+        tooltip.style.display = 'none';
+      }
+    }
+
+    function saveManualPresc(e) {
+      e.preventDefault();
+      const label = document.getElementById('prescNameInput').value;
+      const doc = document.getElementById('prescDocInput').value || 'Self-entered';
+      const sphR = document.getElementById('sphR').value;
+      const cylR = document.getElementById('cylR').value || '0.00';
+      const axisR = document.getElementById('axisR').value || '0';
+      const sphL = document.getElementById('sphL').value;
+      const cylL = document.getElementById('cylL').value || '0.00';
+      const axisL = document.getElementById('axisL').value || '0';
+      const pd = document.getElementById('pdInput').value;
+
+      const id = 'presc-' + Math.floor(Math.random() * 1000);
+      const list = document.getElementById('prescList');
+
+      const card = document.createElement('div');
+      card.className = 'presc-card';
+      card.id = id;
+      card.onclick = () => openDetail(id);
+      card.dataset.label = label;
+      card.dataset.sphR = sphR;
+      card.dataset.cylR = cylR;
+      card.dataset.axisR = axisR;
+      card.dataset.sphL = sphL;
+      card.dataset.cylL = cylL;
+      card.dataset.axisL = axisL;
+      card.dataset.pd = pd;
+      card.dataset.doctor = doc;
+      card.dataset.date = 'Today';
+      card.dataset.validity = 'valid';
+
+      card.innerHTML = `
+        <div class="presc-header">
+          <span class="presc-title">${label}</span>
+          <span class="badge-presc badge-valid">Valid</span>
+        </div>
+        <div class="presc-meta">
+          Issued: Today · ${doc}<br>
+          <span style="font-size: 11px; color: var(--text-lavender);">RE: ${sphR} SPH | LE: ${sphL} SPH</span>
+        </div>
+      `;
+
+      list.appendChild(card);
+      document.getElementById('addPrescFormWrapper').classList.remove('expanded');
+      e.target.reset();
+    }
+
+    function triggerPrescUpload() {
+      document.getElementById('prescFileSelect').click();
+    }
+
+    function handlePrescFile(input) {
+      const display = document.getElementById('prescFileName');
+      if (input.files.length > 0) {
+        display.textContent = `Selected: ${input.files[0].name}`;
+      } else {
+        display.textContent = '';
+      }
+    }
+
+    function savePhotoPresc() {
+      const fileInput = document.getElementById('prescFileSelect');
+      if (fileInput.files.length === 0) {
+        alert('Please select a photo or PDF first.');
+        return;
+      }
+      alert('Prescription uploaded and verified successfully by our AI check!');
+      document.getElementById('addPrescFormWrapper').classList.remove('expanded');
+      fileInput.value = '';
+      document.getElementById('prescFileName').textContent = '';
+    }
+
+    function openDetail(id) {
+      currentDetailId = id;
+      const card = document.getElementById(id);
+      
+      document.getElementById('detailLabel').textContent = card.dataset.label;
+      document.getElementById('detailDocDate').textContent = `Issued: ${card.dataset.date} · ${card.dataset.doctor}`;
+      document.getElementById('tableSphR').textContent = card.dataset.sphR;
+      document.getElementById('tableCylR').textContent = card.dataset.cylR;
+      document.getElementById('tableAxisR').textContent = card.dataset.axisR;
+      document.getElementById('tableSphL').textContent = card.dataset.sphL;
+      document.getElementById('tableCylL').textContent = card.dataset.cylL;
+      document.getElementById('tableAxisL').textContent = card.dataset.axisL;
+      document.getElementById('tablePd').textContent = `${card.dataset.pd}mm`;
+
+      document.getElementById('detailOverlay').classList.add('active');
+      document.getElementById('detailSheet').classList.add('active');
+    }
+
+    function closeDetail() {
+      document.getElementById('detailOverlay').classList.remove('active');
+      document.getElementById('detailSheet').classList.remove('active');
+    }
+
+    function useForOrder() {
+      localStorage.setItem('has_prescription', 'true');
+      alert(`Using "${document.getElementById('detailLabel').textContent}" prescription for your upcoming orders!`);
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('context') === 'special') {
+        window.location.href = 'category.html?category=special';
+      } else {
+        closeDetail();
+      }
+    }
+
+    function deletePrescription() {
+      if (confirm('Delete this prescription record?')) {
+        const card = document.getElementById(currentDetailId);
+        if (card) card.remove();
+        closeDetail();
+      }
+    }
+  </script>
+</body>
+</html>
