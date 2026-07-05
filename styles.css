@@ -2818,3 +2818,101 @@ body, html {
 .premium-special-card.visible, .premium-special-card {
   animation: breatheIdle 6s ease-in-out infinite alternate 1.1s;
 }
+
+/* ==========================================================================
+   MOBILE SHAPE, TOUCH TARGET & ANIMATION OPTIMIZATIONS (60/120 FPS ANTI-JANK)
+   ========================================================================== */
+
+/* 1. Hardware Acceleration & Layer Promotion for Mobile GPUs */
+.category-card, .product-card-glass, .premium-special-card, .bogo-rotating-card, .glass-card-glow-cyan, .glass-card-glow-pink, .glass-card-glow-green, .rx-card-cyan, .purple-shimmer-card, .glass-card-standard, .glass-card-elevated, .btn-primary-pill, .btn-secondary-pill, .modal-sheet, .bottom-nav, .hero-carousel, .location-delivery-bar {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 2. Ensure ambient blobs never block mobile touch threads or cause scroll lag */
+.blob-1, .blob-2, .blob-3 {
+  will-change: transform;
+  pointer-events: none !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* 3. Touch Screen Physics: Disable sticky hover lifts & enforce crisp tap bounce */
+@media (hover: none) and (pointer: coarse) {
+  /* Disable desktop hover lifts on touch devices so tap doesn't get stuck */
+  .category-card:hover, .product-card-glass:hover, .premium-special-card:hover, .bogo-rotating-card:hover, .glass-card-glow-cyan:hover, .glass-card-glow-pink:hover, .glass-card-glow-green:hover, .rx-card-cyan:hover, .purple-shimmer-card:hover, .glass-card-standard:hover, .glass-card-elevated:hover {
+    transform: none !important;
+  }
+  .btn-primary-pill:hover, .btn-secondary-pill:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  /* Enforce immediate, tactile spring down on touch tap */
+  .category-card:active, .product-card-glass:active, .premium-special-card:active, .bogo-rotating-card:active, .glass-card-glow-cyan:active, .glass-card-glow-pink:active, .glass-card-glow-green:active, .rx-card-cyan:active, .purple-shimmer-card:active, .glass-card-standard:active, .glass-card-elevated:active {
+    transform: scale3d(0.95, 0.95, 1) !important;
+    transition: transform 120ms var(--spring-snappy) !important;
+  }
+  .btn-primary-pill:active, .btn-secondary-pill:active {
+    transform: scale3d(0.92, 0.92, 1) translateZ(0) !important;
+    transition: transform 100ms var(--spring-snappy) !important;
+  }
+  .shape-circle-btn:active {
+    transform: scale3d(0.88, 0.88, 1) !important;
+    transition: transform 100ms var(--spring-snappy) !important;
+  }
+}
+
+/* 4. Responsive Mobile Shapes, Touch Targets & Padding (iPhones & Android) */
+@media (max-width: 480px) {
+  :root {
+    --screen-padding: 16px;
+    --card-padding: 16px;
+    --section-gap: 24px;
+  }
+  /* Optimize grid spacing for thumb reach and narrow screens */
+  .category-grid {
+    gap: 10px !important;
+  }
+  .category-card {
+    height: 100px !important;
+    border-radius: 18px !important;
+  }
+  /* Enforce Apple/Google 44px min touch targets for interactive buttons */
+  .btn-primary-pill, .btn-secondary-pill {
+    min-height: 48px !important;
+    padding: 0 20px !important;
+    font-size: 14px !important;
+  }
+  .shape-circle-btn {
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+  /* Refine glassmorphism card radii for compact screens */
+  .product-card-glass, .premium-special-card, .bogo-rotating-card, .glass-card-glow-cyan, .glass-card-glow-pink, .glass-card-glow-green, .rx-card-cyan, .purple-shimmer-card, .glass-card-elevated, .glass-card-standard {
+    border-radius: 20px !important;
+  }
+  /* Optimize modal sheets for mobile thumb navigation */
+  .modal-sheet {
+    border-radius: 28px 28px 0 0 !important;
+    max-height: 88vh !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  :root {
+    --screen-padding: 14px;
+  }
+  .category-card {
+    height: 94px !important;
+    border-radius: 16px !important;
+  }
+  .btn-primary-pill, .btn-secondary-pill {
+    min-height: 44px !important;
+    font-size: 13px !important;
+  }
+}
