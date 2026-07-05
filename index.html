@@ -2,853 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Lens Mart — Premium eyeglasses, sunglasses, and optical frames. Shop online with virtual 3D try-on.">
-  <title>Lensmakers — Premium Eyewear Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <title>Lens Makers — Premium 3D AR Eyewear & Club App</title>
+  <meta name="title" content="Lens Makers — Premium 3D AR Eyewear & Club App">
+  <meta name="description" content="Shop luxury eyeglasses & UV400 sunglasses with real-time 3D AR Virtual Try-On and flat 25% off Club membership.">
+  <meta name="theme-color" content="#0F1535">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lens Makers">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="canonical" href="https://lensmakers-app.vercel.app/">
+
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* Glassmorphic User Profile Modal */
-    .user-avatar-pill {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--cta-gradient, linear-gradient(90deg, #FF4D8D 0%, #C2185B 100%));
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 2px 10px rgba(255, 77, 141, 0.3);
-    }
-    
-    .profile-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
-    }
-    
-    .profile-modal.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    
-    .profile-modal-backdrop {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: rgba(11, 14, 38, 0.7);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    
-    .profile-modal-content {
-      position: relative;
-      z-index: 2;
-      width: 90%;
-      max-width: 360px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 32px 24px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 8px 32px rgba(0, 0, 0, 0.4);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      transform: scale(0.9);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    .profile-modal.open .profile-modal-content {
-      transform: scale(1);
-    }
-    
-    .profile-modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 24px;
-      cursor: pointer;
-      line-height: 1;
-      padding: 4px;
-    }
-    
-    .profile-modal-close:hover {
-      color: #fff;
-    }
-    
-    .profile-modal-avatar {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #FF4D8D 0%, #C2185B 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 20px rgba(255, 77, 141, 0.4);
-    }
-    
-    .profile-modal-name {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-    
-    .profile-modal-detail {
-      font-size: 13px;
-      color: #A0A4C8;
-      margin-bottom: 16px;
-    }
-    
-    .profile-modal-divider {
-      width: 100%;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 20px;
-    }
-    
-    .btn-logout {
-      width: 100%;
-      background: linear-gradient(90deg, #FF4D8D 0%, #C2185B 100%);
-      color: #fff;
-      border: none;
-      padding: 14px 0;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(255, 77, 141, 0.3);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-logout:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(255, 77, 141, 0.4);
-    }
-    
-    .btn-logout:active {
-      transform: translateY(1px);
-    }
-  </style>
-  <!-- MediaPipe Face Mesh -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
-  <!-- Three.js for true 3D rendering -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+  <!-- MediaPipe FaceMesh & Camera Utils CDN (with error fallback handling) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous" onerror="window.mediaPipeLoadError = true;"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous" onerror="window.mediaPipeLoadError = true;"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous" onerror="window.mediaPipeLoadError = true;"></script>
+
+  <!-- Vanilla Design System & Animation Law CSS -->
+  <link rel="stylesheet" href="./styles.css?v=20260705_v3">
+
+  <!-- React 18 & Babel Standalone CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
 </head>
-<body class="has-custom-cursor">
-
-  <!-- Custom Cursor -->
-  <div id="cursorDot" class="cursor-dot"></div>
-  <div id="cursorGlow" class="cursor-glow"></div>
-
-  <!-- ========== SPLASH SCREEN ========== -->
-  <div id="splashScreen" class="splash-screen">
-    <img src="images/logo.svg" alt="Lensmakers Logo" class="splash-logo">
+<body style="background-color: #0F1535; margin: 0; padding: 0; overflow: hidden;">
+  <div id="root">
+    <!-- Zero spinners. Splash screen mounts instantly via React orchestrator. -->
   </div>
 
-  <!-- ========== ANIMATED BACKGROUND ========== -->
-  <div class="animated-background">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
-  </div>
-
-  <div class="app-wrapper">
-  <!-- ========== HEADER / TOP BAR ========== -->
-  <header class="header" id="header">
-    <div class="header__inner">
-      <div class="header__brand" onclick="window.location.href='index.html'">
-        <!-- Logo: two overlapping circles -->
-        <svg class="header__logo" width="44" height="28" viewBox="0 0 44 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Lens Mart logo">
-          <circle cx="14" cy="14" r="11" stroke="#1E88E5" stroke-width="5" fill="none"/>
-          <circle cx="30" cy="14" r="11" stroke="#43A047" stroke-width="5" fill="none"/>
-        </svg>
-        <span class="header__wordmark">Lensmakers</span>
-      </div>
-
-      <!-- Expandable Search Bar System (Center) -->
-      <div class="header__search-container" id="headerSearchContainer">
-        <button class="search-trigger-btn" id="searchTriggerBtn" aria-label="Open search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF7A30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-        </button>
-        <div class="search-expanded-bar" id="searchExpandedBar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF7A30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input type="text" class="search-expanded-input" id="searchExpandedInput" placeholder="Search eyeglasses, sunglasses, brands..." aria-label="Search eyewear">
-          <button class="search-close-btn" id="searchCloseBtn" aria-label="Close search">&times;</button>
-        </div>
-        <div class="search-autocomplete-dropdown" id="searchAutocompleteDropdown"></div>
-      </div>
-
-      <!-- Right cluster of interactive icons -->
-      <div class="header__icons-cluster">
-        <!-- Location pin -->
-        <button class="header-icon-btn" id="headerPinBtn" aria-label="Store Locator">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-        </button>
-        <!-- Wishlist -->
-        <button class="header-icon-btn" id="headerWishlistBtn" aria-label="Wishlist">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
-          <span class="icon-badge badge-red" id="wishlistBadge">0</span>
-        </button>
-        <!-- Cart -->
-        <button class="header-icon-btn" id="headerCartBtn" aria-label="Cart" onclick="window.location.href='cart.html'">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="9" cy="21" r="1"/>
-            <circle cx="20" cy="21" r="1"/>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-          </svg>
-          <span class="icon-badge badge-pink" id="cartBadge">0</span>
-        </button>
-        <!-- Notifications bell -->
-        <button class="header-icon-btn" id="headerBellBtn" aria-label="Notifications">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-          <span class="icon-dot" id="bellDot"></span>
-        </button>
-      </div>
-    </div>
-
-
-    <!-- Location Selector Modal -->
-    <div class="location-dropdown-modal" id="locationDropdownModal">
-      <div class="location-dropdown-content">
-        <div class="loc-dropdown-section">
-          <span class="loc-dropdown-label">Current Saved Address</span>
-          <div class="loc-current-address">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-right: 6px; flex-shrink: 0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span id="locCurrentAddressText">No saved address found</span>
-          </div>
-        </div>
-        <button class="loc-use-current-btn" id="locUseCurrentBtn">
-          Use Current Location
-        </button>
-        <div class="loc-dropdown-section">
-          <span class="loc-dropdown-label">Recent Addresses</span>
-          <div class="loc-recent-list">
-            <div class="loc-recent-item" onclick="selectRecentAddress('Connaught Place, New Delhi, Delhi 110001')">Connaught Place, New Delhi, Delhi 110001</div>
-            <div class="loc-recent-item" onclick="selectRecentAddress('Indiranagar, Bengaluru, Karnataka 560038')">Indiranagar, Bengaluru, Karnataka 560038</div>
-            <div class="loc-recent-item" onclick="selectRecentAddress('Bandra West, Mumbai, Maharashtra 400050')">Bandra West, Mumbai, Maharashtra 400050</div>
-          </div>
-        </div>
-        <button class="loc-find-stores-btn" id="locFindStoresBtn" onclick="scrollToMapSection()">
-          Find Nearby Lens Mart Stores
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- ========== MAIN CONTENT ========== -->
-  <main class="main-content" id="mainContent">
-
-    <!-- ========== HERO BANNER CAROUSEL ========== -->
-    <section class="hero-carousel-section" id="heroCarouselSection">
-      <div class="hero-carousel" id="heroCarousel">
-        <div class="carousel-track" id="carouselTrack">
-          <!-- Slide 1 -->
-          <div class="carousel-slide active">
-            <img src="images/carousel_slide_1.png" alt="Contemporary Eyeglasses" class="slide-img">
-            <div class="slide-overlay"></div>
-            <div class="slide-content">
-              <h2 class="slide-title">CONTEMPORARY.<br>GENUINE. CREATIVE.</h2>
-              <p class="slide-subtext">Premium eyeglasses tailored for you</p>
-              <button class="slide-cta" onclick="scrollToSection('premiumSection')">Shop Now</button>
-            </div>
-          </div>
-          <!-- Slide 2 -->
-          <div class="carousel-slide">
-            <img src="images/carousel_slide_2.png" alt="Designer Sunglasses" class="slide-img">
-            <div class="slide-overlay"></div>
-            <div class="slide-content">
-              <h2 class="slide-title">ELEGANT. BOLD.<br>PROTECTIVE.</h2>
-              <p class="slide-subtext">Designer sunglasses for every sunshine</p>
-              <button class="slide-cta" onclick="scrollToSection('trendingSection')">Shop Now</button>
-            </div>
-          </div>
-          <!-- Slide 3 -->
-          <div class="carousel-slide">
-            <img src="images/carousel_slide_3.png" alt="Smart Eyewear" class="slide-img">
-            <div class="slide-overlay"></div>
-            <div class="slide-content">
-              <h2 class="slide-title">SMART. DIGITAL.<br>SHIELDED.</h2>
-              <p class="slide-subtext">Blue-light filters for screen protectors</p>
-              <button class="slide-cta" onclick="scrollToSection('premiumSection')">Shop Now</button>
-            </div>
-          </div>
-        </div>
-        <!-- Dots indicators -->
-        <div class="carousel-dots" id="carouselDots">
-          <span class="carousel-dot active" data-slide="0"></span>
-          <span class="carousel-dot" data-slide="1"></span>
-          <span class="carousel-dot" data-slide="2"></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== LOCATION / MAP CARD ========== -->
-    <section class="map-section" id="mapSection">
-      <div class="map-card">
-        <div class="map-card__illustration">
-          <!-- Stylized map SVG -->
-          <svg class="map-svg" viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <!-- Grid roads -->
-            <line x1="0" y1="50" x2="380" y2="50" stroke="#E5E7EB" stroke-width="1.5"/>
-            <line x1="0" y1="100" x2="380" y2="100" stroke="#E5E7EB" stroke-width="1.5"/>
-            <line x1="0" y1="150" x2="380" y2="150" stroke="#E5E7EB" stroke-width="1.5"/>
-            <line x1="0" y1="200" x2="380" y2="200" stroke="#E5E7EB" stroke-width="1.5"/>
-            <line x1="70" y1="0" x2="70" y2="260" stroke="#E5E7EB" stroke-width="1.5"/>
-            <line x1="150" y1="0" x2="150" y2="260" stroke="#E5E7EB" stroke-width="1.5"/>
-            <line x1="230" y1="0" x2="230" y2="260" stroke="#E5E7EB" stroke-width="1.5"/>
-            <line x1="310" y1="0" x2="310" y2="260" stroke="#E5E7EB" stroke-width="1.5"/>
-            <!-- Diagonal road -->
-            <line x1="0" y1="220" x2="380" y2="60" stroke="#E8EAED" stroke-width="8" stroke-linecap="round"/>
-            <!-- Main road horizontal -->
-            <rect x="0" y="120" width="380" height="20" rx="2" fill="#F0F1F3"/>
-            <!-- Main road vertical -->
-            <rect x="180" y="0" width="20" height="260" rx="2" fill="#F0F1F3"/>
-            <!-- Building blocks -->
-            <rect x="85" y="60" rx="4" width="50" height="40" fill="#F3F4F6"/>
-            <rect x="245" y="60" rx="4" width="50" height="40" fill="#F3F4F6"/>
-            <rect x="85" y="160" rx="4" width="50" height="30" fill="#F3F4F6"/>
-            <rect x="245" y="160" rx="4" width="50" height="30" fill="#F3F4F6"/>
-            <rect x="30" y="155" rx="4" width="25" height="40" fill="#F3F4F6"/>
-            <rect x="320" y="155" rx="4" width="30" height="40" fill="#F3F4F6"/>
-            <!-- Green areas -->
-            <rect x="15" y="65" rx="8" width="40" height="25" fill="#E8F5E9"/>
-            <rect x="325" y="65" rx="8" width="35" height="25" fill="#E8F5E9"/>
-          </svg>
-          <!-- Map pin -->
-          <div class="map-card__pin">
-            <svg width="36" height="44" viewBox="0 0 36 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="18" cy="41" rx="8" ry="3" fill="rgba(0,0,0,0.1)"/>
-              <path d="M18 2C10.268 2 4 8.268 4 16c0 10 14 24 14 24s14-14 14-24c0-7.732-6.268-14-14-14z" fill="#FBC02D"/>
-              <circle cx="18" cy="16" r="6" fill="#FFFFFF"/>
-            </svg>
-          </div>
-        </div>
-        <div class="map-card__address-bar" id="addressBar">
-          <div class="map-card__address-left">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#66BB6A" stroke="none">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/>
-            </svg>
-            <div class="map-card__address-text">
-              <span class="map-card__label">Deliver to:</span>
-              <span class="map-card__address">Connaught Place, New Delhi</span>
-            </div>
-          </div>
-          <svg class="map-card__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A0A0A0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== EXPANDED CATEGORY GRID ========== -->
-    <section class="category-section" id="categorySection">
-      <h2 class="section-heading">Shop Categories</h2>
-      <div class="category-grid-expanded">
-        <!-- 1. Eyeglasses -->
-        <div class="category-card-exp cat-eyeglasses" onclick="selectCategory('eyeglasses')" tabindex="0" role="button" aria-label="Shop Eyeglasses">
-          <img src="images/man_eyeglasses.png" alt="Eyeglasses" class="category-card-exp__img" loading="lazy">
-          <div class="category-card-exp__overlay"></div>
-          <span class="category-card-exp__label bg-red">Eyeglasses</span>
-        </div>
-        <!-- 2. Sunglasses -->
-        <div class="category-card-exp cat-sunglasses" onclick="selectCategory('sunglasses')" tabindex="0" role="button" aria-label="Shop Sunglasses">
-          <img src="images/woman_eyeglasses.png" alt="Sunglasses" class="category-card-exp__img" loading="lazy">
-          <div class="category-card-exp__overlay"></div>
-          <span class="category-card-exp__label bg-orange">Sunglasses</span>
-        </div>
-        <!-- 3. Blue-Light -->
-        <div class="category-card-exp cat-bluelight" onclick="window.location.href='category.html?category=special'" tabindex="0" role="button" aria-label="Shop Blue Light Glasses">
-          <div class="category-card-exp__icon-wrap">
-            <svg class="category-svg-icon text-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              <path d="M2 12h20"/>
-            </svg>
-          </div>
-          <div class="category-card-exp__overlay"></div>
-          <span class="category-card-exp__label bg-cyan">Blue-Light</span>
-        </div>
-        <!-- 4. Contacts -->
-        <div class="category-card-exp cat-contacts" onclick="selectCategory('accessories')" tabindex="0" role="button" aria-label="Shop Contact Lenses">
-          <div class="category-card-exp__icon-wrap">
-            <svg class="category-svg-icon text-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2a10 10 0 0 0-10 10 10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/>
-              <ellipse cx="12" cy="12" rx="4" ry="4"/>
-            </svg>
-          </div>
-          <div class="category-card-exp__overlay"></div>
-          <span class="category-card-exp__label bg-teal">Contacts</span>
-        </div>
-        <!-- 5. Kids -->
-        <div class="category-card-exp cat-kids" onclick="selectCategory('kids')" tabindex="0" role="button" aria-label="Shop Kids Glasses">
-          <img src="images/kid_eyeglasses.png" alt="Kids Glasses" class="category-card-exp__img" loading="lazy">
-          <div class="category-card-exp__overlay"></div>
-          <span class="category-card-exp__label bg-blue">Kids Glasses</span>
-        </div>
-        <!-- 6. Sale -->
-        <div class="category-card-exp cat-sale" onclick="selectCategory('specials')" tabindex="0" role="button" aria-label="Shop Clearance Sale">
-          <div class="sale-badge-ribbon">50% OFF</div>
-          <div class="category-card-exp__icon-wrap">
-            <svg class="category-svg-icon text-magenta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="19" y1="5" x2="5" y2="19"/>
-              <circle cx="6.5" cy="6.5" r="2.5"/>
-              <circle cx="17.5" cy="17.5" r="2.5"/>
-            </svg>
-          </div>
-          <div class="category-card-exp__overlay"></div>
-          <span class="category-card-exp__label bg-magenta">Mega Sale</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== FREE SERVICES BANNER ========== -->
-    <section class="services-banner-section" id="servicesBannerSection">
-      <div class="services-banner">
-        <div class="services-banner__glow"></div>
-        <div class="services-banner__content">
-          <h2 class="services-banner__heading">FREE LENS REPLACEMENT</h2>
-          <p class="services-banner__subtext">Any Frame · Any Power · Any Reason</p>
-          <button class="services-banner__cta" onclick="scrollToSection('mapSection')">Find Nearby Stores</button>
-          <p class="services-banner__disclaimer">₹199 fitting charges apply on premium anti-glare lenses.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== PREMIUM SPECIALS SECTION ========== -->
-    <section class="premium-section" id="premiumSection">
-      <h2 class="section-heading">Premium Specials</h2>
-
-      <div class="premium-card" id="premium1" tabindex="0" role="button" aria-label="View Aviator Premium Frame">
-        <div class="premium-card__accent"></div>
-        <div class="premium-card__image-wrap">
-          <img src="images/premium_frame_1.png" alt="Aviator Premium Frame" class="premium-card__img" loading="lazy">
-        </div>
-        <div class="premium-card__info">
-          <div class="premium-card__top-row">
-            <span class="premium-card__name">Aviator Premium Frame</span>
-            <span class="premium-card__badge">Premium</span>
-          </div>
-          <span class="premium-card__subtitle">Gold metal · Anti-glare coated</span>
-          <span class="premium-card__price">₹4,499</span>
-        </div>
-      </div>
-
-      <div class="premium-card" id="premium2" tabindex="0" role="button" aria-label="View Tortoise Classic Frame">
-        <div class="premium-card__accent"></div>
-        <div class="premium-card__image-wrap">
-          <img src="images/premium_frame_2.png" alt="Tortoise Classic Frame" class="premium-card__img" loading="lazy">
-        </div>
-        <div class="premium-card__info">
-          <div class="premium-card__top-row">
-            <span class="premium-card__name">Tortoise Classic Frame</span>
-            <span class="premium-card__badge">Premium</span>
-          </div>
-          <span class="premium-card__subtitle">Acetate · Blue-light filter</span>
-          <span class="premium-card__price">₹3,899</span>
-        </div>
-      </div>
-
-      <div class="premium-card" id="premium3" tabindex="0" role="button" aria-label="View Round Titanium Lite">
-        <div class="premium-card__accent"></div>
-        <div class="premium-card__image-wrap">
-          <img src="images/premium_frame_3.png" alt="Round Titanium Lite" class="premium-card__img" loading="lazy">
-        </div>
-        <div class="premium-card__info">
-          <div class="premium-card__top-row">
-            <span class="premium-card__name">Round Titanium Lite</span>
-            <span class="premium-card__badge">Premium</span>
-          </div>
-          <span class="premium-card__subtitle">Titanium · Ultra-light 12g</span>
-          <span class="premium-card__price">₹5,299</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== VIRTUAL 3D TRY-ON SECTION ========== -->
-    <section class="tryon-section" id="tryonSection">
-      <div class="tryon-card" id="tryonCard">
-        <div class="tryon-card__left">
-          <div class="tryon-card__icon-wrap">
-            <!-- AR Face Scan Icon -->
-            <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Face outline -->
-              <path d="M24 6c-6 0-11 4-12 10-1 6 0 10 2 14 2 4 5 7 10 8 5-1 8-4 10-8 2-4 3-8 2-14-1-6-6-10-12-10z" stroke="#FF4D8D" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-              <!-- Scan brackets top-left -->
-              <path d="M8 14V8h6" stroke="#FF4D8D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Scan brackets top-right -->
-              <path d="M40 14V8h-6" stroke="#FF4D8D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Scan brackets bottom-left -->
-              <path d="M8 34v6h6" stroke="#FF4D8D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Scan brackets bottom-right -->
-              <path d="M40 34v6h-6" stroke="#FF4D8D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Scan lines -->
-              <line x1="14" y1="22" x2="34" y2="22" stroke="#FF4D8D" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.5"/>
-              <line x1="14" y1="28" x2="34" y2="28" stroke="#FF4D8D" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.5"/>
-              <!-- Eyes -->
-              <circle cx="19" cy="20" r="2" fill="#FF4D8D" opacity="0.6"/>
-              <circle cx="29" cy="20" r="2" fill="#FF4D8D" opacity="0.6"/>
-            </svg>
-          </div>
-          <div class="tryon-card__text">
-            <span class="tryon-card__title">Virtual Try-On</span>
-            <span class="tryon-card__desc">See how frames look on your face using your camera</span>
-          </div>
-        </div>
-        <div class="tryon-card__right">
-          <!-- Small brand trust logo -->
-          <svg class="tryon-card__logo" width="28" height="16" viewBox="0 0 44 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="14" cy="14" r="10" stroke="#1E88E5" stroke-width="3.5" fill="none"/>
-            <circle cx="30" cy="14" r="10" stroke="#43A047" stroke-width="3.5" fill="none"/>
-          </svg>
-        </div>
-      </div>
-      <button class="tryon-cta" id="tryNowBtn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-        </svg>
-        Try Now
-      </button>
-    </section>
-
-    <!-- ========== FREE EYE CHECKUP SECTION ========== -->
-    <section class="promo-section" id="eyeCheckupSection" style="margin-bottom: 20px;">
-      <div class="promo-card eye-checkup-card">
-        <div class="promo-card__bg-glow eye-checkup-glow"></div>
-        <div class="promo-card__content eye-checkup-content">
-          <div class="eye-checkup-text">
-            <h3 class="promo-title">Get a FREE Eye Check-Up</h3>
-            <p class="promo-desc">Book an in-store or at-home eye test with certified optometrists</p>
-          </div>
-          <div class="eye-checkup-right">
-            <svg class="eye-illustration-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <button class="btn-primary-blue" style="font-size: 13px; margin-top: 10px; padding: 10px 20px; width: auto;" onclick="window.location.href='eyetest.html'">Book Now</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== AI FEATURES SECTION ========== -->
-    <section class="promo-section" id="aiSection" style="margin-bottom: 20px;">
-      <div class="promo-card" style="background: rgba(124, 77, 255, 0.1); border-color: rgba(124, 77, 255, 0.4);">
-        <div class="promo-card__bg-glow" style="background: rgba(124, 77, 255, 0.2);"></div>
-        <div class="promo-card__content">
-          <h3 class="promo-title">New AI Features</h3>
-          <p class="promo-desc">Test our new AI Scripts directly in the console.</p>
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button class="btn-primary-blue" style="font-size: 13px;" onclick="testPrescriptionAI()">Test Rx Scanner</button>
-            <button class="btn-primary" style="font-size: 13px;" onclick="testOutfitAI()">Test Outfit Match</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== PROMO / GUARANTEE SECTION ========== -->
-    <section class="promo-section" id="promoSection">
-      <div class="promo-card">
-        <div class="promo-card__bg-glow"></div>
-        <div class="promo-card__content">
-          <h3 class="promo-title">Summer Collection</h3>
-          <p class="promo-desc">Get 20% off your first order with code <strong class="promo-code">LENS20</strong></p>
-          <div class="promo-badges">
-            <span class="promo-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Free Shipping</span>
-            <span class="promo-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 1-Year Warranty</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== TRADE-IN BANNER ========== -->
-    <section class="promo-section" id="tradeInBannerSection" style="margin-bottom: 20px;">
-      <div class="promo-card" style="background: rgba(255, 77, 141, 0.05); border-color: rgba(255, 77, 141, 0.25);">
-        <div class="promo-card__bg-glow" style="background: rgba(255, 77, 141, 0.1);"></div>
-        <div class="promo-card__content" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <div style="flex: 1.5; padding-right: 12px;">
-            <h3 class="promo-title">Exchange Old Glasses</h3>
-            <p class="promo-desc">Trade in your old glasses and get up to 60% off (Instant Credit up to ₹1,500)</p>
-          </div>
-          <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <button class="btn-primary" style="font-size: 13px; padding: 10px 20px; width: auto;" onclick="window.location.href='tradein.html'">Trade In Now</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== TRENDING SUNGLASSES SECTION ========== -->
-    <section class="trending-section" id="trendingSection">
-      <h2 class="section-heading">Trending Sunglasses</h2>
-      <div class="trending-carousel">
-        
-        <div class="trending-card" tabindex="0" role="button" aria-label="View Retro Square">
-          <div class="trending-card__image-wrap">
-            <img src="images/sunglass_1.png" alt="Retro Square Sunglasses" class="trending-card__img" loading="lazy">
-          </div>
-          <div class="trending-card__info">
-            <span class="trending-card__name">Retro Square</span>
-            <span class="trending-card__price">₹2,999</span>
-          </div>
-        </div>
-
-        <div class="trending-card" tabindex="0" role="button" aria-label="View Elegant Cat-Eye">
-          <div class="trending-card__image-wrap">
-            <img src="images/sunglass_2.png" alt="Cat-Eye Sunglasses" class="trending-card__img" loading="lazy">
-          </div>
-          <div class="trending-card__info">
-            <span class="trending-card__name">Elegant Cat-Eye</span>
-            <span class="trending-card__price">₹3,499</span>
-          </div>
-        </div>
-
-        <div class="trending-card" tabindex="0" role="button" aria-label="View Neon Sport">
-          <div class="trending-card__image-wrap">
-            <img src="images/sunglass_3.png" alt="Neon Sport Sunglasses" class="trending-card__img" loading="lazy">
-          </div>
-          <div class="trending-card__info">
-            <span class="trending-card__name">Neon Sport</span>
-            <span class="trending-card__price">₹4,199</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========== CONTACT & FOOTER ========== -->
-    <footer class="glass-footer" id="contactSection">
-      <div class="footer-top">
-        <div class="footer-col">
-          <h3 class="footer-title">Contact Us</h3>
-          <a href="mailto:support@lensmart.com" class="footer-link">support@lensmart.com</a>
-          <a href="tel:+919876543210" class="footer-link">+91 98765 43210</a>
-        </div>
-        <div class="footer-col">
-          <h3 class="footer-title">Follow Us</h3>
-          <div class="social-links">
-            <a href="#" aria-label="Instagram" class="social-icon">IG</a>
-            <a href="#" aria-label="Twitter" class="social-icon">TW</a>
-            <a href="#" aria-label="Facebook" class="social-icon">FB</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-newsletter">
-        <h3 class="footer-title">Newsletter</h3>
-        <div class="newsletter-input-group">
-          <input type="email" placeholder="Subscribe for 10% off" class="newsletter-input" aria-label="Email address">
-          <button class="newsletter-btn">Go</button>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Lens Mart. All rights reserved.</p>
-      </div>
-    </footer>
-
-  </main>
-
-  <!-- ========== BOTTOM NAVIGATION BAR ========== -->
-  <nav class="bottom-nav" id="bottomNav" aria-label="Main navigation">
-    <button class="bottom-nav__item bottom-nav__item--active" id="navHome" aria-label="Home" data-nav="home">
-      <svg class="bottom-nav__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-        <polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>
-      <span class="bottom-nav__label">Home</span>
-    </button>
-    <button class="bottom-nav__item" id="navShop" aria-label="Shop" data-nav="shop">
-      <svg class="bottom-nav__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 0 1-8 0"/>
-      </svg>
-      <span class="bottom-nav__label">Shop</span>
-    </button>
-    <button class="bottom-nav__item bottom-nav__item--center" id="navTryon" aria-label="AI Try-On" data-nav="tryon">
-      <div class="bottom-nav__center-btn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-          <!-- Sparkle -->
-          <circle cx="19" cy="6" r="1.5" fill="#FFFFFF" stroke="none"/>
-        </svg>
-      </div>
-      <span class="bottom-nav__label">AI Try-On</span>
-    </button>
-    <button class="bottom-nav__item" id="navCart" aria-label="Cart" data-nav="cart">
-      <svg class="bottom-nav__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="9" cy="21" r="1"/>
-        <circle cx="20" cy="21" r="1"/>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-      </svg>
-      <span class="bottom-nav__label">Cart</span>
-    </button>
-    <button class="bottom-nav__item" id="navProfile" aria-label="Profile" data-nav="profile">
-      <svg class="bottom-nav__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-        <circle cx="12" cy="7" r="4"/>
-      </svg>
-      <span class="bottom-nav__label">Profile</span>
-    </button>
-  </nav>
-  </div> <!-- /app-wrapper -->
-
-  <!-- ========== VIRTUAL TRY-ON MODAL ========== -->
-  <div id="tryonModal" class="tryon-modal hidden">
-    <!-- State 1: Permission & Setup -->
-    <div id="tryonPermission" class="tryon-view">
-      <div class="permission-content">
-        <div class="permission-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF4D8D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        </div>
-        <h2>See How These Frames Look On You</h2>
-        <p>We use your camera to show glasses on your face in real time. Nothing is recorded or stored unless you choose to save a photo.</p>
-        <button id="allowCameraBtn" class="btn-primary">Allow Camera Access</button>
-        <button id="closePermissionBtn" class="btn-text">Not now</button>
-      </div>
-    </div>
-
-    <!-- State 2: Live Tracking -->
-    <div id="tryonLive" class="tryon-view hidden">
-      <video id="tryonVideo" class="tryon-video" autoplay playsinline muted></video>
-      <canvas id="tryonCanvas" class="tryon-canvas"></canvas>
-      
-      <div id="tryonGuide" class="tryon-guide">
-        <div class="guide-oval"></div>
-        <p>Position your face inside the frame</p>
-      </div>
-      
-      <!-- Top Bar -->
-      <div class="tryon-top-bar">
-        <button id="closeTryonBtn" class="icon-btn" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-        <div class="tryon-logo">
-          <svg width="28" height="16" viewBox="0 0 44 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#fff" stroke-width="3.5" fill="none"/><circle cx="30" cy="14" r="10" stroke="#fff" stroke-width="3.5" fill="none"/></svg>
-        </div>
-        <button id="flipCameraBtn" class="icon-btn" aria-label="Flip Camera"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10"></path><path d="M3.51 15A9 9 0 0 0 18.36 18.36L23 14"></path></svg></button>
-      </div>
-
-      <!-- Loading State -->
-      <div id="tryonLoading" class="tryon-loading hidden">
-        <div class="spinner"></div>
-        <p>Setting up your virtual mirror...</p>
-      </div>
-
-      <!-- Bottom Control Panel -->
-      <div class="tryon-bottom-panel">
-        <p class="privacy-caption">Processed locally. Not recorded.</p>
-        <div class="glasses-carousel">
-          <img src="images/premium_frame_1.png" class="glasses-thumb active" data-model="images/premium_frame_1.png" data-name="Aviator Premium" data-price="₹1,499">
-          <img src="images/premium_frame_2.png" class="glasses-thumb" data-model="images/premium_frame_2.png" data-name="Tortoise Classic" data-price="₹3,899">
-          <img src="images/sunglass_1.png" class="glasses-thumb" data-model="images/sunglass_1.png" data-name="Retro Square" data-price="₹2,999">
-          <img src="images/sunglass_2.png" class="glasses-thumb" data-model="images/sunglass_2.png" data-name="Elegant Cat-Eye" data-price="₹3,499">
-        </div>
-        <div class="selected-frame-info">
-          <h3 id="liveFrameName">Aviator Premium — ₹1,499</h3>
-        </div>
-        <div class="tryon-actions">
-          <button class="icon-btn dark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
-          <button id="captureBtn" class="capture-btn"><div class="capture-inner"></div></button>
-          <button class="icon-btn dark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- State 3: Snapshot Result -->
-    <div id="tryonResult" class="tryon-view hidden">
-      <img id="snapshotImg" class="snapshot-img">
-      <button id="closeResultBtn" class="icon-btn absolute-top-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-      <button class="icon-btn absolute-top-right"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg></button>
-      
-      <div class="result-bottom-bar">
-        <button id="retakeBtn" class="btn-outline">Retake</button>
-        <button class="btn-primary-blue">Save</button>
-        <button class="btn-primary flex-fill">Buy Frame</button>
-      </div>
-    </div>
-  </div>
-    <img id="glasses-img" src="images/premium_frame_1.png" style="display:none;" crossorigin="anonymous" />
- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
-
-    <!-- AI Feature Scripts & Dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-    <script src="ai-features.js"></script>
-
-    <script>
-      function testPrescriptionAI() {
-        alert("Testing Rx Scanner... check browser console.");
-        const mockText = "RX OD: +1.50 -0.50 x 180 OS: +1.25 -0.75 x 175 PD 62";
-        const result = window.LensmakersAI.PrescriptionScanner.parsePrescriptionData(mockText);
-        alert("Extracted Rx Data:\n" + JSON.stringify(result, null, 2));
+  <!-- Flagship Modular Script Loader -->
+  <script>
+    (async function initializeLensMakers() {
+      // Ensure service worker is updated and active
+      if ('serviceWorker' in navigator) {
+        try {
+          const reg = await navigator.serviceWorker.register('./sw.js');
+          reg.update();
+        } catch (swErr) {
+          console.warn('SW registration info:', swErr);
+        }
       }
-      
-      function testOutfitAI() {
-        alert("Testing Outfit Matcher... check browser console.");
-        const mockCollection = [
-          { name: "Tortoise Classic", colorCategory: "tortoise" },
-          { name: "Clear Acetate", colorCategory: "clear" },
-          { name: "Black Aviator", colorCategory: "black" }
-        ];
-        const result = window.LensmakersAI.OutfitMatcher.rankFramesByMatch('warm_tones', mockCollection);
-        alert("Recommended for Warm Tones:\n" + JSON.stringify(result, null, 2));
+
+      const modules = [
+        './src/utils/spring.js',
+        './src/data/products.js',
+        './src/components/Logo.js',
+        './src/components/UIPrimitives.js',
+        './src/components/Splash.js',
+        './src/components/Onboarding.js',
+        './src/components/AuthModal.js',
+        './src/components/BottomNav.js',
+        './src/components/Header.js',
+        './src/components/PromoCard.js',
+        './src/components/LocationCard.js',
+        './src/components/TrendingSunglasses.js',
+        './src/components/EyeglassesSection.js',
+        './src/components/PremiumPicks.js',
+        './src/components/TryOnBanner.js',
+        './src/components/Navbar.js',
+        './src/screens/HomeScreen.js',
+        './src/screens/ShopScreen.js',
+        './src/screens/TryOnScreen.js',
+        './src/screens/EyeCheckupScreen.js',
+        './src/screens/MembershipScreen.js',
+        './src/screens/PrescriptionScreen.js',
+        './src/screens/CartScreen.js',
+        './src/screens/StoreLocatorScreen.js',
+        './src/screens/ProfileScreen.js',
+        './src/App.js'
+      ];
+
+      try {
+        for (let i = 0; i < modules.length; i++) {
+          try {
+            const res = await fetch(modules[i] + '?v=' + Date.now(), { cache: 'no-store' });
+            if (!res.ok) throw new Error(`HTTP ${res.status} when loading ${modules[i]}`);
+            const text = await res.text();
+            const compiled = Babel.transform(text, { presets: ['react'], filename: modules[i] }).code;
+            window.eval(compiled + "\n//# sourceURL=" + modules[i]);
+          } catch (modErr) {
+            throw new Error(`Error loading/executing ${modules[i]}: ${modErr.message || modErr}`);
+          }
+        }
+
+        // Initialize Lucide icons
+        if (window.lucide && window.lucide.createIcons) {
+          window.lucide.createIcons();
+        }
+
+        // Render Application
+        if (window.App && document.getElementById('root')) {
+          const root = ReactDOM.createRoot(document.getElementById('root'));
+          root.render(React.createElement(window.App));
+        } else {
+          throw new Error('window.App was not defined after loading all modules.');
+        }
+      } catch (err) {
+        console.error('Initialization Error:', err);
+        document.getElementById('root').innerHTML = `
+          <div style="padding: 40px; text-align: center; color: #EF5350; font-family: 'Inter', sans-serif;">
+            <h3>Application Error</h3>
+            <p style="color: #A0A4C8; font-size: 13px; max-width: 400px; margin: 10px auto; line-height: 1.5; background: rgba(239,83,80,0.1); padding: 16px; border-radius: 12px; border: 1px solid rgba(239,83,80,0.3);">${err.message}</p>
+          </div>
+        `;
       }
-    </script>
-
-    <!-- Glassmorphic User Profile Modal (Real Auth System) -->
-    <div id="profileModal" class="profile-modal">
-      <div class="profile-modal-backdrop" onclick="closeProfileModal()"></div>
-      <div class="profile-modal-content">
-        <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
-        <div class="profile-modal-avatar" id="modalUserAvatar">U</div>
-        <h3 class="profile-modal-name" id="modalUserName">User Name</h3>
-        <p class="profile-modal-detail" id="modalUserEmail">email@domain.com</p>
-        <p class="profile-modal-detail" id="modalUserPhone" style="margin-top:-10px; margin-bottom: 20px;">+91 99999 99999</p>
-        <div class="profile-modal-divider"></div>
-        <button class="btn-logout" onclick="handleLogout()">Log Out</button>
-      </div>
-    </div>
-
-    <script src="tryon.js"></script>
-    <script src="app.js"></script>
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,6 @@
+# Robots.txt for Lensmakers AI Eyewear
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://lensmakers-app.vercel.app/sitemap.xml
