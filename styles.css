@@ -1,3 +1,8 @@
+
+/* MOBILE OPTIMIZATIONS */
+* { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.shape-circle-btn svg * { vector-effect: non-scaling-stroke; }
+.category-card, .premium-special-card, .product-card-glass, .shape-circle-btn, .btn-primary-pill, .btn-secondary-pill { will-change: transform, filter; transform: translateZ(0); }
 /* ==========================================================================
    LENS MAKERS — DESIGN SYSTEM & APPLE-LIKE ANIMATION SYSTEM
    PROMPTS 1, 2 & APPLE VISION PRO / iOS LIQUID GLASS UPGRADE
@@ -149,7 +154,7 @@ button, [role="button"], [onclick],
    use transform and opacity ONLY, never width/height/
    top/left/margin for animated properties */
 .animated {
-  will-change: transform, opacity;
+  will-change: opacity;
 }
 
 /* =============================================
@@ -232,7 +237,7 @@ body, html {
   border-radius: 50%;
   filter: blur(80px);
   animation: driftBlob2 8s var(--ease-in-out-bezier) infinite alternate;
-  animation-delay: -4s;
+  transition-delay: -4s;
 }
 
 @keyframes driftBlob1 {
@@ -257,11 +262,11 @@ body, html {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  padding-bottom: calc(68px + 14px + env(safe-area-inset-bottom, 0px) + 24px) !important;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 24px) !important;
 }
 
 .screen-transition-enter {
-  padding-bottom: calc(68px + 14px + env(safe-area-inset-bottom, 0px) + 24px) !important;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 24px) !important;
 }
 
 .screen-container::-webkit-scrollbar { display: none; }
@@ -472,7 +477,7 @@ body, html {
 }
 
 @keyframes shakeOscillation {
-  0%, 100% { transform: translateX(0); }
+  0%, 100% { transform: none; }
   20%, 60% { transform: translateX(-6px); }
   40%, 80% { transform: translateX(6px); }
 }
@@ -774,7 +779,7 @@ body, html {
   20%  { transform: scale(0.7); }      /* compress */
   50%  { transform: scale(1.4); }      /* overshoot big */
   70%  { transform: scale(0.9); }      /* slight undershoot */
-  100% { transform: scale(1); }        /* settle */
+  100% { transform: none; }        /* settle */
 }
 
 /* The unsave animation sequence */
@@ -784,7 +789,7 @@ body, html {
 @keyframes heart-unsave {
   0%   { transform: scale(1); }
   30%  { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  100% { transform: none; }
 }
 
 @keyframes particle-fly {
@@ -804,7 +809,7 @@ body, html {
   35%  { transform: scale(1.55); }
   65%  { transform: scale(0.85); }
   82%  { transform: scale(1.12); }
-  100% { transform: scale(1); }
+  100% { transform: none; }
 }
 
 /* ==========================================================================
@@ -815,13 +820,13 @@ body, html {
 /* Note: .screen-container base rules are defined above (line ~249) — only
    add 3D perspective here without overriding position/overflow */
 .screen-container {
-  perspective: 1000px; /* enables 3D depth for push transitions */
+  
 }
 
 /* Individual screens within transitions — only add GPU compositing hints */
 .screen {
   backface-visibility: hidden;
-  will-change: transform, opacity;
+  will-change: opacity;
 }
 
 /* Screen being PUSHED INTO (new screen entering) */
@@ -957,7 +962,7 @@ body, html {
   0%   { transform: scale(1)    translateY(0);  }
   35%  { transform: scale(0.82) translateY(2px); } /* press down */
   65%  { transform: scale(1.12) translateY(-3px); } /* spring up */
-  100% { transform: scale(1)    translateY(0); } /* settled — not lifted to avoid permanent offset */
+  100% { transform: none; } /* settled — not lifted to avoid permanent offset */
 }
 
 /* Use only explicit JS class, not blanket :not(.active) which fires on every render */
@@ -1014,16 +1019,16 @@ body, html {
 @keyframes slideDownSheet { to { transform: translateY(100%); } }
 
 /* FADE UP STAGGERED LIST ITEMS */
-.fade-up-item { opacity: 0; transform: translateY(16px); animation: fadeUpAnimation 350ms var(--ease-out-bezier) both; }
+.fade-up-item { opacity: 0; transform: translate3d(0, 24px, 0) scale3d(0.96, 0.96, 1); animation: fadeUpAnimation 450ms var(--spring-primary) both; }
 .fade-up-item:nth-child(1) { animation-delay: 0ms; }
-.fade-up-item:nth-child(2) { animation-delay: 40ms; }
-.fade-up-item:nth-child(3) { animation-delay: 80ms; }
-.fade-up-item:nth-child(4) { animation-delay: 120ms; }
-.fade-up-item:nth-child(5) { animation-delay: 160ms; }
-.fade-up-item:nth-child(6) { animation-delay: 200ms; }
-.fade-up-item:nth-child(n+7) { animation-delay: 240ms; }
+.fade-up-item:nth-child(2) { animation-delay: 45ms; }
+.fade-up-item:nth-child(3) { animation-delay: 90ms; }
+.fade-up-item:nth-child(4) { animation-delay: 135ms; }
+.fade-up-item:nth-child(5) { animation-delay: 180ms; }
+.fade-up-item:nth-child(6) { animation-delay: 225ms; }
+.fade-up-item:nth-child(n+7) { animation-delay: 270ms; }
 
-@keyframes fadeUpAnimation { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUpAnimation { to { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1, 1, 1); } }
 
 /* SKELETON LOADING SHIMMER */
 .skeleton-box {
@@ -1097,8 +1102,7 @@ body, html {
     transform: translateY(120%) scale(0.92);
     opacity: 0;
   }
-  100% {
-    transform: translateY(0) scale(1);
+  100% { transform: none;
     opacity: 1;
   }
 }
@@ -1129,7 +1133,7 @@ body, html {
   padding: 0 10px;
   transition: transform var(--dur-medium) var(--spring-gentle),
               opacity var(--dur-normal) var(--ease-out);
-  will-change: transform, opacity;
+  will-change: opacity;
   transform: translateY(0);
   opacity: 1;
 }
@@ -1215,17 +1219,17 @@ body, html {
 @keyframes screenFadeSlideIn {
   0% {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 20px, 0) scale3d(0.98, 0.98, 1);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   }
 }
 
 .screen-container > *:not(.top-header-outer-wrapper) {
-  animation: screenFadeSlideIn 350ms cubic-bezier(0.25, 1.1, 0.5, 1) forwards;
-  will-change: transform, opacity;
+  animation: screenFadeSlideIn 400ms var(--spring-primary) forwards;
+  will-change: opacity, transform;
 }
 
 .bottom-nav.liquid-pulse {
@@ -1403,7 +1407,7 @@ body, html {
   z-index: 3;
 }
 @keyframes sparkleFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
+  0%, 100% { transform: none; }
   50% { transform: translateY(-2px) scale(1.15); }
 }
 
@@ -1497,7 +1501,7 @@ body, html {
 
 @keyframes searchSlideIn {
   0% { transform: translateX(100%); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
+  100% { transform: none; opacity: 1; }
 }
 
 .autocomplete-dropdown {
@@ -1554,7 +1558,7 @@ body, html {
 /* CATEGORY GRID (APPLE GLASS TILES, Section 4) */
 .category-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-  padding: 0 var(--screen-padding); margin-bottom: 28px;
+  padding: 0 var(--screen-padding); margin-bottom: 32px;
 }
 .category-card {
   height: 110px; border-radius: 14px; display: flex; flex-direction: column;
@@ -1639,7 +1643,7 @@ body, html {
   animation: pulseGlowAnim 2.5s infinite ease-in-out;
 }
 @keyframes pulseGlowAnim {
-  0%, 100% { transform: scale(1); box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 0 12px rgba(255, 77, 141, 0.4); }
+  0%, 100% { transform: none; box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 0 12px rgba(255, 77, 141, 0.4); }
   50% { transform: scale(1.08); box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 0 28px rgba(255, 77, 141, 0.8); }
 }
 
@@ -1649,9 +1653,11 @@ body, html {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(27, 31, 74, 0.35);
   backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.15); border-left: none;
-  border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; cursor: pointer; position: relative; overflow: hidden;
+  border-radius: 16px; padding: 14px 20px; margin-bottom: 12px; cursor: pointer; position: relative; overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
   transition: all 400ms var(--spring-bezier);
+  height: 88px;
+  box-sizing: border-box;
 }
 .premium-special-card:hover { transform: translateX(6px) scale(1.01); background: rgba(36, 40, 88, 0.85); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), inset 0 1.5px 1px rgba(255, 255, 255, 0.45); }
 .premium-special-card:active { transform: scale3d(0.95, 0.95, 1); filter: brightness(1.1) saturate(1.2); border-radius: 22px !important; }
@@ -1918,7 +1924,7 @@ body, html {
 }
 @keyframes slideInFromRight {
   0% { transform: translateX(100%); }
-  100% { transform: translateX(0); }
+  100% { transform: none; }
 }
 
 /* PDP GALLERY PANEL */
@@ -2014,7 +2020,7 @@ body, html {
 }
 @keyframes slideInUpModal {
   0% { transform: translateY(100%); }
-  100% { transform: translateY(0); }
+  100% { transform: none; }
 }
 
 /* VIDEO & CANVAS OVERLAYS */
@@ -2349,7 +2355,7 @@ body, html {
 }
 @keyframes toastSlideUp {
   0% { transform: translateY(20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  100% { transform: none; opacity: 1; }
 }
 .toast-success { border-left: 4px solid #43A047; }
 .toast-error { border-left: 4px solid #EF5350; }
@@ -2359,7 +2365,7 @@ body, html {
 /* 2. Quantity Stepper Flip Animation */
 @keyframes flipNum {
   0% { transform: translateY(-8px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  100% { transform: none; opacity: 1; }
 }
 .animate-flip-num {
   display: inline-block;
@@ -2440,7 +2446,7 @@ body, html {
 .animate-item.visible {
   animation: item-fade-up
              var(--dur-slow)
-             var(--spring-gentle)
+             var(--spring-primary)
              var(--stagger, 0ms)
              both; /* 'both' = fills both directions */
   opacity: 1; /* ensure visible after animation */
@@ -2449,11 +2455,11 @@ body, html {
 @keyframes item-fade-up {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translate3d(0, 24px, 0) scale3d(0.95, 0.95, 1);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   }
 }
 
@@ -2558,7 +2564,7 @@ body, html {
   );
   animation: blob-drift-2 13s var(--ease-ambient)
              infinite alternate;
-  animation-delay: -4s; /* offset for async movement */
+  transition-delay: -4s; /* offset for async movement */
 }
 
 .glow-blob-3 {
@@ -2570,7 +2576,7 @@ body, html {
   );
   animation: blob-drift-3 16s var(--ease-ambient)
              infinite alternate;
-  animation-delay: -8s;
+  transition-delay: -8s;
 }
 
 @keyframes blob-drift-1 {
@@ -2677,7 +2683,7 @@ body, html {
   pointer-events: none;
   z-index: 5;
   animation: floatSparkleTwinkle 3s infinite ease-in-out;
-  will-change: transform, opacity;
+  will-change: opacity;
 }
 @keyframes floatSparkleTwinkle {
   0%, 100% { opacity: 0.3; transform: translateY(0px) scale(0.9) rotate(0deg); }
@@ -2756,3 +2762,59 @@ body, html {
   pointer-events: none;
 }
 
+
+
+/* -----------------------------------------------------
+   EXTREME MICRO-ANIMATIONS & ENTRANCE EFFECTS
+----------------------------------------------------- */
+@keyframes extremeSlideUp { 0% { opacity: 0; transform: translateY(40px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes extremeDropIn { 0% { opacity: 0; transform: translateY(-40px) scale(1.05); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes breatheIdle { 0%, 100% { transform: scale(1) translateZ(0); } 50% { transform: scale(1.03) translateZ(0); } }
+@keyframes neonPulseIdle { 0%, 100% { box-shadow: 0 0 10px rgba(255,77,141,0.2), inset 0 0 5px rgba(255,255,255,0.1); } 50% { box-shadow: 0 0 25px rgba(255,77,141,0.6), inset 0 0 15px rgba(255,255,255,0.3); } }
+
+
+.category-card:nth-child(1), .product-card-glass:nth-child(1), .shape-circle-btn:nth-child(1) { animation-delay: 0ms !important; }
+.category-card:nth-child(2), .product-card-glass:nth-child(2), .shape-circle-btn:nth-child(2) { animation-delay: 45ms !important; }
+.category-card:nth-child(3), .product-card-glass:nth-child(3), .shape-circle-btn:nth-child(3) { animation-delay: 90ms !important; }
+.category-card:nth-child(4), .product-card-glass:nth-child(4), .shape-circle-btn:nth-child(4) { animation-delay: 135ms !important; }
+.category-card:nth-child(5), .product-card-glass:nth-child(5), .shape-circle-btn:nth-child(5) { animation-delay: 180ms !important; }
+.category-card:nth-child(6), .product-card-glass:nth-child(6), .shape-circle-btn:nth-child(6) { animation-delay: 225ms !important; }
+.shape-circle-btn:nth-child(7) { animation-delay: 270ms !important; }
+
+
+
+.search-bar-glass { 
+  animation: extremeDropIn 700ms var(--spring-primary) both 100ms;
+}
+
+.btn-primary-pill, .btn-secondary-pill { 
+  transition: all 300ms var(--spring-primary);
+  will-change: transform, box-shadow;
+}
+.btn-primary-pill:hover, .btn-secondary-pill:hover {
+  transform: translateY(-2px) scale3d(1.03, 1.03, 1);
+  box-shadow: 0 8px 24px rgba(255, 77, 141, 0.4);
+}
+.btn-primary-pill:active, .btn-secondary-pill:active {
+  transform: scale3d(0.92, 0.92, 1) translateZ(0);
+  filter: brightness(1.2);
+  transition: transform 100ms var(--spring-snappy), filter 100ms ease;
+}
+
+/* Liquid Spring Hover & Active on Cards */
+.category-card, .product-card-glass, .premium-special-card, .bogo-rotating-card, .glass-card-glow-cyan, .glass-card-glow-pink, .glass-card-glow-green, .rx-card-cyan, .purple-shimmer-card {
+  transition: transform 300ms var(--spring-primary), box-shadow 300ms ease, border-color 300ms ease;
+  will-change: transform;
+}
+.category-card:hover, .product-card-glass:hover, .premium-special-card:hover, .bogo-rotating-card:hover, .glass-card-glow-cyan:hover, .glass-card-glow-pink:hover, .glass-card-glow-green:hover, .rx-card-cyan:hover, .purple-shimmer-card:hover {
+  transform: translateY(-4px) scale3d(1.02, 1.02, 1);
+}
+.category-card:active, .product-card-glass:active, .premium-special-card:active, .bogo-rotating-card:active, .glass-card-glow-cyan:active, .glass-card-glow-pink:active, .glass-card-glow-green:active, .rx-card-cyan:active, .purple-shimmer-card:active {
+  transform: scale3d(0.95, 0.95, 1) !important;
+  transition: transform 150ms var(--spring-snappy);
+}
+
+/* Maintain the idle breathing on premium card */
+.premium-special-card.visible, .premium-special-card {
+  animation: breatheIdle 6s ease-in-out infinite alternate 1.1s;
+}

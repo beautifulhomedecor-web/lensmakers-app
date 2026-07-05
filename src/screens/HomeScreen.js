@@ -52,13 +52,13 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
   // bound to .screen-container in App.js. No local PTR implementation needed.
 
   return (
-    <div className="screen-transition-enter" style={{ paddingBottom: '40px' }}>
+    <div className="screen-transition-enter" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)' }}>
       {/* PTR handled globally by PullToRefresh in App.js — no local indicator needed */}
 
       {/* 1. LOCATION DELIVERY BAR (Section 3 - Placed above Hero Carousel per Item 1 & Item 4) */}
       <div
         className="location-delivery-bar fade-up-item"
-        style={{ height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', margin: '0 var(--screen-padding) 20px var(--screen-padding)' }}
+        style={{ height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', margin: '0 var(--screen-padding) 32px var(--screen-padding)' }}
         onClick={() => setShowLocationModal(true)}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
@@ -78,7 +78,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       </div>
 
       {/* 2. HERO BANNER CAROUSEL (Section 2 - Exact 220px height, 60% left column, 40% right column per Item 2) */}
-      <div className="hero-carousel-wrapper" style={{ position: 'relative', margin: '0 var(--screen-padding) 28px var(--screen-padding)' }}>
+      <div className="hero-carousel-wrapper" style={{ position: 'relative', margin: '0 var(--screen-padding) 32px var(--screen-padding)' }}>
         <div
           className="hero-carousel"
           onMouseEnter={() => setIsPaused(true)}
@@ -339,7 +339,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       {/* 5. FREE EYE CHECK-UP FEATURE CARD (Section 5 per Item 1 & Item 8) */}
       <div
         className="glass-card-glow-cyan fade-up-item"
-        style={{ margin: '0 var(--screen-padding) 16px var(--screen-padding)', padding: '18px 20px', height: 'auto', display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: '14px', animationDelay: '80ms' }}
+        style={{ margin: '0 var(--screen-padding) 32px var(--screen-padding)', padding: '20px', height: 'auto', display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: '14px', animationDelay: '80ms' }}
       >
         <div style={{ width: '52px', height: '52px', borderRadius: '26px', background: 'rgba(41,182,246,0.18)', border: '1.5px solid rgba(41,182,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <i data-lucide="eye" style={{ width: '26px', height: '26px', color: '#29B6F6' }} />
@@ -365,7 +365,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       </div>
 
       {/* 6. BOGO OFFER DETAIL CARD (Section 6 per Item 1) */}
-      <div className="bogo-rotating-card fade-up-item" style={{ margin: '0 var(--screen-padding) 16px var(--screen-padding)', animationDelay: '120ms' }}>
+      <div className="bogo-rotating-card fade-up-item" style={{ margin: '0 var(--screen-padding) 32px var(--screen-padding)', animationDelay: '120ms' }}>
         <div className="bogo-card-inner">
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '14px' }}>
             <div style={{ width: '48px', height: '48px', borderRadius: '24px', background: 'rgba(255,122,48,0.18)', border: '1.5px solid rgba(255,122,48,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', flexShrink: 0 }}>
@@ -396,7 +396,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       </div>
 
       {/* 7. MEMBERSHIP TEASER CARD (Section 7 per Item 1) */}
-      <div className="purple-shimmer-card fade-up-item" style={{ margin: '0 var(--screen-padding) 16px var(--screen-padding)', animationDelay: '160ms' }}>
+      <div className="purple-shimmer-card fade-up-item" style={{ margin: '0 var(--screen-padding) 32px var(--screen-padding)', animationDelay: '160ms' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
           <span style={{ fontSize: '12px', fontWeight: '800', color: '#7C4DFF', letterSpacing: '1.5px' }}>
             LENS MAKERS CLUB
@@ -438,7 +438,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       {/* 8. AR TRY-ON FEATURE CARD (Section 8 - 28px gap before Premium Specials per Item 1) */}
       <div
         className="glass-card-glow-pink fade-up-item"
-        style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)', display: 'flex', alignItems: 'center', gap: '16px', animationDelay: '200ms' }}
+        style={{ margin: '0 var(--screen-padding) 32px var(--screen-padding)', display: 'flex', alignItems: 'center', gap: '16px', animationDelay: '200ms' }}
       >
         <div className="pulse-glow-circle">
           <i data-lucide="camera" style={{ width: '26px', height: '26px', color: '#FF4D8D' }} />
@@ -461,7 +461,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       </div>
 
       {/* 9. PREMIUM SPECIALS (Section 9 - 3 Stacked Product Cards per Item 6 & Item 7) */}
-      <div className="fade-up-item" style={{ animationDelay: '240ms', padding: '0 var(--screen-padding)', marginBottom: '28px' }}>
+      <div className="fade-up-item" style={{ animationDelay: '240ms', padding: '0 var(--screen-padding)', marginBottom: '32px' }}>
         <h2 className="section-heading mb-3">
           Premium Specials
         </h2>
@@ -530,7 +530,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       {/* 9.5 DIGITAL EYE PRESCRIPTION TEASER CARD (Prompt 8) */}
       <div
         className="rx-card-cyan fade-up-item"
-        style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)', animationDelay: '260ms', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px' }}
+        style={{ margin: '0 var(--screen-padding) 32px var(--screen-padding)', animationDelay: '260ms', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px' }}
         onClick={() => onSelectTab('prescription')}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>

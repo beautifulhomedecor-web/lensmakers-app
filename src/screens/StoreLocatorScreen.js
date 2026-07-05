@@ -164,7 +164,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
   };
 
   return (
-    <div className="screen-transition-enter" style={{ padding: '16px var(--screen-padding)', paddingBottom: '90px' }}>
+    <div className="screen-transition-enter" style={{ padding: '16px var(--screen-padding)', paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)' }}>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="glass-card-glow-pink" style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '12px 24px', borderRadius: '999px', fontSize: '13px', fontWeight: '800', color: '#FFFFFF', whiteSpace: 'nowrap', boxShadow: '0 8px 32px rgba(255,77,141,0.5)', animation: 'fadeIn 200ms ease' }}>

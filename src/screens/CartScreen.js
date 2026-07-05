@@ -256,7 +256,7 @@ const CartScreen = ({ onSelectTab }) => {
   // SUCCESS SCREEN
   if (viewMode === 'success') {
     return (
-      <div className="screen-transition-enter" style={{ padding: '24px var(--screen-padding)', paddingBottom: '120px', minHeight: '90vh', position: 'relative', overflow: 'hidden' }}>
+      <div className="screen-transition-enter" style={{ padding: '24px var(--screen-padding)', paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)', minHeight: '90vh', position: 'relative', overflow: 'hidden' }}>
         {toast && (
           <div className="lens-toast-container">
             <div className={`lens-toast-item toast-${toast.type}`}>
@@ -359,7 +359,7 @@ const CartScreen = ({ onSelectTab }) => {
   // CHECKOUT FLOW
   if (viewMode === 'checkout') {
     return (
-      <div className="screen-transition-enter" style={{ padding: '16px var(--screen-padding)', paddingBottom: '120px', minHeight: '90vh', maxWidth: '520px', margin: '0 auto' }}>
+      <div className="screen-transition-enter" style={{ padding: '16px var(--screen-padding)', paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)', minHeight: '90vh', maxWidth: '520px', margin: '0 auto' }}>
         {toast && (
           <div className="lens-toast-container">
             <div className={`lens-toast-item toast-${toast.type}`}>
@@ -813,7 +813,7 @@ const CartScreen = ({ onSelectTab }) => {
 
   // CART MAIN SCREEN
   return (
-    <div className="screen-transition-enter" style={{ padding: '16px var(--screen-padding)', paddingBottom: '110px', minHeight: '90vh' }}>
+    <div className="screen-transition-enter" style={{ padding: '16px var(--screen-padding)', paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)', minHeight: '90vh' }}>
       {toast && (
         <div className="lens-toast-container">
           <div className={`lens-toast-item toast-${toast.type}`}>

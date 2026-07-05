@@ -466,13 +466,13 @@ function initListAnimations() {
     }
   );
 
-  /* Apply stagger delays to all animate-items in lists */
-  document.querySelectorAll('.animate-list, .product-grid, .product-grid-2col, .category-grid, .orders-list, .address-list, .prescription-list, .grid-container, .cards-grid').forEach(list => {
-    const items = list.querySelectorAll('.animate-item, .product-card, .product-card-glass, .category-card, .promo-card, .location-card, .bogo-rotating-card, .premium-special-card, .order-card, .address-card, .prescription-card');
+  /* Apply stagger delays to all animate-items in lists and cards */
+  document.querySelectorAll('.animate-list, .product-grid, .product-grid-2col, .category-grid, .orders-list, .address-list, .prescription-list, .grid-container, .cards-grid, .screen-container, .section, .home-screen, .shop-screen, .tryon-screen, .profile-screen, .cart-screen, .orders-screen, .store-locator-screen, .prescription-screen').forEach(list => {
+    const items = list.querySelectorAll('.animate-item, .product-card, .product-card-glass, .category-card, .promo-card, .location-card, .bogo-rotating-card, .premium-special-card, .order-card, .address-card, .prescription-card, .glass-card-glow-cyan, .glass-card-glow-pink, .glass-card-glow-green, .rx-card-cyan, .purple-shimmer-card, .glass-card-elevated, .glass-card-standard, .fade-up-item');
     items.forEach((item, index) => {
       if (item.classList.contains('visible')) return;
-      /* Stagger: 55ms per item, max 400ms total stagger */
-      const delay = Math.min(index * 55, 400);
+      /* Stagger: 45ms per item, max 350ms total stagger */
+      const delay = Math.min(index * 45, 350);
       item.style.setProperty('--stagger', `${delay}ms`);
       if (!item.classList.contains('animate-item')) item.classList.add('animate-item');
       /* Mark with data-animate BEFORE observing — CSS only hides items with this attr */

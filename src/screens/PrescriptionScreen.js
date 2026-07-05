@@ -264,7 +264,7 @@ const PrescriptionScreen = ({ onSelectTab, initialViewMode = 'list' }) => {
   };
 
   return (
-    <div className="screen-transition-enter" style={{ minHeight: '100vh', paddingBottom: '90px' }}>
+    <div className="screen-transition-enter" style={{ minHeight: '100vh', paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)' }}>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="lens-toast" style={{ zIndex: 9999 }}>
