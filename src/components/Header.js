@@ -78,7 +78,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
         transition: 'all 300ms var(--spring-bezier)'
       }}
     >
-      {/* ROW 1: Logo on left, AI Virtual Try-On Label & Cart Icon on right */}
+      {/* ROW 1: Logo on left, AI Virtual Try-On Label on right */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '6px' }}>
         <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 1, minWidth: 0 }}>
           <window.Logo size={26} />
@@ -91,41 +91,11 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
             className="ai-tryon-header-badge"
             onClick={() => onSelectTab && onSelectTab('tryon')}
             title="Launch Studio AI Virtual Try-On"
-            style={{ padding: '0 10px', height: '34px', display: 'flex', alignItems: 'center', gap: '5px' }}
+            style={{ padding: '0 12px', height: '34px', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
             <span className="ai-tryon-text-full">AI Virtual Try-On</span>
             <span className="ai-tryon-text-mobile">AI Try-On</span>
             <span style={{ background: 'linear-gradient(135deg, #FF0055, #FF4D8D)', color: '#FFF', fontSize: '9px', padding: '2px 5px', borderRadius: '8px', fontWeight: '900', letterSpacing: '0.4px', lineHeight: 1 }}>LIVE</span>
-          </button>
-
-          {/* Cart Icon with Number Counter Badge */}
-          <button
-            type="button"
-            className="liquid-btn"
-            style={{
-              position: 'relative', width: '34px', height: '34px', borderRadius: '17px',
-              background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.28)',
-              color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', transition: 'all 200ms ease', boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-              flexShrink: 0
-            }}
-            onClick={() => onSelectTab && onSelectTab('cart')}
-            title="Shopping Cart"
-          >
-            <i data-lucide="shopping-bag" style={{ width: '16px', height: '16px', color: '#FFFFFF' }} />
-            <span
-              style={{
-                position: 'absolute', top: '-1px', right: '-1px',
-                background: 'linear-gradient(135deg, #FF4D8D 0%, #FF0055 100%)',
-                color: '#FFFFFF', fontSize: '9px', fontWeight: '900',
-                minWidth: '16px', height: '16px', borderRadius: '8px',
-                padding: '0 4px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(255, 77, 141, 0.9), 0 0 0 2px #0F1535', zIndex: 10,
-                animation: 'breatheGlow 2s infinite ease-in-out'
-              }}
-            >
-              {window.cartCount || 2}
-            </span>
           </button>
         </div>
       </div>
