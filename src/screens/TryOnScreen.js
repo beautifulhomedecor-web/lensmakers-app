@@ -61,6 +61,9 @@ const TryOnScreen = ({ onSelectTab }) => {
   const [toastMessage, setToastMessage] = useState(null);
   const [showBiometricHUD, setShowBiometricHUD] = useState(true);
   const [lensCoating, setLensCoating] = useState('antireflective'); // 'antireflective' | 'bluelight' | 'polarized' | 'photochromic' | 'none'
+  const [orbitAngle, setOrbitAngle] = useState(0); // 0 to 360 degrees for 360° 3D preview
+  const [orbitPitch, setOrbitPitch] = useState(10); // -30 to +30 degrees vertical tilt
+  const [isAutoSpinning, setIsAutoSpinning] = useState(true);
 
   // Refs that mirror state for use in rAF/MediaPipe callbacks (avoids stale closure)
   const selectedFrameIdxRef = useRef(1);
@@ -71,6 +74,11 @@ const TryOnScreen = ({ onSelectTab }) => {
   const lensCoatingRef = useRef('antireflective');
   const modeRef = useRef('demo');
   const uploadedPhotoRef = useRef(null);
+  const orbitAngleRef = useRef(0);
+  const orbitPitchRef = useRef(10);
+  const isAutoSpinningRef = useRef(true);
+  const isDragging360Ref = useRef(false);
+  const lastMousePosRef = useRef({ x: 0, y: 0 });
 
   // Keep refs in sync whenever state changes
   useEffect(() => { selectedFrameIdxRef.current = selectedFrameIdx; }, [selectedFrameIdx]);
@@ -80,6 +88,9 @@ const TryOnScreen = ({ onSelectTab }) => {
   useEffect(() => { lensCoatingRef.current = lensCoating; }, [lensCoating]);
   useEffect(() => { modeRef.current = mode; }, [mode]);
   useEffect(() => { uploadedPhotoRef.current = uploadedPhoto; }, [uploadedPhoto]);
+  useEffect(() => { orbitAngleRef.current = orbitAngle; }, [orbitAngle]);
+  useEffect(() => { orbitPitchRef.current = orbitPitch; }, [orbitPitch]);
+  useEffect(() => { isAutoSpinningRef.current = isAutoSpinning; }, [isAutoSpinning]);
 
   // References
   const videoRef = useRef(null);
@@ -324,6 +335,207 @@ const TryOnScreen = ({ onSelectTab }) => {
   };
 
   // ==========================================================================
+  // HIGH-ACCURACY 3D 360-DEGREE INTERACTIVE EYEWEAR TURNTABLE RENDERING ENGINE
+  // ==========================================================================
+  const draw360Frame = (ctx, style, angleDeg, pitchDeg, w, h) => {
+    ctx.save();
+    const centerX = w / 2;
+    const centerY = h * 0.44;
+    const theta = (angleDeg * Math.PI) / 180;
+    const phi = (pitchDeg * Math.PI) / 180;
+    const fovDist = 900;
+
+    // Helper to project 3D coordinates (x, y, z) to 2D canvas with perspective
+    const project = (x, y, z) => {
+      // Yaw around Y
+      const x1 = x * Math.cos(theta) + z * Math.sin(theta);
+      const z1 = -x * Math.sin(theta) + z * Math.cos(theta);
+      // Pitch around X
+      const y2 = y * Math.cos(phi) - z1 * Math.sin(phi);
+      const z2 = y * Math.sin(phi) + z1 * Math.cos(phi);
+      const scale = fovDist / (fovDist - z2);
+      return {
+        x: centerX + x1 * scale,
+        y: centerY + y2 * scale,
+        scale: scale,
+        z: z2
+      };
+    };
+
+    // 1. DRAW 3D GLOWING TURNTABLE PEDESTAL UNDERNEATH GLASSES
+    const pCenter = project(0, 140, 0);
+    ctx.save();
+    ctx.translate(pCenter.x, pCenter.y);
+    ctx.scale(1, 0.28);
+    const pedGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, 240 * pCenter.scale);
+    pedGrad.addColorStop(0, 'rgba(0, 229, 255, 0.45)');
+    pedGrad.addColorStop(0.5, 'rgba(255, 77, 141, 0.18)');
+    pedGrad.addColorStop(1, 'rgba(15, 21, 53, 0)');
+    ctx.fillStyle = pedGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 240 * pCenter.scale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(0, 229, 255, 0.35)';
+    ctx.stroke();
+    ctx.restore();
+
+    // 2. DEFINE 3D COMPONENTS & DEPTH SORTING
+    const strokeW = 8;
+    const lw = 132;
+    const lh = 94;
+    const lx = -78;
+    const rx = 78;
+    const templeLen = 270;
+
+    const leftTempleCenterZ = project(-155, 0, -templeLen / 2).z;
+    const rightTempleCenterZ = project(155, 0, -templeLen / 2).z;
+    const frontCenterZ = project(0, 0, 0).z;
+
+    const components = [
+      { id: 'leftTemple', z: leftTempleCenterZ },
+      { id: 'rightTemple', z: rightTempleCenterZ },
+      { id: 'frontFrame', z: frontCenterZ }
+    ];
+
+    // Sort ascending by z: back components draw first, front components draw on top
+    components.sort((a, b) => a.z - b.z);
+
+    const renderLeftTemple = () => {
+      const p1 = project(-145, -6, 0);
+      const p2 = project(-154, -4, -templeLen * 0.75);
+      const p3 = project(-154, 18, -templeLen);
+      const p4 = project(-154, 52, -templeLen - 20);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.quadraticCurveTo(p3.x, p3.y, p4.x, p4.y);
+      ctx.lineWidth = strokeW * ((p1.scale + p2.scale) / 2) * 0.9;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = style.frameColor || '#1C1C1E';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(p1.x, p1.y, strokeW * p1.scale * 0.7, 0, Math.PI * 2);
+      ctx.fillStyle = style.hingeAccent || '#FFD700';
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const renderRightTemple = () => {
+      const p1 = project(145, -6, 0);
+      const p2 = project(154, -4, -templeLen * 0.75);
+      const p3 = project(154, 18, -templeLen);
+      const p4 = project(154, 52, -templeLen - 20);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.quadraticCurveTo(p3.x, p3.y, p4.x, p4.y);
+      ctx.lineWidth = strokeW * ((p1.scale + p2.scale) / 2) * 0.9;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = style.frameColor || '#1C1C1E';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(p1.x, p1.y, strokeW * p1.scale * 0.7, 0, Math.PI * 2);
+      ctx.fillStyle = style.hingeAccent || '#FFD700';
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const renderFrontFrame = () => {
+      const pLeft = project(lx, 0, 0);
+      const pRight = project(rx, 0, 0);
+      const pBridge = project(0, -12, 6);
+
+      const draw3DLens = (centerP) => {
+        ctx.save();
+        ctx.translate(centerP.x, centerP.y);
+        const foreshortenX = Math.max(0.12, Math.abs(Math.cos(theta)));
+        ctx.scale(foreshortenX * centerP.scale, centerP.scale);
+
+        const wL = lw;
+        const hL = lh;
+        ctx.beginPath();
+        ctx.roundRect(-wL / 2, -hL / 2, wL, hL, 22);
+
+        const coating = lensCoatingRef.current;
+        if (coating === 'antireflective') {
+          const grad = ctx.createLinearGradient(-wL / 2, -hL / 2, wL / 2, hL / 2);
+          grad.addColorStop(0, 'rgba(0, 229, 255, 0.35)');
+          grad.addColorStop(0.5, style.lensFill || 'rgba(10,15,40,0.25)');
+          grad.addColorStop(1, 'rgba(40, 220, 160, 0.35)');
+          ctx.fillStyle = grad;
+        } else if (coating === 'bluelight') {
+          const grad = ctx.createLinearGradient(-wL / 2, -hL / 2, wL / 2, hL / 2);
+          grad.addColorStop(0, 'rgba(0, 140, 255, 0.4)');
+          grad.addColorStop(0.6, 'rgba(15, 20, 40, 0.22)');
+          grad.addColorStop(1, 'rgba(255, 170, 0, 0.3)');
+          ctx.fillStyle = grad;
+        } else if (coating === 'polarized') {
+          ctx.fillStyle = 'rgba(10, 15, 25, 0.88)';
+        } else if (coating === 'photochromic') {
+          ctx.fillStyle = 'rgba(20, 25, 45, 0.72)';
+        } else {
+          ctx.fillStyle = style.lensFill || 'rgba(10,15,40,0.3)';
+        }
+        ctx.fill();
+
+        ctx.lineWidth = strokeW;
+        ctx.strokeStyle = style.frameColor || '#1C1C1E';
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(-wL * 0.25, -hL * 0.3);
+        ctx.lineTo(wL * 0.2, hL * 0.35);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.stroke();
+
+        ctx.restore();
+      };
+
+      draw3DLens(pLeft);
+      draw3DLens(pRight);
+
+      const bLeft = project(lx + lw * 0.46, -8, 2);
+      const bRight = project(rx - lw * 0.46, -8, 2);
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(bLeft.x, bLeft.y);
+      ctx.quadraticCurveTo(pBridge.x, pBridge.y - 18 * pBridge.scale, bRight.x, bRight.y);
+      ctx.lineWidth = strokeW * pBridge.scale * 0.85;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = style.frameColor || '#1C1C1E';
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    components.forEach((comp) => {
+      if (comp.id === 'leftTemple') renderLeftTemple();
+      else if (comp.id === 'rightTemple') renderRightTemple();
+      else if (comp.id === 'frontFrame') renderFrontFrame();
+    });
+
+    ctx.save();
+    ctx.font = '900 13px Inter, system-ui, -apple-system';
+    ctx.fillStyle = '#00E5FF';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = 'rgba(0, 229, 255, 0.8)';
+    ctx.shadowBlur = 10;
+    ctx.fillText(`🔄 360° TURNTABLE: ${Math.round((angleDeg + 360) % 360)}°`, centerX, h * 0.84);
+    ctx.restore();
+
+    ctx.restore();
+  };
+
+  // ==========================================================================
   // MODE 1: LIVE AI SIMULATION LOOP (For Desktop / Immediate Testing)
   // ==========================================================================
   const startDemoSimulation = () => {
@@ -501,6 +713,69 @@ const TryOnScreen = ({ onSelectTab }) => {
   };
 
   // ==========================================================================
+  // MODE 4: INTERACTIVE 360° 3D EYEWEAR TURNTABLE PREVIEW MODE
+  // ==========================================================================
+  const start360Simulation = () => {
+    if (cameraInstanceRef.current && cameraInstanceRef.current.stop) {
+      try { cameraInstanceRef.current.stop(); } catch (_) {}
+      cameraInstanceRef.current = null;
+    }
+    if (videoRef.current && videoRef.current.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+      videoRef.current.srcObject = null;
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+
+    setStatus('active');
+    setMode('360');
+    setFaceDetected(true);
+    modeRef.current = '360';
+
+    const renderLoop = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        animationFrameRef.current = requestAnimationFrame(renderLoop);
+        return;
+      }
+      const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      const w = canvas.width || 1280;
+      const h = canvas.height || 720;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw premium 3D studio gradient background
+      const bgGrad = ctx.createRadialGradient(w / 2, h * 0.44, 60, w / 2, h * 0.44, w * 0.75);
+      bgGrad.addColorStop(0, '#151C48');
+      bgGrad.addColorStop(0.6, '#0B0F2A');
+      bgGrad.addColorStop(1, '#050716');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Advance auto-spin rotation if active and not dragging
+      if (isAutoSpinningRef.current && !isDragging360Ref.current) {
+        orbitAngleRef.current = (orbitAngleRef.current + 0.65) % 360;
+        setOrbitAngle(orbitAngleRef.current);
+      }
+
+      draw360Frame(
+        ctx,
+        FRAMES[selectedFrameIdxRef.current],
+        orbitAngleRef.current,
+        orbitPitchRef.current,
+        w,
+        h
+      );
+
+      animationFrameRef.current = requestAnimationFrame(renderLoop);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(renderLoop);
+  };
+
+  // ==========================================================================
   // MODE 2: REAL MEDIAPIPE FACEMESH WEBCAM STREAM
   // ==========================================================================
   const startRealCamera = async () => {
@@ -527,9 +802,9 @@ const TryOnScreen = ({ onSelectTab }) => {
         throw new Error('Camera API not accessible in this environment.');
       }
 
-      // Request live camera stream
+      // Request live camera stream with optimized high framerate for lag-free AR try-on
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: facingMode }
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: facingMode, frameRate: { ideal: 60, max: 60 } }
       });
 
       if (videoRef.current) {
@@ -575,14 +850,14 @@ const TryOnScreen = ({ onSelectTab }) => {
       faceMesh.setOptions({
         maxNumFaces: 1,
         refineLandmarks: true, // Enables refined iris tracking
-        minDetectionConfidence: 0.7,
-        minTrackingConfidence: 0.7
+        minDetectionConfidence: 0.65,
+        minTrackingConfidence: 0.65
       });
 
       faceMesh.onResults((results) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
@@ -773,6 +1048,63 @@ const TryOnScreen = ({ onSelectTab }) => {
     });
   };
 
+  // Reset Try-On to defaults
+  const handleResetTryOn = () => {
+    setSelectedFrameIdx(1); // Reset to Classic Black
+    setLensCoating('antireflective');
+    setOrbitAngle(0);
+    setOrbitPitch(10);
+    setIsAutoSpinning(true);
+    smoothRef.current = {
+      frameCenterX: 640,
+      frameCenterY: 360,
+      frameWidth: 320,
+      lensHeight: 104,
+      bridgeWidth: 60,
+      yawAngle: 0,
+      pitchAngle: 0
+    };
+    showToast('↺ Reset frame, optical coating & 360° position to defaults!');
+  };
+
+  // 360° Interactive Orbit Drag Handlers
+  const handle360MouseDown = (e) => {
+    if (modeRef.current !== '360') return;
+    isDragging360Ref.current = true;
+    lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+  };
+  const handle360MouseMove = (e) => {
+    if (modeRef.current !== '360' || !isDragging360Ref.current) return;
+    const deltaX = e.clientX - lastMousePosRef.current.x;
+    const deltaY = e.clientY - lastMousePosRef.current.y;
+    lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+    orbitAngleRef.current = (orbitAngleRef.current + deltaX * 0.75 + 360) % 360;
+    orbitPitchRef.current = Math.max(-30, Math.min(30, orbitPitchRef.current + deltaY * 0.45));
+    setOrbitAngle(orbitAngleRef.current);
+    setOrbitPitch(orbitPitchRef.current);
+  };
+  const handle360MouseUp = () => {
+    isDragging360Ref.current = false;
+  };
+  const handle360TouchStart = (e) => {
+    if (modeRef.current !== '360' || !e.touches || !e.touches[0]) return;
+    isDragging360Ref.current = true;
+    lastMousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+  const handle360TouchMove = (e) => {
+    if (modeRef.current !== '360' || !isDragging360Ref.current || !e.touches || !e.touches[0]) return;
+    const deltaX = e.touches[0].clientX - lastMousePosRef.current.x;
+    const deltaY = e.touches[0].clientY - lastMousePosRef.current.y;
+    lastMousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    orbitAngleRef.current = (orbitAngleRef.current + deltaX * 0.75 + 360) % 360;
+    orbitPitchRef.current = Math.max(-30, Math.min(30, orbitPitchRef.current + deltaY * 0.45));
+    setOrbitAngle(orbitAngleRef.current);
+    setOrbitPitch(orbitPitchRef.current);
+  };
+  const handle360TouchEnd = () => {
+    isDragging360Ref.current = false;
+  };
+
   return (
     <div className="tryon-full-container">
       {/* Toast Notification */}
@@ -925,8 +1257,23 @@ const TryOnScreen = ({ onSelectTab }) => {
          SCREEN 4: LIVE TRY-ON AR STUDIO (Active Mode)
          ========================================================================== */}
       {(status === 'active' || status === 'loading') && (
-        <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
-          {/* Mirrored Video Stream Layer (hidden in demo mode) */}
+        <div
+          style={{
+            flex: 1,
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            cursor: mode === '360' ? (isDragging360Ref.current ? 'grabbing' : 'grab') : 'default'
+          }}
+          onMouseDown={handle360MouseDown}
+          onMouseMove={handle360MouseMove}
+          onMouseUp={handle360MouseUp}
+          onMouseLeave={handle360MouseUp}
+          onTouchStart={handle360TouchStart}
+          onTouchMove={handle360TouchMove}
+          onTouchEnd={handle360TouchEnd}
+        >
+          {/* Mirrored Video Stream Layer (hidden in demo/360 mode) */}
           <video
             ref={videoRef}
             className="tryon-media-layer"
@@ -947,10 +1294,10 @@ const TryOnScreen = ({ onSelectTab }) => {
 
           {/* TOP TRANSPARENT BAR CONTROLS */}
           <div className="tryon-top-bar">
-            {/* Close Button */}
+            {/* Far Left: Consistent Circular Close Button */}
             <button
               type="button"
-              style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(15, 21, 53, 0.6)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', cursor: 'pointer', backdropFilter: 'blur(10px)' }}
+              className="tryon-circle-btn"
               onClick={() => {
                 if (onSelectTab) onSelectTab('home');
               }}
@@ -959,45 +1306,145 @@ const TryOnScreen = ({ onSelectTab }) => {
               ✕
             </button>
 
-            {/* Well-Defined Label for AI Try-On Feature & Title Badge */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(15, 21, 53, 0.75)', padding: '6px 14px', borderRadius: '999px', backdropFilter: 'blur(10px)', border: '1px solid #00E5FF', boxShadow: '0 0 14px rgba(0, 229, 255, 0.4)' }}>
-              <span className="sparkle-anim" style={{ fontSize: '14px' }}>✨</span>
-              <span style={{ fontSize: '13px', fontWeight: '800', color: '#FFFFFF', letterSpacing: '0.5px' }}>
-                {mode === 'demo' ? 'AI 3D SIMULATION' : mode === 'photo' ? 'AI PHOTO TRY-ON' : 'LIVE BIOMETRIC MIRROR'}
-              </span>
+            {/* Center: Segmented 3-Mode Switcher & Photo Upload */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <div className="tryon-mode-pill">
+                <button
+                  type="button"
+                  className={`tryon-mode-option ${mode === 'camera' ? 'active' : ''}`}
+                  onClick={() => {
+                    showToast('🪞 Launching Live AR Camera');
+                    startRealCamera();
+                  }}
+                >
+                  <span>🪞 Live AR</span>
+                </button>
+                <button
+                  type="button"
+                  className={`tryon-mode-option ${mode === 'demo' || mode === 'photo' ? 'active' : ''}`}
+                  onClick={() => {
+                    showToast('✨ Switched to 3D AI Simulation');
+                    startDemoSimulation();
+                  }}
+                >
+                  <span>✨ Simulation</span>
+                </button>
+                <button
+                  type="button"
+                  className={`tryon-mode-option ${mode === '360' ? 'active' : ''}`}
+                  onClick={() => {
+                    showToast('🌐 360° Interactive Turntable Active!');
+                    start360Simulation();
+                  }}
+                >
+                  <span>🌐 360° 3D Preview</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                className="photo-upload-btn-premium"
+                style={{ padding: '6px 14px', fontSize: '12px', height: '36px' }}
+                onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                title="Upload a new selfie or photo"
+              >
+                <span>📁 Upload Photo</span>
+              </button>
             </div>
 
-            {/* Upload Photo Button in HUD */}
-            <button
-              type="button"
-              className="photo-upload-btn-premium"
-              style={{ padding: '6px 14px', fontSize: '12px', height: '36px' }}
-              onClick={() => fileInputRef.current && fileInputRef.current.click()}
-              title="Upload a new selfie or photo"
-            >
-              <span>📁 Upload Photo</span>
-            </button>
+            {/* Far Right: Consistent Circular Reset & Flip Camera Buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button
+                type="button"
+                className="tryon-circle-btn"
+                onClick={handleResetTryOn}
+                title="Reset Try-On Frame & Angle"
+              >
+                ↺
+              </button>
 
-            {/* Flip Camera Button */}
-            <button
-              type="button"
-              style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(15, 21, 53, 0.6)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(10px)' }}
-              onClick={() => {
-                const nextMode = facingMode === 'user' ? 'environment' : 'user';
-                setFacingMode(nextMode);
-                showToast(`🔄 Switched to ${nextMode === 'user' ? 'Front' : 'Rear'} Camera`);
-                if (mode === 'camera') {
-                  if (videoRef.current && videoRef.current.srcObject) {
-                    videoRef.current.srcObject.getTracks().forEach((t) => t.stop());
+              <button
+                type="button"
+                className="tryon-circle-btn"
+                onClick={() => {
+                  const nextMode = facingMode === 'user' ? 'environment' : 'user';
+                  setFacingMode(nextMode);
+                  showToast(`🔄 Switched to ${nextMode === 'user' ? 'Front' : 'Rear'} Camera`);
+                  if (mode === 'camera') {
+                    if (videoRef.current && videoRef.current.srcObject) {
+                      videoRef.current.srcObject.getTracks().forEach((t) => t.stop());
+                    }
+                    startRealCamera();
                   }
-                  startRealCamera();
-                }
-              }}
-              title="Flip Camera"
-            >
-              <i data-lucide="refresh-cw" style={{ width: '18px', height: '18px' }} />
-            </button>
+                }}
+                title="Flip Camera"
+              >
+                <i data-lucide="refresh-cw" style={{ width: '18px', height: '18px' }} />
+              </button>
+            </div>
           </div>
+
+          {/* 360° TURNTABLE ANGLE PRESET CONTROLS (Only visible in 360 mode) */}
+          {mode === '360' && (
+            <div className="tryon-360-controls">
+              <span style={{ fontSize: '11px', fontWeight: '800', color: '#00E5FF', marginRight: '4px' }}>📐 Angle Presets:</span>
+              <button
+                type="button"
+                className={`tryon-360-chip ${orbitAngle === 0 ? 'active' : ''}`}
+                onClick={() => {
+                  setOrbitAngle(0);
+                  setOrbitPitch(10);
+                  setIsAutoSpinning(false);
+                }}
+              >
+                👁️ Front 0°
+              </button>
+              <button
+                type="button"
+                className={`tryon-360-chip ${orbitAngle === 45 ? 'active' : ''}`}
+                onClick={() => {
+                  setOrbitAngle(45);
+                  setOrbitPitch(20);
+                  setIsAutoSpinning(false);
+                }}
+              >
+                💎 Isometric 45°
+              </button>
+              <button
+                type="button"
+                className={`tryon-360-chip ${orbitAngle === 90 ? 'active' : ''}`}
+                onClick={() => {
+                  setOrbitAngle(90);
+                  setOrbitPitch(0);
+                  setIsAutoSpinning(false);
+                }}
+              >
+                📐 Side 90°
+              </button>
+              <button
+                type="button"
+                className={`tryon-360-chip ${orbitAngle === 180 ? 'active' : ''}`}
+                onClick={() => {
+                  setOrbitAngle(180);
+                  setOrbitPitch(10);
+                  setIsAutoSpinning(false);
+                }}
+              >
+                🔄 Rear 180°
+              </button>
+              <button
+                type="button"
+                className={`tryon-360-chip ${isAutoSpinning ? 'active' : ''}`}
+                style={{ background: isAutoSpinning ? 'linear-gradient(135deg, #FF4D8D, #7C4DFF)' : undefined, borderColor: isAutoSpinning ? '#FF4D8D' : undefined }}
+                onClick={() => {
+                  setIsAutoSpinning(!isAutoSpinning);
+                  showToast(isAutoSpinning ? '⏸️ Auto-Spin Paused' : '▶️ Auto-Spin Resumed');
+                }}
+              >
+                {isAutoSpinning ? '⏸️ Pause Spin' : '▶️ Auto-Spin'}
+              </button>
+            </div>
+          )}
 
           {/* "NO FACE DETECTED" GUIDE OVAL (When face lost or calibrating) */}
           {!faceDetected && (
