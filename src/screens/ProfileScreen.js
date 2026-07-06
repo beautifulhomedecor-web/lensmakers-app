@@ -124,6 +124,24 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
             className="glass-card-elevated mb-3"
             style={{ padding: '24px 18px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
           >
+            {/* Quick Logout Button (Top Right corner of identity card) */}
+            <button
+              type="button"
+              style={{
+                position: 'absolute', top: '16px', right: '16px',
+                padding: '6px 12px', borderRadius: '999px',
+                background: 'rgba(239, 83, 80, 0.15)', border: '1px solid rgba(239, 83, 80, 0.4)',
+                color: '#EF5350', fontSize: '12px', fontWeight: '800',
+                display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer',
+                transition: 'all 200ms ease', zIndex: 10
+              }}
+              onClick={() => setShowLogoutModal(true)}
+              title="Log Out of Account"
+            >
+              <i data-lucide="log-out" style={{ width: '14px', height: '14px' }} />
+              <span>Log Out</span>
+            </button>
+
             {/* Background Ambient Blob */}
             <div style={{ position: 'absolute', top: '-40px', left: '50%', transform: 'translateX(-50%)', width: '140px', height: '140px', background: 'radial-gradient(circle, rgba(255,77,141,0.25) 0%, transparent 70%)', filter: 'blur(20px)', pointerEvents: 'none' }} />
 
@@ -429,7 +447,21 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
               ←
             </button>
             <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#FFFFFF' }}>Settings</h1>
-            <span style={{ width: '36px' }} />
+            <button
+              type="button"
+              style={{
+                padding: '6px 12px', borderRadius: '999px',
+                background: 'rgba(239, 83, 80, 0.15)', border: '1px solid rgba(239, 83, 80, 0.4)',
+                color: '#EF5350', fontSize: '12px', fontWeight: '800',
+                display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer',
+                transition: 'all 200ms ease'
+              }}
+              onClick={() => setShowLogoutModal(true)}
+              title="Log Out of Account"
+            >
+              <i data-lucide="log-out" style={{ width: '13px', height: '13px' }} />
+              <span>Log Out</span>
+            </button>
           </div>
 
           {/* 1. ACCOUNT SECTION (Grouped Glass Card) */}

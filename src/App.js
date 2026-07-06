@@ -24,6 +24,24 @@ window.App = function App() {
   // Check localStorage for onboarding and auth on startup
   useEffect(() => {
     try {
+      // Strict Authentication Policy: Disable automatic login from shared links
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasSharedLinkParams = urlParams.has('token') || urlParams.has('guest') || urlParams.has('auth') || urlParams.has('shared') || urlParams.has('user') || urlParams.has('ref') || urlParams.has('auto_login') || window.location.hash.includes('token=') || window.location.hash.includes('auth=') || window.location.hash.includes('shared=');
+      
+      if (hasSharedLinkParams) {
+        // Strip shared link parameters so automatic login from shared links is disabled
+        ['token', 'guest', 'auth', 'shared', 'user', 'ref', 'auto_login'].forEach(param => urlParams.delete(param));
+        const newSearch = urlParams.toString();
+        const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash.replace(/[\?&](token|auth|shared|guest)=[^&]*/g, '');
+        window.history.replaceState({}, document.title, newUrl);
+        
+        // Ensure every new device or shared link visit is strictly prompted to log in or sign up
+        localStorage.removeItem('lensmakers_token');
+        localStorage.removeItem('guest_mode');
+        setShowAuthModal(true);
+        return;
+      }
+
       const isComplete = localStorage.getItem('onboardingComplete');
       if (!isComplete) {
         setShowOnboarding(true);
@@ -105,6 +123,15 @@ window.App = function App() {
     setShowOnboarding(true);
   };
 
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('lensmakers_token');
+      localStorage.removeItem('guest_mode');
+    } catch (e) {}
+    setUser(null);
+    setShowAuthModal(true);
+  };
+
   return (
     <div className="app-shell">
       {/* 1. AMBIENT BACKGROUND GLOW BLOBS (Prompt 4 Section 4) */}
@@ -144,21 +171,22 @@ window.App = function App() {
 
       {/* 5. MAIN APP SHELL (Section 6) */}
       {!showSplash && !showOnboarding && !showAuthModal && (
-        <>
-          {/* Scrollable Screen Container */}
-          <main className="screen-container">
-            {/* Top Header */}
-            <div 
-              className="top-header-outer-wrapper"
-              onClick={handleRefresh} 
-              title="Double click header or pull down to refresh content"
-              style={{ display: 'contents' }}
-            >
-              <window.Header
-                onLogoClick={() => handleSelectTab('home')}
-                onSelectTab={handleSelectTab}
-                onNotificationClick={() => alert('🔔 No new notifications. Your ₹99 Club membership is active!')}
-              />
+        <div className="main-content-wrapper screen-transition-enter" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* TOP FIXED NAVIGATION HEADER */}
+          <window.Header
+            activeTab={activeTab}
+            onSelectTab={handleSelectTab}
+            cartCount={2}
+            user={user}
+            onOpenAuth={() => setShowAuthModal(true)}
+          />
+
+          {/* DYNAMIC SCREEN CONTENT CONTAINER (with iOS Edge Swipe back pattern) */}
+          <main className="screen-container" style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
+            {/* AMBIENT BACKGROUND GLOW BLOBS IN MAIN CONTENT AREA */}
+            <div className="ambient-blobs-container" style={{ pointerEvents: 'none' }}>
+              <div className="ambient-blob-1" style={{ width: '380px', height: '380px', top: '15%', left: '-80px' }} />
+              <div className="ambient-blob-2" style={{ width: '420px', height: '420px', bottom: '20%', right: '-100px' }} />
             </div>
 
             {/* PULL TO REFRESH is handled natively by PullToRefresh class in spring.js */}
@@ -183,7 +211,7 @@ window.App = function App() {
               )}
               {activeTab === 'profile' && (
                 <window.ProfileScreen
-                  onLogout={() => setShowAuthModal(true)}
+                  onLogout={handleLogout}
                   onReplayOnboarding={handleReplayOnboarding}
                   onSelectTab={handleSelectTab}
                 />
@@ -220,7 +248,7 @@ window.App = function App() {
               )}
               {activeTab === 'settings' && (
                 <window.ProfileScreen
-                  onLogout={() => setShowAuthModal(true)}
+                  onLogout={handleLogout}
                   onReplayOnboarding={handleReplayOnboarding}
                   onSelectTab={handleSelectTab}
                   initialViewMode="settings"

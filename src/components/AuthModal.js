@@ -689,6 +689,21 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
                 Log In
               </span>
             </div>
+
+            {/* Continue as Guest */}
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <button
+                type="button"
+                className="btn-secondary-pill"
+                style={{ width: '100%', height: '42px', fontSize: '13px' }}
+                onClick={() => {
+                  if (onExploreGuest) onExploreGuest();
+                }}
+              >
+                <span>Continue as Guest</span>
+                <span style={{ color: '#A0A4C8' }}>→</span>
+              </button>
+            </div>
           </div>
         )}
 
