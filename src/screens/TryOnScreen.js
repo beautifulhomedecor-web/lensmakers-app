@@ -53,8 +53,8 @@ function lerp(a, b, t) {
 
 const TryOnScreen = ({ onSelectTab }) => {
   // UI & Flow State
-  const [status, setStatus] = useState('permission'); // 'permission' | 'loading' | 'active' | 'snapshot' | 'fallback'
-  const [mode, setMode] = useState('demo'); // 'camera' | 'demo' | 'photo'
+  const [status, setStatus] = useState('loading'); // 'loading' | 'active' | 'snapshot' | 'fallback'
+  const [mode, setMode] = useState('camera'); // 'camera' | 'demo' | 'photo'
   const [uploadedPhoto, setUploadedPhoto] = useState(null);
   const [selectedFrameIdx, setSelectedFrameIdx] = useState(1); // Default Classic Black (#1)
   const [faceDetected, setFaceDetected] = useState(false);
@@ -63,7 +63,6 @@ const TryOnScreen = ({ onSelectTab }) => {
   const [facingMode, setFacingMode] = useState('user'); // 'user' | 'environment'
   const [wishlist, setWishlist] = useState(['classic-black']);
   const [toastMessage, setToastMessage] = useState(null);
-  const [showBiometricHUD, setShowBiometricHUD] = useState(true);
   const [lensCoating, setLensCoating] = useState('antireflective'); // 'antireflective' | 'bluelight' | 'polarized' | 'photochromic' | 'none'
   const [orbitAngle, setOrbitAngle] = useState(0); // 0 to 360 degrees for 360° 3D preview
   const [orbitPitch, setOrbitPitch] = useState(10); // -30 to +30 degrees vertical tilt
@@ -73,11 +72,10 @@ const TryOnScreen = ({ onSelectTab }) => {
   // Refs that mirror state for use in rAF/MediaPipe callbacks (avoids stale closure)
   const selectedFrameIdxRef = useRef(1);
   const faceDetectedRef = useRef(false);
-  const statusRef = useRef('permission');
+  const statusRef = useRef('loading');
   const toastTimeoutRef = useRef(null);
-  const showBiometricHUDRef = useRef(true);
   const lensCoatingRef = useRef('antireflective');
-  const modeRef = useRef('demo');
+  const modeRef = useRef('camera');
   const uploadedPhotoRef = useRef(null);
   const orbitAngleRef = useRef(0);
   const orbitPitchRef = useRef(10);
@@ -90,7 +88,6 @@ const TryOnScreen = ({ onSelectTab }) => {
   useEffect(() => { selectedFrameIdxRef.current = selectedFrameIdx; }, [selectedFrameIdx]);
   useEffect(() => { faceDetectedRef.current = faceDetected; }, [faceDetected]);
   useEffect(() => { statusRef.current = status; }, [status]);
-  useEffect(() => { showBiometricHUDRef.current = showBiometricHUD; }, [showBiometricHUD]);
   useEffect(() => { lensCoatingRef.current = lensCoating; }, [lensCoating]);
   useEffect(() => { modeRef.current = mode; }, [mode]);
   useEffect(() => { uploadedPhotoRef.current = uploadedPhoto; }, [uploadedPhoto]);
@@ -139,74 +136,8 @@ const TryOnScreen = ({ onSelectTab }) => {
   // ==========================================================================
   const drawGlassesFrame = (ctx, s, style) => {
     ctx.save();
-
-    // ------------------------------------------------------------------------
-    // LAYER 1: REAL-TIME BIOMETRIC FACIAL TRACKING HUD
-    // ------------------------------------------------------------------------
-    if (showBiometricHUDRef.current) {
-      ctx.save();
-      ctx.translate(s.frameCenterX, s.frameCenterY);
-      ctx.rotate(s.yawAngle);
-
-      const w = s.frameWidth;
-      const h = s.lensHeight * 1.85;
-      const pdMM = (s.bridgeWidth * 1.05).toFixed(1);
-
-      // Scanning bounding outline around ocular zone
-      ctx.strokeStyle = 'rgba(0, 229, 255, 0.45)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([6, 4]);
-      ctx.strokeRect(-w * 0.58, -h * 0.52, w * 1.16, h * 1.04);
-      ctx.setLineDash([]);
-
-      // Corner precision alignment brackets
-      const bw = 14;
-      ctx.strokeStyle = '#00E5FF';
-      ctx.lineWidth = 2;
-      // Top left
-      ctx.beginPath(); ctx.moveTo(-w * 0.58, -h * 0.52 + bw); ctx.lineTo(-w * 0.58, -h * 0.52); ctx.lineTo(-w * 0.58 + bw, -h * 0.52); ctx.stroke();
-      // Top right
-      ctx.beginPath(); ctx.moveTo(w * 0.58 - bw, -h * 0.52); ctx.lineTo(w * 0.58, -h * 0.52); ctx.lineTo(w * 0.58, -h * 0.52 + bw); ctx.stroke();
-      // Bottom left
-      ctx.beginPath(); ctx.moveTo(-w * 0.58, h * 0.52 - bw); ctx.lineTo(-w * 0.58, h * 0.52); ctx.lineTo(-w * 0.58 + bw, h * 0.52); ctx.stroke();
-      // Bottom right
-      ctx.beginPath(); ctx.moveTo(w * 0.58 - bw, h * 0.52); ctx.lineTo(w * 0.58, h * 0.52); ctx.lineTo(w * 0.58, h * 0.52 - bw); ctx.stroke();
-
-      // Pupil crosshairs (+)
-      const lxPupil = -s.frameWidth * 0.26;
-      const rxPupil = s.frameWidth * 0.26;
-      ctx.strokeStyle = 'rgba(255, 77, 141, 0.9)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(lxPupil - 7, 0); ctx.lineTo(lxPupil + 7, 0); ctx.moveTo(lxPupil, -7); ctx.lineTo(lxPupil, 7); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(rxPupil - 7, 0); ctx.lineTo(rxPupil + 7, 0); ctx.moveTo(rxPupil, -7); ctx.lineTo(rxPupil, 7); ctx.stroke();
-
-      // Interpupillary connecting line
-      ctx.strokeStyle = 'rgba(0, 229, 255, 0.55)';
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(lxPupil, 0); ctx.lineTo(rxPupil, 0); ctx.stroke();
-
-      // Biometric telemetry badge pill
-      ctx.fillStyle = 'rgba(15, 21, 53, 0.9)';
-      ctx.strokeStyle = '#00E5FF';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.roundRect(-90, -h * 0.52 - 28, 180, 22, 11);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = '#00E5FF';
-      ctx.font = '800 10px monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.save();
-      if (modeRef.current === 'camera') {
-        ctx.scale(-1, 1);
-      }
-      ctx.fillText(`PD: ${pdMM}mm • 3D MESH: OVAL`, 0, -h * 0.52 - 17);
-      ctx.restore();
-
-      ctx.restore();
-    }
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     // Translate to frame center and apply yaw rotation for 3D glasses
     ctx.translate(s.frameCenterX, s.frameCenterY);
@@ -1060,8 +991,9 @@ const TryOnScreen = ({ onSelectTab }) => {
     }
   };
 
-  // Cleanup on unmount or mode switch
+  // Auto-launch camera directly upon activation & cleanup on unmount
   useEffect(() => {
+    startRealCamera();
     return () => {
       // 1. Cancel animation frame
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
@@ -1231,86 +1163,14 @@ const TryOnScreen = ({ onSelectTab }) => {
       {/* White Flash Animation Overlay */}
       {isFlashing && <div className="tryon-flash-overlay" />}
 
-      {/* ==========================================================================
-         SCREEN 1: ENTRY POINT & PERMISSION MODAL
-         ========================================================================== */}
-      {status === 'permission' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px var(--screen-padding)', textAlign: 'center', position: 'relative' }}>
-          {/* Ambient Glow Blobs behind illustration */}
-          <div style={{ position: 'absolute', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,77,141,0.25) 0%, transparent 70%)', top: '20%', filter: 'blur(30px)', pointerEvents: 'none' }} />
-
-          {/* SVG Line-Art Face Scan Illustration */}
-          <div style={{ width: '130px', height: '130px', borderRadius: '65px', border: '3px dashed #FF4D8D', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,77,141,0.08)', marginBottom: '28px', boxShadow: '0 0 32px rgba(255,77,141,0.3)', animation: 'pulseGlowAnim 3s infinite ease-in-out' }}>
-            <span style={{ fontSize: '64px' }}>🧑‍✈️</span>
-          </div>
-
-          <h1 style={{ fontSize: '26px', fontWeight: '800', color: '#FFFFFF', letterSpacing: '-0.5px', marginBottom: '12px' }}>
-            See Frames On Your Face
-          </h1>
-
-          <p style={{ fontSize: '14px', color: '#A0A4C8', lineHeight: '1.6', maxWidth: '320px', marginBottom: '24px' }}>
-            Lens Makers uses your front camera to show how glasses look on you in real time. Nothing is recorded or sent to our servers.
-          </p>
-
-          {/* Privacy Badge Note */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(67, 160, 71, 0.15)', border: '1px solid rgba(67, 160, 71, 0.4)', padding: '8px 16px', borderRadius: '999px', marginBottom: '36px' }}>
-            <span style={{ fontSize: '14px' }}>🔒</span>
-            <span style={{ fontSize: '12px', fontWeight: '700', color: '#43A047' }}>100% private — processed on your device only</span>
-          </div>
-
-          {/* Primary CTA: Allow Real Camera */}
-          <button
-            type="button"
-            className="btn-primary-pill w-100 mb-3"
-            style={{ height: '54px', fontSize: '16px', fontWeight: '800', maxWidth: '340px' }}
-            onClick={startRealCamera}
-          >
-            <span>📷 Allow Camera Access</span>
-          </button>
-
-          {/* Secondary Demo Simulation CTA */}
-          <button
-            type="button"
-            className="btn-secondary-pill w-100 mb-3"
-            style={{ height: '50px', fontSize: '14px', fontWeight: '700', maxWidth: '340px', border: '1.5px solid #7C4DFF', background: 'rgba(124, 77, 255, 0.15)', color: '#FFFFFF' }}
-            onClick={() => {
-              showToast('Launching Live AI 3D Simulation');
-              startDemoSimulation();
-            }}
-          >
-            <span>Try Live Demo Simulation (No Camera Needed)</span>
-          </button>
-
-          {/* Hidden File Input for Photo Upload */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={handlePhotoUpload}
-          />
-
-          {/* Tertiary Upload Photo CTA */}
-          <button
-            type="button"
-            className="photo-upload-btn-premium w-100 mb-3"
-            style={{ height: '50px', fontSize: '14px', fontWeight: '800', maxWidth: '340px', background: 'linear-gradient(135deg, rgba(0, 229, 255, 0.18), rgba(255, 77, 141, 0.18))', borderColor: '#00E5FF' }}
-            onClick={() => fileInputRef.current && fileInputRef.current.click()}
-          >
-            <span>📁 Upload Photo / Selfie for AI Try-On</span>
-          </button>
-
-          {/* Not Now link */}
-          <span
-            style={{ fontSize: '13px', color: '#6B6E9A', fontWeight: '700', cursor: 'pointer', marginTop: '8px' }}
-            onClick={() => {
-              if (onSelectTab) onSelectTab('home');
-            }}
-          >
-            Not Now
-          </span>
-        </div>
-      )}
+      {/* Hidden File Input for Photo Upload */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handlePhotoUpload}
+      />
 
       {/* ==========================================================================
          SCREEN 2: LOADING STATE (While FaceMesh Initializes)
@@ -1407,107 +1267,22 @@ const TryOnScreen = ({ onSelectTab }) => {
             style={{ transform: mode === 'camera' ? 'scaleX(-1)' : 'none' }}
           />
 
-          {/* USER REQUESTED INTERACTIVE OVERLAYS (Like WhatsApp Screenshots) */}
-          {mode !== '360' && (
-            <>
-              {/* Top Left: Frame Fit / Adjust Badge ("L ✏️") */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '80px',
-                  left: '20px',
-                  zIndex: 25,
-                  display: 'flex',
-                  alignItems: 'center',
-                  background: '#FFFFFF',
-                  borderRadius: '24px',
-                  padding: '4px 14px 4px 6px',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25)',
-                  cursor: 'pointer',
-                  border: '1px solid rgba(0,0,0,0.08)',
-                  transition: 'transform 0.2s ease'
-                }}
-                onClick={() => {
-                  showToast('✏️ Adjust Mode: Select frames below to change style and fit!');
-                }}
-                title="Frame Style & Fit Adjust"
-              >
-                <div style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: '#1E1B4B',
-                  color: '#FFFFFF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: '800',
-                  fontSize: '14px',
-                  marginRight: '8px',
-                  boxShadow: '0 2px 6px rgba(30, 27, 75, 0.4)'
-                }}>
-                  {currentFrameStyle.name.charAt(0)}
-                </div>
-                <span style={{ fontSize: '15px', fontWeight: '700', color: '#1E1B4B', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  ✎ Adjust Frame
-                </span>
-              </div>
-
-              {/* Top Right: "Erase Frame" Comparison Button */}
-              <button
-                type="button"
-                style={{
-                  position: 'absolute',
-                  top: '75px',
-                  right: '20px',
-                  zIndex: 25,
-                  background: isFrameErased ? '#FF4D8D' : 'rgba(28, 28, 30, 0.88)',
-                  border: '2px solid rgba(255, 255, 255, 0.25)',
-                  borderRadius: '16px',
-                  padding: '8px 16px',
-                  color: '#FFFFFF',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseDown={() => { setIsFrameErased(true); isFrameErasedRef.current = true; }}
-                onMouseUp={() => { setIsFrameErased(false); isFrameErasedRef.current = false; }}
-                onMouseLeave={() => { if (isFrameErased) { setIsFrameErased(false); isFrameErasedRef.current = false; } }}
-                onTouchStart={(e) => { e.stopPropagation(); setIsFrameErased(true); isFrameErasedRef.current = true; }}
-                onTouchEnd={(e) => { e.stopPropagation(); setIsFrameErased(false); isFrameErasedRef.current = false; }}
-                onClick={() => {
-                  const next = !isFrameErasedRef.current;
-                  setIsFrameErased(next);
-                  isFrameErasedRef.current = next;
-                  showToast(next ? '👁️ Frame Erased: Comparing with natural face' : '👓 Frame Restored!');
-                }}
-                title="Erase Frame (Hold or Click to Compare)"
-              >
-                <span style={{ fontSize: '20px', marginBottom: '2px', lineHeight: 1 }}>⌫</span>
-                <span style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.5px' }}>{isFrameErased ? 'SHOW FRAME' : 'Erase Frame'}</span>
-              </button>
-            </>
-          )}
-
           {/* TOP TRANSPARENT BAR CONTROLS */}
           <div className="tryon-top-bar">
-            {/* Far Left: Consistent Circular Close Button */}
+            {/* Far Left: Sleek Modern Close Button */}
             <button
               type="button"
-              className="tryon-circle-btn"
+              className="tryon-sleek-btn"
               onClick={() => {
                 if (onSelectTab) onSelectTab('home');
               }}
               title="Close Try-On"
             >
-              ✕
+              <i data-lucide="x" style={{ width: '18px', height: '18px' }} />
+              <span>Close</span>
             </button>
 
-            {/* Center: Segmented 3-Mode Switcher & Photo Upload */}
+            {/* Center: Segmented 3-Mode Switcher & Conditional Photo Upload */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
               <div className="tryon-mode-pill">
                 <button
@@ -1528,7 +1303,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                     startDemoSimulation();
                   }}
                 >
-                  <span>Simulation</span>
+                  <span>✨ Simulation</span>
                 </button>
                 <button
                   type="button"
@@ -1538,35 +1313,38 @@ const TryOnScreen = ({ onSelectTab }) => {
                     start360Simulation();
                   }}
                 >
-                  <span>🌐 360° 3D Preview</span>
+                  <span>🌐 360°</span>
                 </button>
               </div>
 
-              <button
-                type="button"
-                className="photo-upload-btn-premium"
-                style={{ padding: '6px 14px', fontSize: '12px', height: '36px' }}
-                onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                title="Upload a new selfie or photo"
-              >
-                <span>📁 Upload Photo</span>
-              </button>
+              {mode !== 'camera' && (
+                <button
+                  type="button"
+                  className="photo-upload-btn-premium"
+                  style={{ padding: '6px 14px', fontSize: '12px', height: '36px' }}
+                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  title="Upload a new selfie or photo"
+                >
+                  <span>📁 Upload Photo</span>
+                </button>
+              )}
             </div>
 
-            {/* Far Right: Consistent Circular Reset & Flip Camera Buttons */}
+            {/* Far Right: Sleek Modern Reset & Flip Camera Buttons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button
                 type="button"
-                className="tryon-circle-btn"
+                className="tryon-sleek-btn"
                 onClick={handleResetTryOn}
                 title="Reset Try-On Frame & Angle"
               >
-                ↺
+                <i data-lucide="rotate-ccw" style={{ width: '18px', height: '18px' }} />
+                <span>Reset</span>
               </button>
 
               <button
                 type="button"
-                className="tryon-circle-btn"
+                className="tryon-sleek-btn"
                 onClick={() => {
                   const nextMode = facingMode === 'user' ? 'environment' : 'user';
                   setFacingMode(nextMode);
@@ -1656,127 +1434,76 @@ const TryOnScreen = ({ onSelectTab }) => {
             </div>
           )}
 
-          {/* PERMANENT PRIVACY BADGE (~70% height) */}
-          {mode !== '360' && (
-            <div className="tryon-privacy-badge">
-              🔒 Processed locally on device. Not recorded.
+          {/* BOTTOM CONTROL RIBBON (Minimalist landscape aesthetic) */}
+          <div className="tryon-bottom-panel tryon-landscape-ribbon">
+            {/* Minimal floating frame name & price badge */}
+            <div className="tryon-frame-badge">
+              <span style={{ fontWeight: '800', color: '#FFFFFF', fontSize: '13px' }}>{currentFrameStyle.name}</span>
+              <span style={{ fontWeight: '900', color: '#00E5FF', marginLeft: '6px', fontSize: '13px' }}>{currentFrameStyle.price}</span>
             </div>
-          )}
 
-          {/* BOTTOM CONTROL PANEL (Anchored to bottom, ~150px height) */}
-          <div className="tryon-bottom-panel">
-            {/* OPTICAL COATING & BIOMETRIC HUD TOGGLES ROW */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '10px', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                style={{
-                  padding: '4px 10px', borderRadius: '14px', fontSize: '11px', fontWeight: '800', cursor: 'pointer',
-                  background: showBiometricHUD ? 'linear-gradient(135deg, #00E5FF, #7C4DFF)' : 'rgba(255,255,255,0.1)',
-                  border: showBiometricHUD ? '1px solid #FFFFFF' : '1px solid rgba(255,255,255,0.2)',
-                  color: '#FFFFFF', transition: 'all 200ms ease', boxShadow: showBiometricHUD ? '0 0 10px rgba(0, 229, 255, 0.6)' : 'none'
-                }}
-                onClick={() => {
-                  setShowBiometricHUD(!showBiometricHUD);
-                  showToast(showBiometricHUD ? '👁️ Biometric HUD Disabled' : '👁️ 3D Biometric HUD Active');
-                }}
-              >
-                👁️ Biometric HUD
-              </button>
-              {[
-                { id: 'antireflective', label: 'Anti-Reflective' },
-                { id: 'bluelight', label: '🛡️ Blue Light' },
-                { id: 'polarized', label: '🕶️ Polarized' },
-                { id: 'photochromic', label: '☀️ Photochromic' }
-              ].map(c => (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '12px' }}>
+              {/* Left Side: Wishlist & Cart Icons */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                 <button
-                  key={c.id}
                   type="button"
-                  style={{
-                    padding: '4px 10px', borderRadius: '14px', fontSize: '11px', fontWeight: '700', cursor: 'pointer',
-                    background: lensCoating === c.id ? 'rgba(255, 77, 141, 0.3)' : 'rgba(255,255,255,0.08)',
-                    border: lensCoating === c.id ? '1px solid #FF4D8D' : '1px solid rgba(255,255,255,0.15)',
-                    color: lensCoating === c.id ? '#FF4D8D' : '#C5C9E8', transition: 'all 200ms ease'
-                  }}
-                  onClick={() => {
-                    setLensCoating(c.id);
-                    showToast(`Applied ${c.label.replace(/^[^\s]+\s/, '')} Coating`);
-                  }}
+                  className="tryon-sleek-btn"
+                  style={{ width: '42px', height: '42px', padding: 0 }}
+                  onClick={handleToggleWishlist}
+                  title="Save to Wishlist"
                 >
-                  {c.label}
+                  <span style={{ fontSize: '18px', color: wishlist.includes(currentFrameStyle.id) ? '#FF4D8D' : '#FFFFFF' }}>
+                    {wishlist.includes(currentFrameStyle.id) ? '♥' : '♡'}
+                  </span>
                 </button>
-              ))}
-            </div>
+                <button
+                  type="button"
+                  className="tryon-sleek-btn"
+                  style={{ width: '42px', height: '42px', padding: 0 }}
+                  onClick={() => {
+                    showToast(`🛍️ Added ${currentFrameStyle.name} to Cart!`);
+                    try {
+                      const prevCart = parseInt(localStorage.getItem('lensmakers_cart_count') || '2', 10);
+                      localStorage.setItem('lensmakers_cart_count', String(prevCart + 1));
+                    } catch (err) {}
+                  }}
+                  title="Add to Cart"
+                >
+                  <span style={{ fontSize: '18px' }}>🛒</span>
+                </button>
+              </div>
 
-            {/* Horizontal Frame Thumbnails Row */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', marginBottom: '14px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
-              {FRAMES.map((frame, idx) => {
-                const isSel = selectedFrameIdx === idx;
-                return (
-                  <div
-                    key={frame.id}
-                    className={`tryon-thumb-circle ${isSel ? 'selected' : ''}`}
-                    onClick={() => {
-                      setSelectedFrameIdx(idx);
-                      showToast(`👓 Switched to ${frame.name}`);
-                    }}
-                    title={frame.name}
-                  >
-                    <span>{frame.thumbnail}</span>
-                  </div>
-                );
-              })}
-            </div>
+              {/* Center: Horizontal Frame Thumbnails Ribbon */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', overflowX: 'auto', flex: 1, padding: '2px 0', scrollbarWidth: 'none', justifyContent: 'center' }}>
+                {FRAMES.map((frame, idx) => {
+                  const isSel = selectedFrameIdx === idx;
+                  return (
+                    <div
+                      key={frame.id}
+                      className={`tryon-thumb-circle ${isSel ? 'selected' : ''}`}
+                      onClick={() => {
+                        setSelectedFrameIdx(idx);
+                        showToast(`👓 Switched to ${frame.name}`);
+                      }}
+                      title={frame.name}
+                    >
+                      <span>{frame.thumbnail}</span>
+                    </div>
+                  );
+                })}
+              </div>
 
-            {/* Active Frame Name + Price */}
-            <div style={{ textAlign: 'center', marginBottom: '14px' }}>
-              <span style={{ fontSize: '15px', fontWeight: '800', color: '#FFFFFF', letterSpacing: '0.3px' }}>
-                {currentFrameStyle.name}
-              </span>
-              <span style={{ fontSize: '15px', fontWeight: '900', color: '#FF4D8D', marginLeft: '8px' }}>
-                {currentFrameStyle.price}
-              </span>
-            </div>
-
-            {/* Three Bottom Action Controls */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', maxWidth: '320px', margin: '0 auto' }}>
-              {/* 1. Left: Wishlist Heart */}
-              <button
-                type="button"
-                style={{ width: '46px', height: '46px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 150ms ease' }}
-                onClick={handleToggleWishlist}
-                title="Save to Wishlist"
-              >
-                <span style={{ fontSize: '20px', color: wishlist.includes(currentFrameStyle.id) ? '#FF4D8D' : '#FFFFFF' }}>
-                  {wishlist.includes(currentFrameStyle.id) ? '♥' : '♡'}
-                </span>
-              </button>
-
-              {/* 2. Center: Capture Snapshot Button */}
-              <button
-                type="button"
-                className="tryon-capture-btn"
-                onClick={handleTakeSnapshot}
-                title="Take AR Snapshot"
-              >
-                <i data-lucide="camera" style={{ width: '26px', height: '26px', color: '#FFFFFF' }} />
-              </button>
-
-              {/* 3. Right: Add to Cart */}
-              <button
-                type="button"
-                style={{ width: '46px', height: '46px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 150ms ease' }}
-                onClick={(e) => {
-                  showToast(`🛍️ Added ${currentFrameStyle.name} to Cart!`);
-                  // Trigger cart badge count
-                  try {
-                    const prevCart = parseInt(localStorage.getItem('lensmakers_cart_count') || '2', 10);
-                    localStorage.setItem('lensmakers_cart_count', String(prevCart + 1));
-                  } catch (err) {}
-                }}
-                title="Add to Cart"
-              >
-                <span style={{ fontSize: '20px' }}>🛒</span>
-              </button>
+              {/* Right Side: Prominent Snapshot Camera Button */}
+              <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                <button
+                  type="button"
+                  className="tryon-capture-btn"
+                  onClick={handleTakeSnapshot}
+                  title="Take AR Snapshot"
+                >
+                  <i data-lucide="camera" style={{ width: '22px', height: '22px', color: '#FFFFFF' }} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
