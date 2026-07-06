@@ -101,7 +101,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
             type="button"
             className="liquid-btn"
             style={{
-              position: 'relative', width: '40px', height: '40px', borderRadius: '20px',
+              position: 'relative', width: '34px', height: '34px', borderRadius: '17px',
               background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.28)',
               color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', transition: 'all 200ms ease', boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
@@ -110,14 +110,14 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
             onClick={() => onSelectTab && onSelectTab('cart')}
             title="Shopping Cart"
           >
-            <i data-lucide="shopping-bag" style={{ width: '18px', height: '18px', color: '#FFFFFF' }} />
+            <i data-lucide="shopping-bag" style={{ width: '16px', height: '16px', color: '#FFFFFF' }} />
             <span
               style={{
-                position: 'absolute', top: '-1px', right: '-1px',
+                position: 'absolute', top: '-3px', right: '-3px',
                 background: 'linear-gradient(135deg, #FF4D8D 0%, #FF0055 100%)',
-                color: '#FFFFFF', fontSize: '10px', fontWeight: '900',
-                minWidth: '18px', height: '18px', borderRadius: '9px',
-                padding: '0 5px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#FFFFFF', fontSize: '9px', fontWeight: '900',
+                minWidth: '16px', height: '16px', borderRadius: '8px',
+                padding: '0 4px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(255, 77, 141, 0.9), 0 0 0 2px #0F1535', zIndex: 10,
                 animation: 'breatheGlow 2s infinite ease-in-out'
               }}

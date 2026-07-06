@@ -1,5 +1,5 @@
-// Lens Makers PWA Service Worker (Clean Network-First Strategy)
-const CACHE_NAME = 'lensmakers-v3-live-update-20260705';
+// Lens Makers PWA Service Worker (Stale-While-Revalidate Strategy for Lightning Fast Loading)
+const CACHE_NAME = 'lensmakers-v4-lightning-20260706';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -60,13 +60,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network-First Strategy: always fetch live files first during dev/production, fallback to cache if offline
   if (event.request.method !== 'GET') return;
   
+  // Stale-While-Revalidate Strategy: Serve instantly from cache, update silently in background
   event.respondWith(
-    fetch(event.request, { cache: 'no-store' })
-      .then((networkResponse) => {
-        // Cache valid responses if they are part of our same origin
+    caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
+      const fetchPromise = fetch(event.request, { cache: 'default' }).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -74,16 +73,15 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      })
-      .catch(() => {
-        // Offline fallback: try matching cache (ignoring search params like ?v=timestamp)
-        return caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-          return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
-        });
-      })
+      }).catch(() => null);
+
+      return cachedResponse || fetchPromise.then((res) => {
+        if (res) return res;
+        if (event.request.mode === 'navigate') {
+          return caches.match('./index.html');
+        }
+        return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+      });
+    })
   );
 });

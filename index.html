@@ -14,21 +14,23 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="canonical" href="https://lensmakers-app.vercel.app/">
 
-  <!-- Google Fonts: Inter -->
+  <!-- CDN Preconnects for lightning-fast asset loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
-  <!-- MediaPipe FaceMesh & Camera Utils CDN (with error fallback handling) -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous" onerror="window.mediaPipeLoadError = true;"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous" onerror="window.mediaPipeLoadError = true;"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous" onerror="window.mediaPipeLoadError = true;"></script>
+  <!-- MediaPipe FaceMesh & Camera Utils CDN (deferred for fast initial page load) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous" defer onerror="window.mediaPipeLoadError = true;"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous" defer onerror="window.mediaPipeLoadError = true;"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous" defer onerror="window.mediaPipeLoadError = true;"></script>
 
   <!-- Vanilla Design System & Animation Law CSS -->
-  <link rel="stylesheet" href="./styles.css?v=20260705_v3">
+  <link rel="stylesheet" href="./styles.css?v=20260706_lightning">
 
   <!-- React 18 & Babel Standalone CDN -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -83,15 +85,22 @@
       ];
 
       try {
-        for (let i = 0; i < modules.length; i++) {
+        // Fetch all modules simultaneously in parallel over network for maximum loading speed
+        const moduleResponses = await Promise.all(modules.map(async (mod) => {
+          const res = await fetch(mod + '?v=20260706_lightning', { cache: 'default' });
+          if (!res.ok) throw new Error(`HTTP ${res.status} when loading ${mod}`);
+          const text = await res.text();
+          return { mod, text };
+        }));
+
+        // Compile and execute sequentially in exact dependency order
+        for (let i = 0; i < moduleResponses.length; i++) {
+          const { mod, text } = moduleResponses[i];
           try {
-            const res = await fetch(modules[i] + '?v=' + Date.now(), { cache: 'no-store' });
-            if (!res.ok) throw new Error(`HTTP ${res.status} when loading ${modules[i]}`);
-            const text = await res.text();
-            const compiled = Babel.transform(text, { presets: ['react'], filename: modules[i] }).code;
-            window.eval(compiled + "\n//# sourceURL=" + modules[i]);
+            const compiled = Babel.transform(text, { presets: ['react'], filename: mod }).code;
+            window.eval(compiled + "\n//# sourceURL=" + mod);
           } catch (modErr) {
-            throw new Error(`Error loading/executing ${modules[i]}: ${modErr.message || modErr}`);
+            throw new Error(`Error loading/executing ${mod}: ${modErr.message || modErr}`);
           }
         }
 
