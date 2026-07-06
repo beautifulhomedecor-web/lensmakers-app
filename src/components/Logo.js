@@ -62,10 +62,10 @@ const Logo = ({ iconOnly = false, size = 36, onClick }) => {
       style={{ 
         display: 'inline-flex', 
         alignItems: 'center', 
-        gap: '10px', 
+        gap: '6px', 
         cursor: onClick ? 'pointer' : 'default',
         userSelect: 'none',
-        padding: '4px'
+        padding: '2px'
       }}
     >
       {/* =========================================================================

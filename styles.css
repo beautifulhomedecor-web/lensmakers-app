@@ -3044,9 +3044,18 @@ h1, h2, h3, h4, h5, p, span, div, label {
     aspect-ratio: 1 / 1 !important;
     padding: 10px 4px !important;
   }
-  /* Header spacing optimization */
+  /* Header spacing and carry bag overflow prevention */
+  .top-header-wrapper {
+    width: calc(100% - 14px) !important;
+    padding: 8px 10px !important;
+  }
+  .ai-tryon-header-badge {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    gap: 4px !important;
+  }
   .header-actions {
-    gap: clamp(8px, 2vw, 12px) !important;
+    gap: clamp(6px, 2vw, 10px) !important;
   }
   /* Card Internal Padding (Corner radius stays fixed per Section 3.3!) */
   .glass-card-standard, .glass-card-elevated, .product-card-glass, .premium-special-card, .bogo-rotating-card, .rx-card-cyan, .purple-shimmer-card {

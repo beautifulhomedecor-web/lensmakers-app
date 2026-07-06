@@ -64,8 +64,8 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
         left: 0,
         right: 0,
         margin: '10px auto 20px auto',
-        width: 'calc(100% - 28px)',
-        maxWidth: '460px',
+        width: 'calc(100% - 16px)',
+        maxWidth: '480px',
         zIndex: 100,
         background: 'rgba(27, 31, 74, 0.72)',
         backdropFilter: 'blur(24px) saturate(1.6)',
@@ -74,26 +74,27 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
         borderTop: '1px solid rgba(255, 255, 255, 0.32)',
         borderRadius: '36px',
         boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 8px 24px rgba(255, 77, 141, 0.2), 0 0 12px rgba(255, 77, 141, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.45)',
-        padding: '12px 16px',
+        padding: '10px 12px',
         transition: 'all 300ms var(--spring-bezier)'
       }}
     >
       {/* ROW 1: Logo on left, AI Virtual Try-On Label & Cart Icon on right */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-        <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-          <window.Logo size={32} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '6px' }}>
+        <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 1, minWidth: 0 }}>
+          <window.Logo size={26} />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
           {/* Well-Defined Label for AI Try-On Feature */}
           <button
             type="button"
             className="ai-tryon-header-badge"
             onClick={() => onSelectTab && onSelectTab('tryon')}
             title="Launch Studio AI Virtual Try-On"
+            style={{ padding: '5px 8px', gap: '4px' }}
           >
-            <span>AI Virtual Try-On</span>
-            <span style={{ background: 'linear-gradient(135deg, #FF0055, #FF4D8D)', color: '#FFF', fontSize: '9px', padding: '2px 6px', borderRadius: '8px', fontWeight: '900', letterSpacing: '0.4px' }}>LIVE</span>
+            <span>AI Try-On</span>
+            <span style={{ background: 'linear-gradient(135deg, #FF0055, #FF4D8D)', color: '#FFF', fontSize: '9px', padding: '2px 5px', borderRadius: '8px', fontWeight: '900', letterSpacing: '0.4px' }}>LIVE</span>
           </button>
 
           {/* Cart Icon with Number Counter Badge */}
