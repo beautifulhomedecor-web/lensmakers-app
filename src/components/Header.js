@@ -80,11 +80,11 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
     >
       {/* ROW 1: Logo on left, AI Virtual Try-On Label & Cart Icon on right */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-        <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+        <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <window.Logo size={32} />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
           {/* Well-Defined Label for AI Try-On Feature */}
           <button
             type="button"
@@ -101,10 +101,11 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
             type="button"
             className="liquid-btn"
             style={{
-              position: 'relative', width: '38px', height: '38px', borderRadius: '19px',
+              position: 'relative', width: '40px', height: '40px', borderRadius: '20px',
               background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.28)',
               color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', transition: 'all 200ms ease', boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+              cursor: 'pointer', transition: 'all 200ms ease', boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              flexShrink: 0
             }}
             onClick={() => onSelectTab && onSelectTab('cart')}
             title="Shopping Cart"
@@ -112,7 +113,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
             <i data-lucide="shopping-bag" style={{ width: '18px', height: '18px', color: '#FFFFFF' }} />
             <span
               style={{
-                position: 'absolute', top: '-4px', right: '-6px',
+                position: 'absolute', top: '-1px', right: '-1px',
                 background: 'linear-gradient(135deg, #FF4D8D 0%, #FF0055 100%)',
                 color: '#FFFFFF', fontSize: '10px', fontWeight: '900',
                 minWidth: '18px', height: '18px', borderRadius: '9px',
