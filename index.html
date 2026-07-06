@@ -30,7 +30,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous" defer onerror="window.mediaPipeLoadError = true;"></script>
 
   <!-- Vanilla Design System & Animation Law CSS -->
-  <link rel="stylesheet" href="./styles.css?v=20260706_lightning">
+  <link rel="stylesheet" href="./styles.css?v=20260706_nocart_v5">
 
   <!-- React 18 & Babel Standalone CDN -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -87,7 +87,7 @@
       try {
         // Fetch all modules simultaneously in parallel over network for maximum loading speed
         const moduleResponses = await Promise.all(modules.map(async (mod) => {
-          const res = await fetch(mod + '?v=20260706_lightning', { cache: 'default' });
+          const res = await fetch(mod + '?v=20260706_nocart_v5', { cache: 'no-cache' });
           if (!res.ok) throw new Error(`HTTP ${res.status} when loading ${mod}`);
           const text = await res.text();
           return { mod, text };

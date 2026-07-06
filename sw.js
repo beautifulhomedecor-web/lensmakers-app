@@ -1,5 +1,5 @@
 // Lens Makers PWA Service Worker (Stale-While-Revalidate Strategy for Lightning Fast Loading)
-const CACHE_NAME = 'lensmakers-v4-lightning-20260706';
+const CACHE_NAME = 'lensmakers-v5-nocart-20260706';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
