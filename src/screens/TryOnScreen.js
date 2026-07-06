@@ -548,15 +548,6 @@ const TryOnScreen = ({ onSelectTab }) => {
       else if (comp.id === 'bridge') renderBridge();
     });
 
-    ctx.save();
-    ctx.font = '900 13px Inter, system-ui, -apple-system';
-    ctx.fillStyle = '#00E5FF';
-    ctx.textAlign = 'center';
-    ctx.shadowColor = 'rgba(0, 229, 255, 0.8)';
-    ctx.shadowBlur = 10;
-    ctx.fillText(`🔄 360° TURNTABLE: ${Math.round((angleDeg + 360) % 360)}°`, centerX, h * 0.84);
-    ctx.restore();
-
     ctx.restore();
   };
 
@@ -595,36 +586,6 @@ const TryOnScreen = ({ onSelectTab }) => {
       const simYaw = Math.sin(elapsed * 0.6) * 0.12; // +- 7 degrees tilt
       const simScale = 1 + Math.sin(elapsed * 0.5) * 0.03;
       const simWidth = (w * 0.32) * simScale;
-
-      // Draw stylized 3D facial mesh silhouette behind glasses
-      ctx.save();
-      ctx.translate(simX, simY);
-      ctx.rotate(simYaw);
-
-      // Face silhouette oval
-      ctx.beginPath();
-      ctx.ellipse(0, 0, simWidth * 0.65, simWidth * 0.9, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-      ctx.fill();
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = 'rgba(255, 77, 141, 0.25)';
-      ctx.stroke();
-
-      // Eye contour markers
-      ctx.beginPath();
-      ctx.ellipse(-simWidth * 0.25, -simWidth * 0.12, 18, 10, 0, 0, Math.PI * 2);
-      ctx.ellipse(simWidth * 0.25, -simWidth * 0.12, 18, 10, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(30, 136, 229, 0.3)';
-      ctx.fill();
-
-      // Nose bridge line
-      ctx.beginPath();
-      ctx.moveTo(0, -simWidth * 0.12);
-      ctx.lineTo(0, simWidth * 0.2);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-      ctx.stroke();
-
-      ctx.restore();
 
       // Update smooth tracking parameters
       const s = smoothRef.current;
@@ -1267,84 +1228,37 @@ const TryOnScreen = ({ onSelectTab }) => {
             style={{ transform: mode === 'camera' ? 'scaleX(-1)' : 'none' }}
           />
 
-          {/* TOP TRANSPARENT BAR CONTROLS */}
+          {/* TOP TRANSPARENT BAR CONTROLS (Only circular icons in corners, zero text, zero center clutter) */}
           <div className="tryon-top-bar">
-            {/* Far Left: Sleek Modern Close Button */}
+            {/* Far Left: Sleek Circular Close Button */}
             <button
               type="button"
-              className="tryon-sleek-btn"
+              className="tryon-circle-btn"
               onClick={() => {
                 if (onSelectTab) onSelectTab('home');
               }}
               title="Close Try-On"
             >
-              <i data-lucide="x" style={{ width: '18px', height: '18px' }} />
-              <span>Close</span>
+              <i data-lucide="x" style={{ width: '20px', height: '20px' }} />
             </button>
 
-            {/* Center: Segmented 3-Mode Switcher & Conditional Photo Upload */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <div className="tryon-mode-pill">
-                <button
-                  type="button"
-                  className={`tryon-mode-option ${mode === 'camera' ? 'active' : ''}`}
-                  onClick={() => {
-                    showToast('🪞 Launching Live AR Camera');
-                    startRealCamera();
-                  }}
-                >
-                  <span>🪞 Live AR</span>
-                </button>
-                <button
-                  type="button"
-                  className={`tryon-mode-option ${mode === 'demo' || mode === 'photo' ? 'active' : ''}`}
-                  onClick={() => {
-                    showToast('Switched to 3D AI Simulation');
-                    startDemoSimulation();
-                  }}
-                >
-                  <span>✨ Simulation</span>
-                </button>
-                <button
-                  type="button"
-                  className={`tryon-mode-option ${mode === '360' ? 'active' : ''}`}
-                  onClick={() => {
-                    showToast('🌐 360° Interactive Turntable Active!');
-                    start360Simulation();
-                  }}
-                >
-                  <span>🌐 360°</span>
-                </button>
-              </div>
+            {/* Center: Completely Empty & Transparent to preserve 100% unobstructed camera view */}
+            <div style={{ flex: 1 }} />
 
-              {mode !== 'camera' && (
-                <button
-                  type="button"
-                  className="photo-upload-btn-premium"
-                  style={{ padding: '6px 14px', fontSize: '12px', height: '36px' }}
-                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                  title="Upload a new selfie or photo"
-                >
-                  <span>📁 Upload Photo</span>
-                </button>
-              )}
-            </div>
-
-            {/* Far Right: Sleek Modern Reset & Flip Camera Buttons */}
+            {/* Far Right: Sleek Circular Reset & Flip Camera Buttons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button
                 type="button"
-                className="tryon-sleek-btn"
+                className="tryon-circle-btn"
                 onClick={handleResetTryOn}
                 title="Reset Try-On Frame & Angle"
               >
                 <i data-lucide="rotate-ccw" style={{ width: '18px', height: '18px' }} />
-                <span>Reset</span>
               </button>
 
               <button
                 type="button"
-                className="tryon-sleek-btn"
+                className="tryon-circle-btn"
                 onClick={() => {
                   const nextMode = facingMode === 'user' ? 'environment' : 'user';
                   setFacingMode(nextMode);
@@ -1363,10 +1277,9 @@ const TryOnScreen = ({ onSelectTab }) => {
             </div>
           </div>
 
-          {/* 360° TURNTABLE ANGLE PRESET CONTROLS (Only visible in 360 mode) */}
+          {/* 360° TURNTABLE ANGLE PRESET CONTROLS (Only visible in 360 mode, positioned cleanly above bottom console) */}
           {mode === '360' && (
             <div className="tryon-360-controls">
-              <span style={{ fontSize: '11px', fontWeight: '800', color: '#00E5FF', marginRight: '4px' }}>📐 Angle Presets:</span>
               <button
                 type="button"
                 className={`tryon-360-chip ${orbitAngle === 0 ? 'active' : ''}`}
@@ -1376,7 +1289,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                   setIsAutoSpinning(false);
                 }}
               >
-                👁️ Front 0°
+                Front 0°
               </button>
               <button
                 type="button"
@@ -1387,7 +1300,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                   setIsAutoSpinning(false);
                 }}
               >
-                💎 Isometric 45°
+                45°
               </button>
               <button
                 type="button"
@@ -1398,7 +1311,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                   setIsAutoSpinning(false);
                 }}
               >
-                📐 Side 90°
+                Side 90°
               </button>
               <button
                 type="button"
@@ -1409,7 +1322,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                   setIsAutoSpinning(false);
                 }}
               >
-                🔄 Rear 180°
+                180°
               </button>
               <button
                 type="button"
@@ -1419,7 +1332,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                   setIsAutoSpinning(!isAutoSpinning);
                 }}
               >
-                {isAutoSpinning ? '⏸️ Pause Auto-Spin' : '▶️ Auto-Spin 360°'}
+                {isAutoSpinning ? '⏸️ Pause' : '▶️ Spin'}
               </button>
             </div>
           )}
@@ -1434,14 +1347,68 @@ const TryOnScreen = ({ onSelectTab }) => {
             </div>
           )}
 
-          {/* BOTTOM CONTROL RIBBON (Minimalist landscape aesthetic) */}
+          {/* BOTTOM UNIFIED STUDIO CONSOLE (Minimalist landscape ribbon with integrated mode switcher & frame title) */}
           <div className="tryon-bottom-panel tryon-landscape-ribbon">
-            {/* Minimal floating frame name & price badge */}
-            <div className="tryon-frame-badge">
-              <span style={{ fontWeight: '800', color: '#FFFFFF', fontSize: '13px' }}>{currentFrameStyle.name}</span>
-              <span style={{ fontWeight: '900', color: '#00E5FF', marginLeft: '6px', fontSize: '13px' }}>{currentFrameStyle.price}</span>
+            {/* Upper Console Header: Compact Mode Pill, Frame Title, and Photo Upload */}
+            <div className="tryon-console-header">
+              {/* Compact Mode Toggle Pill */}
+              <div className="tryon-mode-pill-mini">
+                <button
+                  type="button"
+                  className={`tryon-mode-option-mini ${mode === 'camera' ? 'active' : ''}`}
+                  onClick={() => {
+                    showToast('🪞 Launching Live AR Camera');
+                    startRealCamera();
+                  }}
+                  title="Live AR Camera"
+                >
+                  <span>🪞 AR</span>
+                </button>
+                <button
+                  type="button"
+                  className={`tryon-mode-option-mini ${mode === 'demo' || mode === 'photo' ? 'active' : ''}`}
+                  onClick={() => {
+                    showToast('Switched to 3D AI Simulation');
+                    startDemoSimulation();
+                  }}
+                  title="3D Simulation"
+                >
+                  <span>✨ Demo</span>
+                </button>
+                <button
+                  type="button"
+                  className={`tryon-mode-option-mini ${mode === '360' ? 'active' : ''}`}
+                  onClick={() => {
+                    showToast('🌐 360° Interactive Turntable Active!');
+                    start360Simulation();
+                  }}
+                  title="360° Turntable"
+                >
+                  <span>🌐 360°</span>
+                </button>
+              </div>
+
+              {/* Active Frame Name & Price Badge */}
+              <div className="tryon-frame-title-mini">
+                <span style={{ fontWeight: '800', color: '#FFFFFF' }}>{currentFrameStyle.name}</span>
+                <span style={{ fontWeight: '900', color: '#00E5FF', marginLeft: '6px' }}>{currentFrameStyle.price}</span>
+              </div>
+
+              {/* Upload Photo Button (Only shown in demo/photo mode) */}
+              {mode !== 'camera' ? (
+                <button
+                  type="button"
+                  className="tryon-mini-icon-btn"
+                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  title="Upload Selfie"
+                >
+                  <i data-lucide="folder" style={{ width: '13px', height: '13px' }} />
+                  <span>Upload</span>
+                </button>
+              ) : <div style={{ width: '64px' }} />}
             </div>
 
+            {/* Lower Console Ribbon: Wishlist, Cart, Thumbnails, Snapshot */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '12px' }}>
               {/* Left Side: Wishlist & Cart Icons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
