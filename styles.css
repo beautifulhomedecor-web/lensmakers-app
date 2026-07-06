@@ -263,11 +263,11 @@ body, html {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px) + 32px) !important;
+  padding-bottom: calc(115px + env(safe-area-inset-bottom, 24px) + 40px) !important;
 }
 
 .screen-transition-enter {
-  padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px) + 32px) !important;
+  padding-bottom: calc(115px + env(safe-area-inset-bottom, 24px) + 40px) !important;
 }
 
 .screen-container::-webkit-scrollbar { display: none; }
@@ -1110,7 +1110,7 @@ body, html {
 
 .bottom-nav {
   position: absolute;
-  bottom: calc(24px + env(safe-area-inset-bottom, 14px));
+  bottom: calc(34px + env(safe-area-inset-bottom, 24px));
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -1140,7 +1140,7 @@ body, html {
 }
 
 .bottom-nav.nav-hidden {
-  transform: translateY(calc(100% + 34px));
+  transform: translateY(calc(100% + 44px));
   opacity: 0;
   pointer-events: none; /* prevent accidental taps while off-screen */
 }
@@ -1155,7 +1155,7 @@ body, html {
   .bottom-nav {
     max-width: 520px;
     height: 68px;
-    bottom: calc(28px + env(safe-area-inset-bottom, 14px));
+    bottom: calc(38px + env(safe-area-inset-bottom, 24px));
     border-radius: 999px;
   }
   .nav-center-tryon-btn {
@@ -1389,6 +1389,26 @@ body, html {
   transition: transform 350ms var(--spring-bezier), background 300ms ease, box-shadow 300ms ease;
   animation: breatheGlow 2.5s infinite ease-in-out;
   z-index: 2;
+}
+.tryon-ai-sparkle {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #00E5FF;
+  border: 1.5px solid #FFFFFF;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.9), 0 2px 4px rgba(0,0,0,0.4);
+  animation: sparkleFloat 2s infinite ease-in-out;
+  z-index: 5;
+}
+@keyframes sparkleFloat {
+  0%, 100% { transform: none; }
+  50% { transform: translateY(-2px) scale(1.15); }
 }
 .nav-center-tryon-wrapper.active .nav-center-tryon-btn {
   background: linear-gradient(135deg, #FF4D8D 0%, #7C4DFF 100%);
@@ -3039,7 +3059,7 @@ h1, h2, h3, h4, h5, p, span, div, label {
     margin: 0 auto !important;
     width: calc(100% - 24px) !important;
     max-width: 440px !important;
-    bottom: calc(22px + env(safe-area-inset-bottom, 16px)) !important;
+    bottom: calc(32px + env(safe-area-inset-bottom, 22px)) !important;
   }
   .nav-label {
     font-size: clamp(10px, 2.8vw, 11px) !important;
@@ -3093,7 +3113,7 @@ h1, h2, h3, h4, h5, p, span, div, label {
   }
   .bottom-nav {
     width: calc(100% - 16px) !important;
-    bottom: calc(20px + env(safe-area-inset-bottom, 14px)) !important;
+    bottom: calc(28px + env(safe-area-inset-bottom, 20px)) !important;
     padding: 0 6px !important;
   }
   .nav-label {

@@ -63,7 +63,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
         top: '16px', 
         left: 0,
         right: 0,
-        margin: '0 auto 16px auto',
+        margin: '10px auto 20px auto',
         width: 'calc(100% - 28px)',
         maxWidth: '460px',
         zIndex: 100,
@@ -129,7 +129,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
       </header>
 
       {/* STANDALONE SEARCH BAR (Scrolls with page) */}
-      <div className="standalone-search-container fade-up-item" style={{ padding: '0 20px', marginBottom: '16px', position: 'relative', zIndex: 90 }}>
+      <div className="standalone-search-container fade-up-item" style={{ padding: '0 20px', marginTop: '6px', marginBottom: '24px', position: 'relative', zIndex: 90 }}>
         <div style={{ position: 'relative', width: '100%', height: '48px', display: 'flex', alignItems: 'center' }}>
           <i
           data-lucide="search"

@@ -75,6 +75,9 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
               <div className="tryon-radar-ring" />
               <div className="nav-center-tryon-btn">
                 <i data-lucide="camera" style={{ width: '22px', height: '22px', color: '#FFFFFF' }} />
+                <span className="tryon-ai-sparkle" title="AI 3D Scan">
+                  <i data-lucide="sparkles" style={{ width: '11px', height: '11px', color: '#000000', strokeWidth: '2.5px' }} />
+                </span>
               </div>
             </div>
           );
