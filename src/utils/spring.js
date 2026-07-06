@@ -504,6 +504,10 @@ class PullToRefresh {
 
   createIndicator() {
     if (!this.container || !this.container.parentElement) return;
+    /* Clean up any orphaned indicators from previous renders or screen switches */
+    const existing = this.container.parentElement.querySelectorAll('.ptr-indicator');
+    existing.forEach(el => el.remove());
+
     this.indicator = document.createElement('div');
     this.indicator.innerHTML = `
       <div class="ptr-logo">
@@ -532,6 +536,22 @@ class PullToRefresh {
       this.container.parentElement.style.position = 'relative';
     }
     this.container.parentElement.appendChild(this.indicator);
+  }
+
+  reset() {
+    this.pulling = false;
+    this.refreshing = false;
+    if (this.container) {
+      this.container.style.transition = `transform 380ms var(--spring-primary)`;
+      this.container.style.transform = 'translateY(0)';
+    }
+    if (this.indicator) {
+      this.indicator.style.transition = `opacity 200ms var(--ease-out), transform 200ms var(--ease-out)`;
+      this.indicator.style.opacity = '0';
+      this.indicator.style.transform = 'translateX(-50%) translateY(0)';
+      const logoEl = this.indicator.querySelector('.ptr-logo');
+      if (logoEl) logoEl.style.animation = 'none';
+    }
   }
 
   bindEvents() {
@@ -593,29 +613,26 @@ class PullToRefresh {
         this.refreshing = true;
         const labelEl = this.indicator.querySelector('.ptr-label');
         if (labelEl) labelEl.textContent = 'Refreshing...';
-        /* Spin the logo during refresh */
+        /* Spin the logo during refresh using ptr-spin */
         const logoEl = this.indicator.querySelector('.ptr-logo');
-        if (logoEl) logoEl.style.animation = 'spin 1s linear infinite';
+        if (logoEl) logoEl.style.animation = 'ptr-spin 1s linear infinite';
 
         /* Spring content back up slightly */
         this.container.style.transition =
           `transform 350ms var(--spring-gentle)`;
         this.container.style.transform = 'translateY(24px)';
 
+        let isDone = false;
         /* Execute refresh callback */
         const doneCallback = () => {
-          this.container.style.transition =
-            `transform 400ms var(--spring-primary)`;
-          this.container.style.transform = 'translateY(0)';
-          this.indicator.style.transition =
-            `opacity 250ms var(--ease-out),
-             transform 250ms var(--ease-out)`;
-          this.indicator.style.opacity = '0';
-          this.indicator.style.transform =
-            'translateX(-50%) translateY(0)';
-          if (logoEl) logoEl.style.animation = 'none';
-          this.refreshing = false;
+          if (isDone) return;
+          isDone = true;
+          this.reset();
         };
+
+        /* Failsafe safety timer: ensure indicator never stays stuck on screen! */
+        setTimeout(doneCallback, 2000);
+
         if (this.onRefresh) {
           this.onRefresh(doneCallback);
         } else {
@@ -623,16 +640,13 @@ class PullToRefresh {
         }
       } else {
         /* Snap back */
-        this.container.style.transition =
-          `transform 380ms var(--spring-primary)`;
-        this.container.style.transform = 'translateY(0)';
-        this.indicator.style.transition =
-          `opacity 200ms var(--ease-out),
-           transform 200ms var(--ease-out)`;
-        this.indicator.style.opacity = '0';
-        this.indicator.style.transform =
-          'translateX(-50%) translateY(0)';
+        this.reset();
       }
+    }, { passive: true });
+
+    /* Handle touch cancellation (e.g., interrupted gesture or system notification) */
+    this.container.addEventListener('touchcancel', () => {
+      this.reset();
     }, { passive: true });
   }
 }

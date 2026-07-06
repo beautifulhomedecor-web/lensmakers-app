@@ -84,17 +84,18 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
           <window.Logo size={26} />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           {/* Well-Defined Label for AI Try-On Feature */}
           <button
             type="button"
             className="ai-tryon-header-badge"
             onClick={() => onSelectTab && onSelectTab('tryon')}
             title="Launch Studio AI Virtual Try-On"
-            style={{ padding: '5px 8px', gap: '4px' }}
+            style={{ padding: '0 10px', height: '34px', display: 'flex', alignItems: 'center', gap: '5px' }}
           >
-            <span>AI Try-On</span>
-            <span style={{ background: 'linear-gradient(135deg, #FF0055, #FF4D8D)', color: '#FFF', fontSize: '9px', padding: '2px 5px', borderRadius: '8px', fontWeight: '900', letterSpacing: '0.4px' }}>LIVE</span>
+            <span className="ai-tryon-text-full">AI Virtual Try-On</span>
+            <span className="ai-tryon-text-mobile">AI Try-On</span>
+            <span style={{ background: 'linear-gradient(135deg, #FF0055, #FF4D8D)', color: '#FFF', fontSize: '9px', padding: '2px 5px', borderRadius: '8px', fontWeight: '900', letterSpacing: '0.4px', lineHeight: 1 }}>LIVE</span>
           </button>
 
           {/* Cart Icon with Number Counter Badge */}
@@ -114,7 +115,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
             <i data-lucide="shopping-bag" style={{ width: '16px', height: '16px', color: '#FFFFFF' }} />
             <span
               style={{
-                position: 'absolute', top: '-3px', right: '-3px',
+                position: 'absolute', top: '-1px', right: '-1px',
                 background: 'linear-gradient(135deg, #FF4D8D 0%, #FF0055 100%)',
                 color: '#FFFFFF', fontSize: '9px', fontWeight: '900',
                 minWidth: '16px', height: '16px', borderRadius: '8px',
