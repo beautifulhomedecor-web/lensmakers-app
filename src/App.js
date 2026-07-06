@@ -229,12 +229,14 @@ window.App = function App() {
             </window.ErrorBoundary>
           </main>
 
-          {/* Persistent Fixed Bottom Navigation Bar */}
-          <window.BottomNav
-            activeTab={activeTab}
-            onSelectTab={handleSelectTab}
-            cartCount={2}
-          />
+          {/* Persistent Fixed Bottom Navigation Bar (Hidden during immersive Try-On Studio) */}
+          {activeTab !== 'tryon' && (
+            <window.BottomNav
+              activeTab={activeTab}
+              onSelectTab={handleSelectTab}
+              cartCount={2}
+            />
+          )}
         </>
       )}
     </div>

@@ -78,10 +78,6 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
         transition: 'all 300ms var(--spring-bezier)'
       }}
     >
-      {/* Elegant Sparkling Effect Particle on Interface */}
-      <div className="floating-sparkle-fx" style={{ top: '14px', right: '180px', fontSize: '14px' }}>✨</div>
-      <div className="floating-sparkle-fx" style={{ top: '24px', left: '20px', fontSize: '12px', animationDelay: '1.2s' }}>✨</div>
-
       {/* ROW 1: Logo on left, AI Virtual Try-On Label & Cart Icon on right */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
         <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
@@ -96,7 +92,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
             onClick={() => onSelectTab && onSelectTab('tryon')}
             title="Launch Studio AI Virtual Try-On"
           >
-            <span>✨ AI Virtual Try-On</span>
+            <span>AI Virtual Try-On</span>
             <span style={{ background: 'linear-gradient(135deg, #FF0055, #FF4D8D)', color: '#FFF', fontSize: '9px', padding: '2px 6px', borderRadius: '8px', fontWeight: '900', letterSpacing: '0.4px' }}>LIVE</span>
           </button>
 
@@ -258,7 +254,6 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#00E5FF', fontWeight: '800', fontSize: '12px', letterSpacing: '0.6px' }}>
-              <span className="tryon-ai-sparkle" style={{ position: 'static', width: '20px', height: '20px' }}><i data-lucide="sparkles" style={{ width: '12px', height: '12px', color: '#00E5FF' }} /></span>
               AI VOICE NAVIGATION ACTIVE
             </div>
             <button

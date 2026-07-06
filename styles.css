@@ -195,6 +195,7 @@ body, html {
   width: 100%;
   max-width: 480px;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height prevents mobile browser toolbars from cutting off bottom bar! */
   margin: 0 auto;
   background: var(--bg-primary);
   overflow: hidden;
@@ -262,11 +263,11 @@ body, html {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 24px) !important;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px) + 32px) !important;
 }
 
 .screen-transition-enter {
-  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 24px) !important;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px) + 32px) !important;
 }
 
 .screen-container::-webkit-scrollbar { display: none; }
@@ -1109,11 +1110,11 @@ body, html {
 
 .bottom-nav {
   position: absolute;
-  bottom: 16px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 14px));
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: calc(100% - 28px);
+  width: calc(100% - 32px);
   max-width: 460px;
   height: 64px;
   background: rgba(27, 31, 74, 0.35);
@@ -1154,7 +1155,7 @@ body, html {
   .bottom-nav {
     max-width: 520px;
     height: 68px;
-    bottom: 24px;
+    bottom: calc(28px + env(safe-area-inset-bottom, 14px));
     border-radius: 999px;
   }
   .nav-center-tryon-btn {
@@ -1389,28 +1390,6 @@ body, html {
   animation: breatheGlow 2.5s infinite ease-in-out;
   z-index: 2;
 }
-
-.tryon-ai-sparkle {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: #0F1535;
-  border: 1px solid #00E5FF;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
-  animation: sparkleFloat 2s infinite ease-in-out;
-  z-index: 3;
-}
-@keyframes sparkleFloat {
-  0%, 100% { transform: none; }
-  50% { transform: translateY(-2px) scale(1.15); }
-}
-
 .nav-center-tryon-wrapper.active .nav-center-tryon-btn {
   background: linear-gradient(135deg, #FF4D8D 0%, #7C4DFF 100%);
   box-shadow: 0 0 28px rgba(255, 77, 141, 0.9);
@@ -1802,7 +1781,7 @@ body, html {
 /* TOAST NOTIFICATION */
 .lens-toast {
   position: fixed;
-  bottom: calc(68px + 14px + 16px);
+  bottom: calc(84px + env(safe-area-inset-bottom, 14px) + 16px);
   left: 50%;
   transform: translateX(-50%) translateY(0);
   background: rgba(27, 31, 74, 0.55);
@@ -1953,7 +1932,7 @@ body, html {
 /* STICKY LIVE TOTAL PRICE BAR */
 .pdp-live-price-bar {
   position: sticky;
-  bottom: calc(72px + env(safe-area-inset-bottom, 10px));
+  bottom: calc(84px + env(safe-area-inset-bottom, 14px));
   left: var(--screen-padding); right: var(--screen-padding);
   background: linear-gradient(135deg, rgba(36, 40, 88, 0.95) 0%, rgba(27, 31, 74, 0.55) 100%);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -2026,12 +2005,12 @@ body, html {
 /* VIDEO & CANVAS OVERLAYS */
 .tryon-media-layer {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  object-fit: cover; z-index: 1;
+  object-fit: cover; object-position: center; z-index: 1;
   transform: scaleX(-1); /* Mirror view */
 }
 .tryon-canvas-layer {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 2; pointer-events: none;
+  object-fit: cover; object-position: center; z-index: 2; pointer-events: none;
 }
 
 /* TOP TRANSPARENT BAR & CIRCULAR BUTTONS */
@@ -2143,7 +2122,7 @@ body, html {
 
 /* BOTTOM PANEL (Elevated floating panel positioned cleanly ABOVE the 68px bottom nav bar) */
 .tryon-bottom-panel {
-  position: absolute; bottom: 88px; left: 0; right: 0;
+  position: absolute; bottom: 20px; left: 0; right: 0;
   margin: 0 auto;
   width: calc(100% - 24px);
   max-width: 620px;
@@ -2159,7 +2138,7 @@ body, html {
 
 @media (max-width: 480px) {
   .tryon-bottom-panel {
-    bottom: 82px !important;
+    bottom: calc(18px + env(safe-area-inset-bottom, 12px)) !important;
     padding: 12px 14px !important;
     width: calc(100% - 16px) !important;
     border-radius: 24px !important;
@@ -2420,7 +2399,7 @@ body, html {
 /* 1. Global Toast Notification System */
 .lens-toast-container {
   position: fixed;
-  bottom: 84px;
+  bottom: calc(92px + env(safe-area-inset-bottom, 16px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
@@ -2772,19 +2751,7 @@ body, html {
   }
 }
 
-/* 8. ELEGANT SPARKLING EFFECTS & VISIONOS AI BADGE STYLING */
-.floating-sparkle-fx {
-  position: absolute;
-  pointer-events: none;
-  z-index: 5;
-  animation: floatSparkleTwinkle 3s infinite ease-in-out;
-  will-change: opacity;
-}
-@keyframes floatSparkleTwinkle {
-  0%, 100% { opacity: 0.3; transform: translateY(0px) scale(0.9) rotate(0deg); }
-  50% { opacity: 1; transform: translateY(-6px) scale(1.25) rotate(15deg); filter: drop-shadow(0 0 8px #00E5FF); }
-}
-
+/* 8. VISIONOS AI BADGE STYLING */
 .ai-tryon-header-badge {
   display: flex;
   align-items: center;
@@ -3065,10 +3032,14 @@ h1, h2, h3, h4, h5, p, span, div, label {
   .glass-card-standard, .glass-card-elevated, .product-card-glass, .premium-special-card, .bogo-rotating-card, .rx-card-cyan, .purple-shimmer-card {
     padding: clamp(16px, 4vw, 20px) !important;
   }
-  /* Bottom Nav Capsule (Section 3.6) */
+  /* Bottom Nav Capsule (Section 3.6) - Responsive centering & safe-area bottom padding */
   .bottom-nav {
-    left: 16px !important;
-    right: 16px !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 auto !important;
+    width: calc(100% - 24px) !important;
+    max-width: 440px !important;
+    bottom: calc(22px + env(safe-area-inset-bottom, 16px)) !important;
   }
   .nav-label {
     font-size: clamp(10px, 2.8vw, 11px) !important;
@@ -3119,6 +3090,11 @@ h1, h2, h3, h4, h5, p, span, div, label {
   .btn-primary-pill, .btn-secondary-pill {
     padding: 0 16px !important;
     font-size: 13px !important;
+  }
+  .bottom-nav {
+    width: calc(100% - 16px) !important;
+    bottom: calc(20px + env(safe-area-inset-bottom, 14px)) !important;
+    padding: 0 6px !important;
   }
   .nav-label {
     font-size: 10px !important;

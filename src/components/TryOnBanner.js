@@ -8,10 +8,6 @@ window.TryOnBanner = function TryOnBanner({ onTriggerTryOn }) {
         {/* Ambient magenta aura */}
         <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-[#EC4899]/20 rounded-full blur-3xl pointer-events-none group-hover:bg-[#EC4899]/30 transition-colors duration-500"></div>
 
-        {/* Floating Sparkles */}
-        <div className="floating-sparkle-fx" style={{ top: '15px', right: '80px', fontSize: '18px' }}>✨</div>
-        <div className="floating-sparkle-fx" style={{ bottom: '20px', left: '30px', fontSize: '14px', animationDelay: '1.5s' }}>✨</div>
-
         {/* Top Row: Icon + Title + Infinity Mark */}
         <div className="flex items-start justify-between relative z-10 mb-5">
           <div className="flex items-start space-x-4">
@@ -31,7 +27,7 @@ window.TryOnBanner = function TryOnBanner({ onTriggerTryOn }) {
                   Virtual Try-On
                 </h2>
                 <span className="bg-gradient-to-r from-[#00E5FF] to-[#7C4DFF] text-[#0F1535] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-[0_0_10px_rgba(0,229,255,0.8)]">
-                  ✨ AI Studio Pro
+                  AI Studio Pro
                 </span>
               </div>
               <p className="text-sm text-[#C7C3D9] max-w-xs sm:max-w-md leading-relaxed font-normal">
@@ -72,7 +68,7 @@ window.TryOnBanner = function TryOnBanner({ onTriggerTryOn }) {
         {/* Feature badges at bottom */}
         <div className="flex items-center justify-center space-x-6 mt-4 text-xs text-[#C7C3D9]/80 font-medium">
           <span className="flex items-center">⚡ Instant 3D AR</span>
-          <span className="flex items-center">✨ AI Face Fit Analysis</span>
+          <span className="flex items-center">AI Face Fit Analysis</span>
         </div>
       </div>
     </section>

@@ -8,18 +8,20 @@ const FRAMES = [
     id: 'aviator',
     name: 'Aviator Gold',
     price: '₹4,499',
-    frameColor: '#C9B037',
-    lensFill: 'rgba(100, 80, 20, 0.15)',
+    frameColor: '#2B303A',
+    lensFill: 'rgba(50, 60, 70, 0.32)',
     hingeAccent: null,
+    shape: 'hex-aviator',
     thumbnail: '🛩️'
   },
   {
     id: 'classic-black',
     name: 'Classic Black',
     price: '₹3,899',
-    frameColor: '#1C1C1E',
-    lensFill: 'rgba(10, 15, 40, 0.22)',
+    frameColor: '#0F172A',
+    lensFill: 'rgba(10, 15, 40, 0.18)',
     hingeAccent: '#D4AF37', // Gold ribbed hinge accents
+    shape: 'modern-rect',
     thumbnail: '👓'
   },
   {
@@ -27,17 +29,19 @@ const FRAMES = [
     name: 'Noir Shield',
     price: '₹5,199',
     frameColor: '#0A0A0A',
-    lensFill: 'rgba(5, 5, 15, 0.75)', // High-density dark tint
+    lensFill: 'rgba(5, 5, 15, 0.78)', // High-density dark tint
     hingeAccent: null,
+    shape: 'shield',
     thumbnail: '🕶️'
   },
   {
     id: 'tortoise',
     name: 'Elegant Cat-Eye',
     price: '₹3,499',
-    frameColor: '#6B3F18',
+    frameColor: '#5C3317',
     lensFill: 'rgba(60, 30, 10, 0.2)',
     hingeAccent: null,
+    shape: 'cat-eye',
     thumbnail: '◥'
   }
 ];
@@ -64,6 +68,7 @@ const TryOnScreen = ({ onSelectTab }) => {
   const [orbitAngle, setOrbitAngle] = useState(0); // 0 to 360 degrees for 360° 3D preview
   const [orbitPitch, setOrbitPitch] = useState(10); // -30 to +30 degrees vertical tilt
   const [isAutoSpinning, setIsAutoSpinning] = useState(true);
+  const [isFrameErased, setIsFrameErased] = useState(false);
 
   // Refs that mirror state for use in rAF/MediaPipe callbacks (avoids stale closure)
   const selectedFrameIdxRef = useRef(1);
@@ -79,6 +84,7 @@ const TryOnScreen = ({ onSelectTab }) => {
   const isAutoSpinningRef = useRef(true);
   const isDragging360Ref = useRef(false);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
+  const isFrameErasedRef = useRef(false);
 
   // Keep refs in sync whenever state changes
   useEffect(() => { selectedFrameIdxRef.current = selectedFrameIdx; }, [selectedFrameIdx]);
@@ -91,6 +97,7 @@ const TryOnScreen = ({ onSelectTab }) => {
   useEffect(() => { orbitAngleRef.current = orbitAngle; }, [orbitAngle]);
   useEffect(() => { orbitPitchRef.current = orbitPitch; }, [orbitPitch]);
   useEffect(() => { isAutoSpinningRef.current = isAutoSpinning; }, [isAutoSpinning]);
+  useEffect(() => { isFrameErasedRef.current = isFrameErased; }, [isFrameErased]);
 
   // References
   const videoRef = useRef(null);
@@ -191,7 +198,12 @@ const TryOnScreen = ({ onSelectTab }) => {
       ctx.font = '800 10px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      ctx.save();
+      if (modeRef.current === 'camera') {
+        ctx.scale(-1, 1);
+      }
       ctx.fillText(`PD: ${pdMM}mm • 3D MESH: OVAL`, 0, -h * 0.52 - 17);
+      ctx.restore();
 
       ctx.restore();
     }
@@ -213,6 +225,52 @@ const TryOnScreen = ({ onSelectTab }) => {
     const ly = -lh / 2;
     const rx = s.bridgeWidth / 2;
 
+    // Helper for custom frame shape profiles (Aviator Hex, Modern Rect, Shield, Cat-Eye)
+    const drawLensPath = (x, y, width, height, radius, isLeft) => {
+      ctx.beginPath();
+      const shape = style.shape || 'modern-rect';
+      if (shape === 'hex-aviator') {
+        // Hexagonal / Geometric Aviator like Screenshot 1
+        const ch = width * 0.22;
+        ctx.moveTo(x + ch, y);
+        ctx.lineTo(x + width - ch, y);
+        ctx.lineTo(x + width, y + height * 0.38);
+        ctx.lineTo(x + width - ch * 0.65, y + height);
+        ctx.lineTo(x + ch * 0.65, y + height);
+        ctx.lineTo(x, y + height * 0.38);
+        ctx.closePath();
+      } else if (shape === 'cat-eye') {
+        // Elegant Cat-Eye with flared outer top corners
+        if (isLeft) {
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + width - radius * 0.5, y - height * 0.14);
+          ctx.arcTo(x + width, y - height * 0.14, x + width, y + radius, radius * 0.7);
+          ctx.lineTo(x + width, y + height - radius);
+          ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+          ctx.lineTo(x + radius, y + height);
+          ctx.arcTo(x, y + height, x, y + height - radius, radius);
+          ctx.lineTo(x, y + radius);
+          ctx.arcTo(x, y, x + radius, y, radius);
+        } else {
+          ctx.moveTo(x + radius * 0.5, y - height * 0.14);
+          ctx.lineTo(x + width - radius, y);
+          ctx.arcTo(x + width, y, x + width, y + radius, radius);
+          ctx.lineTo(x + width, y + height - radius);
+          ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+          ctx.lineTo(x + radius, y + height);
+          ctx.arcTo(x, y + height, x, y + height - radius, radius);
+          ctx.lineTo(x, y + radius);
+          ctx.arcTo(x, y - height * 0.14, x + radius * 0.5, y - height * 0.14, radius * 0.7);
+        }
+      } else if (shape === 'shield') {
+        // Shield / Sport contour
+        ctx.roundRect(x, y, width, height, [radius * 0.4, radius * 1.5, radius * 1.2, radius * 0.4]);
+      } else {
+        // Modern Rounded Rectangular (like Screenshot 2)
+        ctx.roundRect(x, y, width, height, radius);
+      }
+    };
+
     // ------------------------------------------------------------------------
     // LAYER 2: REALISTIC AMBIENT OCCLUSION SHADOW CAST ONTO CHEEKBONES
     // ------------------------------------------------------------------------
@@ -220,9 +278,9 @@ const TryOnScreen = ({ onSelectTab }) => {
     ctx.translate(0, lh * 0.14);
     ctx.filter = 'blur(12px)';
     ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.beginPath();
-    ctx.roundRect(lx, ly, lw, lh, r);
-    ctx.roundRect(rx, ly, lw, lh, r);
+    drawLensPath(lx, ly, lw, lh, r, true);
+    ctx.fill();
+    drawLensPath(rx, ly, lw, lh, r, false);
     ctx.fill();
     ctx.restore();
 
@@ -231,10 +289,9 @@ const TryOnScreen = ({ onSelectTab }) => {
     ctx.lineCap = 'round';
 
     // Helper for optical lens rendering with selectable coatings
-    const renderCoatedLens = (x, y, width, height, radius) => {
+    const renderCoatedLens = (x, y, width, height, radius, isLeft) => {
       ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(x, y, width, height, radius);
+      drawLensPath(x, y, width, height, radius, isLeft);
 
       const coating = lensCoatingRef.current;
       if (coating === 'antireflective') {
@@ -269,19 +326,33 @@ const TryOnScreen = ({ onSelectTab }) => {
       // Inner 3D bevel highlight for realistic depth
       ctx.lineWidth = strokeW * 0.35;
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
-      ctx.strokeRect(x + strokeW * 0.4, y + strokeW * 0.4, width - strokeW * 0.8, height - strokeW * 0.8);
+      ctx.save();
+      ctx.translate(isLeft ? strokeW * 0.3 : -strokeW * 0.3, strokeW * 0.3);
+      ctx.scale(0.96, 0.96);
+      drawLensPath(x, y, width, height, radius, isLeft);
+      ctx.stroke();
+      ctx.restore();
+
       ctx.restore();
     };
 
     // 1. LEFT LENS & RIGHT LENS WITH OPTICAL COATINGS
-    renderCoatedLens(lx, ly, lw, lh, r);
-    renderCoatedLens(rx, ly, lw, lh, r);
+    renderCoatedLens(lx, ly, lw, lh, r, true);
+    renderCoatedLens(rx, ly, lw, lh, r, false);
 
-    // 3. NOSE BRIDGE WITH 3D HIGHLIGHT
+    // 3. NOSE BRIDGE & OPTIONAL DOUBLE BRIDGE WITH 3D HIGHLIGHT
     ctx.beginPath();
-    ctx.moveTo(-bw / 2, -bh / 2);
-    ctx.quadraticCurveTo(0, -bh * 1.6, bw / 2, -bh / 2);
-    ctx.lineWidth = strokeW * 0.8;
+    if (style.shape === 'hex-aviator') {
+      // Aviator Double Bridge (top straight bar + lower nose curve)
+      ctx.moveTo(-bw / 2, -bh * 0.4);
+      ctx.lineTo(bw / 2, -bh * 0.4);
+      ctx.moveTo(-bw / 2, -lh * 0.25);
+      ctx.quadraticCurveTo(0, -lh * 0.38, bw / 2, -lh * 0.25);
+    } else {
+      ctx.moveTo(-bw / 2, -bh / 2);
+      ctx.quadraticCurveTo(0, -bh * 1.6, bw / 2, -bh / 2);
+    }
+    ctx.lineWidth = strokeW * 0.85;
     ctx.strokeStyle = style.frameColor || '#1C1C1E';
     ctx.stroke();
 
@@ -380,147 +451,170 @@ const TryOnScreen = ({ onSelectTab }) => {
     ctx.stroke();
     ctx.restore();
 
-    // 2. DEFINE 3D COMPONENTS & DEPTH SORTING
-    const strokeW = 8;
+    // 2. DEFINE 3D EYEWEAR GEOMETRY & EXACT DEPTH SORTING
+    const strokeW = 9;
     const lw = 132;
     const lh = 94;
     const lx = -78;
     const rx = 78;
-    const templeLen = 270;
+    const templeLen = 260;
 
-    const leftTempleCenterZ = project(-155, 0, -templeLen / 2).z;
-    const rightTempleCenterZ = project(155, 0, -templeLen / 2).z;
-    const frontCenterZ = project(0, 0, 0).z;
+    // Center Z depth calculations for each structural primitive
+    const leftTempleZ = project(-140, 0, -templeLen / 2).z;
+    const rightTempleZ = project(140, 0, -templeLen / 2).z;
+    const rimBackZ = project(0, 0, -8).z;
+    const rimMidZ = project(0, 0, -4).z;
+    const rimFrontZ = project(0, 0, 2).z;
+    const bridgeZ = project(0, -12, 6).z;
 
     const components = [
-      { id: 'leftTemple', z: leftTempleCenterZ },
-      { id: 'rightTemple', z: rightTempleCenterZ },
-      { id: 'frontFrame', z: frontCenterZ }
+      { id: 'leftTemple', z: leftTempleZ },
+      { id: 'rightTemple', z: rightTempleZ },
+      { id: 'rimBack', z: rimBackZ },
+      { id: 'rimMid', z: rimMidZ },
+      { id: 'rimFront', z: rimFrontZ },
+      { id: 'bridge', z: bridgeZ }
     ];
 
-    // Sort ascending by z: back components draw first, front components draw on top
+    // Sort ascending by z: furthest elements draw first, nearest draw on top (painters algorithm)
     components.sort((a, b) => a.z - b.z);
 
-    const renderLeftTemple = () => {
-      const p1 = project(-145, -6, 0);
-      const p2 = project(-154, -4, -templeLen * 0.75);
-      const p3 = project(-154, 18, -templeLen);
-      const p4 = project(-154, 52, -templeLen - 20);
+    // Render solid shaded temple arm with realistic earpiece curve and metallic hinge
+    const renderTemple = (isLeft) => {
+      const xSide = isLeft ? -142 : 142;
+      const xEar = isLeft ? -134 : 134;
+      const pHinge = project(xSide, -12, 0);
+      const pMid = project(xSide, -8, -templeLen * 0.65);
+      const pEarTop = project(xEar, 6, -templeLen * 0.9);
+      const pEarEnd = project(xEar, 44, -templeLen);
 
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.quadraticCurveTo(p3.x, p3.y, p4.x, p4.y);
-      ctx.lineWidth = strokeW * ((p1.scale + p2.scale) / 2) * 0.9;
+      ctx.moveTo(pHinge.x, pHinge.y);
+      ctx.lineTo(pMid.x, pMid.y);
+      ctx.quadraticCurveTo(pEarTop.x, pEarTop.y, pEarEnd.x, pEarEnd.y);
+      
+      // Arm width scales with perspective
+      const armW = Math.max(3, strokeW * ((pHinge.scale + pMid.scale) / 2) * 0.95);
+      ctx.lineWidth = armW;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = style.frameColor || '#1C1C1E';
+
+      // Gradient shading along temple depth
+      const grad = ctx.createLinearGradient(pHinge.x, pHinge.y, pEarEnd.x, pEarEnd.y);
+      grad.addColorStop(0, style.frameColor || '#1C1C1E');
+      grad.addColorStop(0.6, style.frameColor || '#1C1C1E');
+      grad.addColorStop(1, '#0A0D1A'); // Shaded earpiece tip
+      ctx.strokeStyle = grad;
       ctx.stroke();
 
+      // Metallic barrel hinge joint at frame connection
       ctx.beginPath();
-      ctx.arc(p1.x, p1.y, strokeW * p1.scale * 0.7, 0, Math.PI * 2);
+      ctx.arc(pHinge.x, pHinge.y, armW * 0.75, 0, Math.PI * 2);
       ctx.fillStyle = style.hingeAccent || '#FFD700';
       ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.stroke();
       ctx.restore();
     };
 
-    const renderRightTemple = () => {
-      const p1 = project(145, -6, 0);
-      const p2 = project(154, -4, -templeLen * 0.75);
-      const p3 = project(154, 18, -templeLen);
-      const p4 = project(154, 52, -templeLen - 20);
+    // Helper to draw extruded 3D lens rim at specific z offset
+    const renderRimLayer = (zOffset, isFront) => {
+      const pLeft = project(lx, 0, zOffset);
+      const pRight = project(rx, 0, zOffset);
 
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.quadraticCurveTo(p3.x, p3.y, p4.x, p4.y);
-      ctx.lineWidth = strokeW * ((p1.scale + p2.scale) / 2) * 0.9;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = style.frameColor || '#1C1C1E';
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(p1.x, p1.y, strokeW * p1.scale * 0.7, 0, Math.PI * 2);
-      ctx.fillStyle = style.hingeAccent || '#FFD700';
-      ctx.fill();
-      ctx.restore();
-    };
-
-    const renderFrontFrame = () => {
-      const pLeft = project(lx, 0, 0);
-      const pRight = project(rx, 0, 0);
-      const pBridge = project(0, -12, 6);
-
-      const draw3DLens = (centerP) => {
+      const drawRim = (centerP) => {
         ctx.save();
         ctx.translate(centerP.x, centerP.y);
         const foreshortenX = Math.max(0.12, Math.abs(Math.cos(theta)));
         ctx.scale(foreshortenX * centerP.scale, centerP.scale);
 
-        const wL = lw;
-        const hL = lh;
         ctx.beginPath();
-        ctx.roundRect(-wL / 2, -hL / 2, wL, hL, 22);
+        ctx.roundRect(-lw / 2, -lh / 2, lw, lh, 22);
 
-        const coating = lensCoatingRef.current;
-        if (coating === 'antireflective') {
-          const grad = ctx.createLinearGradient(-wL / 2, -hL / 2, wL / 2, hL / 2);
-          grad.addColorStop(0, 'rgba(0, 229, 255, 0.35)');
-          grad.addColorStop(0.5, style.lensFill || 'rgba(10,15,40,0.25)');
-          grad.addColorStop(1, 'rgba(40, 220, 160, 0.35)');
-          ctx.fillStyle = grad;
-        } else if (coating === 'bluelight') {
-          const grad = ctx.createLinearGradient(-wL / 2, -hL / 2, wL / 2, hL / 2);
-          grad.addColorStop(0, 'rgba(0, 140, 255, 0.4)');
-          grad.addColorStop(0.6, 'rgba(15, 20, 40, 0.22)');
-          grad.addColorStop(1, 'rgba(255, 170, 0, 0.3)');
-          ctx.fillStyle = grad;
-        } else if (coating === 'polarized') {
-          ctx.fillStyle = 'rgba(10, 15, 25, 0.88)';
-        } else if (coating === 'photochromic') {
-          ctx.fillStyle = 'rgba(20, 25, 45, 0.72)';
-        } else {
-          ctx.fillStyle = style.lensFill || 'rgba(10,15,40,0.3)';
+        if (isFront) {
+          // Fill optical lens coating gradient on front face
+          const coating = lensCoatingRef.current;
+          if (coating === 'antireflective') {
+            const grad = ctx.createLinearGradient(-lw / 2, -lh / 2, lw / 2, lh / 2);
+            grad.addColorStop(0, 'rgba(0, 229, 255, 0.35)');
+            grad.addColorStop(0.5, style.lensFill || 'rgba(10,15,40,0.25)');
+            grad.addColorStop(1, 'rgba(40, 220, 160, 0.35)');
+            ctx.fillStyle = grad;
+          } else if (coating === 'bluelight') {
+            const grad = ctx.createLinearGradient(-lw / 2, -lh / 2, lw / 2, lh / 2);
+            grad.addColorStop(0, 'rgba(0, 140, 255, 0.4)');
+            grad.addColorStop(0.6, 'rgba(15, 20, 40, 0.22)');
+            grad.addColorStop(1, 'rgba(255, 170, 0, 0.3)');
+            ctx.fillStyle = grad;
+          } else if (coating === 'polarized') {
+            ctx.fillStyle = 'rgba(10, 15, 25, 0.88)';
+          } else if (coating === 'photochromic') {
+            ctx.fillStyle = 'rgba(20, 25, 45, 0.72)';
+          } else {
+            ctx.fillStyle = style.lensFill || 'rgba(10,15,40,0.3)';
+          }
+          ctx.fill();
+
+          // Specular diagonal glare streak on glass
+          ctx.beginPath();
+          ctx.moveTo(-lw * 0.25, -lh * 0.3);
+          ctx.lineTo(lw * 0.2, lh * 0.35);
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+          ctx.stroke();
         }
-        ctx.fill();
 
-        ctx.lineWidth = strokeW;
-        ctx.strokeStyle = style.frameColor || '#1C1C1E';
+        // Rim thickness and shading
+        ctx.lineWidth = isFront ? strokeW : strokeW * 0.95;
+        if (isFront) {
+          ctx.strokeStyle = style.frameColor || '#1C1C1E';
+        } else {
+          // Darker shading for extruded back edges to create depth
+          ctx.strokeStyle = 'rgba(10, 14, 30, 0.85)';
+        }
         ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(-wL * 0.25, -hL * 0.3);
-        ctx.lineTo(wL * 0.2, hL * 0.35);
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-        ctx.stroke();
-
         ctx.restore();
       };
 
-      draw3DLens(pLeft);
-      draw3DLens(pRight);
+      drawRim(pLeft);
+      drawRim(pRight);
+    };
 
+    // Render sculpted 3D bridge and silicone nose pads
+    const renderBridge = () => {
+      const pBridge = project(0, -12, 6);
       const bLeft = project(lx + lw * 0.46, -8, 2);
       const bRight = project(rx - lw * 0.46, -8, 2);
+
       ctx.save();
+      // Nose pads behind bridge
+      const padL = project(-16, 4, -4);
+      const padR = project(16, 4, -4);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.beginPath(); ctx.ellipse(padL.x, padL.y, 4 * padL.scale, 7 * padL.scale, 0.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(padR.x, padR.y, 4 * padR.scale, 7 * padR.scale, -0.2, 0, Math.PI * 2); ctx.fill();
+
+      // Main bridge arch
       ctx.beginPath();
       ctx.moveTo(bLeft.x, bLeft.y);
       ctx.quadraticCurveTo(pBridge.x, pBridge.y - 18 * pBridge.scale, bRight.x, bRight.y);
-      ctx.lineWidth = strokeW * pBridge.scale * 0.85;
+      ctx.lineWidth = strokeW * pBridge.scale * 0.9;
       ctx.lineCap = 'round';
       ctx.strokeStyle = style.frameColor || '#1C1C1E';
       ctx.stroke();
       ctx.restore();
     };
 
+    // Execute depth-sorted rendering queue
     components.forEach((comp) => {
-      if (comp.id === 'leftTemple') renderLeftTemple();
-      else if (comp.id === 'rightTemple') renderRightTemple();
-      else if (comp.id === 'frontFrame') renderFrontFrame();
+      if (comp.id === 'leftTemple') renderTemple(true);
+      else if (comp.id === 'rightTemple') renderTemple(false);
+      else if (comp.id === 'rimBack') renderRimLayer(-8, false);
+      else if (comp.id === 'rimMid') renderRimLayer(-3, false);
+      else if (comp.id === 'rimFront') renderRimLayer(2, true);
+      else if (comp.id === 'bridge') renderBridge();
     });
 
     ctx.save();
@@ -611,7 +705,9 @@ const TryOnScreen = ({ onSelectTab }) => {
       s.yawAngle = lerp(s.yawAngle, simYaw, 0.35);
 
       // RENDER THE GLASSES FRAME — uses ref to always get current frame without stale closure
-      drawGlassesFrame(ctx, s, FRAMES[selectedFrameIdxRef.current]);
+      if (!isFrameErasedRef.current) {
+        drawGlassesFrame(ctx, s, FRAMES[selectedFrameIdxRef.current]);
+      }
 
       animationFrameRef.current = requestAnimationFrame(renderLoop);
     };
@@ -676,19 +772,22 @@ const TryOnScreen = ({ onSelectTab }) => {
       }
 
       // Position eyewear frame naturally on face in uploaded photo
-      const simX = w / 2;
-      const simY = h * 0.44;
-      const simWidth = w * 0.36;
-
       const s = smoothRef.current;
-      s.frameCenterX = lerp(s.frameCenterX, simX, 0.4);
-      s.frameCenterY = lerp(s.frameCenterY, simY - simWidth * 0.1, 0.4);
-      s.frameWidth = lerp(s.frameWidth, simWidth, 0.4);
-      s.bridgeWidth = lerp(s.bridgeWidth, simWidth * 0.18, 0.4);
-      s.lensHeight = lerp(s.lensHeight, ((simWidth - s.bridgeWidth) / 2) * 0.65, 0.4);
-      s.yawAngle = 0;
+      if (!s.isPhotoMapped) {
+        const simX = w / 2;
+        const simY = h * 0.44;
+        const simWidth = w * 0.36;
+        s.frameCenterX = lerp(s.frameCenterX, simX, 0.4);
+        s.frameCenterY = lerp(s.frameCenterY, simY - simWidth * 0.1, 0.4);
+        s.frameWidth = lerp(s.frameWidth, simWidth, 0.4);
+        s.bridgeWidth = lerp(s.bridgeWidth, simWidth * 0.18, 0.4);
+        s.lensHeight = lerp(s.lensHeight, ((simWidth - s.bridgeWidth) / 2) * 0.65, 0.4);
+        s.yawAngle = 0;
+      }
 
-      drawGlassesFrame(ctx, s, FRAMES[selectedFrameIdxRef.current]);
+      if (!isFrameErasedRef.current) {
+        drawGlassesFrame(ctx, s, FRAMES[selectedFrameIdxRef.current]);
+      }
 
       animationFrameRef.current = requestAnimationFrame(renderLoop);
     };
@@ -702,10 +801,19 @@ const TryOnScreen = ({ onSelectTab }) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
-      img.onload = () => {
+      img.onload = async () => {
         setUploadedPhoto(img);
+        smoothRef.current.isPhotoMapped = false;
         startPhotoSimulation(img);
-        showToast('📸 Photo Loaded! AI Facial Mapping Active');
+        showToast('📸 Photo Loaded! Scanning AI Facial Landmarks...');
+        if (faceMeshRef.current) {
+          try {
+            await faceMeshRef.current.send({ image: img });
+            showToast('AI Facial Mapping Complete!');
+          } catch (err) {
+            console.warn('Photo face mesh error:', err);
+          }
+        }
       };
       img.src = event.target.result;
     };
@@ -733,6 +841,7 @@ const TryOnScreen = ({ onSelectTab }) => {
     setMode('360');
     setFaceDetected(true);
     modeRef.current = '360';
+    smoothRef.current.isPhotoMapped = false;
 
     const renderLoop = () => {
       const canvas = canvasRef.current;
@@ -795,6 +904,8 @@ const TryOnScreen = ({ onSelectTab }) => {
 
     setStatus('loading');
     setMode('camera');
+    modeRef.current = 'camera';
+    smoothRef.current.isPhotoMapped = false;
 
     try {
       // Check if getUserMedia is supported
@@ -818,113 +929,116 @@ const TryOnScreen = ({ onSelectTab }) => {
         await videoRef.current.play();
       }
 
-      // If MediaPipe CDN scripts are already available in window
-      if (window.FaceMesh && window.Camera && !window.mediaPipeLoadError) {
-        initMediaPipeFaceMesh();
-      } else {
-        // Fallback or demo simulation if scripts not loaded
-        showToast('📡 Initializing high-speed AR tracking...');
-        setTimeout(() => {
-          if (window.FaceMesh && window.Camera && !window.mediaPipeLoadError) {
-            initMediaPipeFaceMesh();
+      if (!faceMeshRef.current) {
+        const faceMesh = new window.FaceMesh({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+        });
+
+        faceMesh.setOptions({
+          maxNumFaces: 1,
+          refineLandmarks: true, // Enables refined iris tracking
+          minDetectionConfidence: 0.65,
+          minTrackingConfidence: 0.65
+        });
+
+        faceMesh.onResults((results) => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+
+          if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+            // Check if face lost for > 1.5 seconds
+            if (Date.now() - lastFaceTimeRef.current > 1500) {
+              setFaceDetected(false);
+            }
+            return;
+          }
+
+          lastFaceTimeRef.current = Date.now();
+          if (!faceDetectedRef.current) {
+            faceDetectedRef.current = true;
+            setFaceDetected(true);
+          }
+          if (statusRef.current === 'loading') {
+            statusRef.current = 'active';
+            setStatus('active');
+          }
+
+          const lm = results.multiFaceLandmarks[0];
+          if (!lm || !lm[33] || !lm[263] || !lm[133] || !lm[362]) return;
+
+          let toPixel;
+          if (modeRef.current === 'photo' && uploadedPhotoRef.current) {
+            const imgObj = uploadedPhotoRef.current;
+            const imgRatio = imgObj.width / imgObj.height;
+            const canvasRatio = canvas.width / canvas.height;
+            let drawW = canvas.width, drawH = canvas.height, offsetX = 0, offsetY = 0;
+            if (imgRatio > canvasRatio) {
+              drawH = canvas.height;
+              drawW = canvas.height * imgRatio;
+              offsetX = (canvas.width - drawW) / 2;
+            } else {
+              drawW = canvas.width;
+              drawH = canvas.width / imgRatio;
+              offsetY = (canvas.height - drawH) / 2;
+            }
+            toPixel = (pt) => ({ x: offsetX + pt.x * drawW, y: offsetY + pt.y * drawH });
+            smoothRef.current.isPhotoMapped = true;
           } else {
-            showToast('ℹ️ Switched to Live AI Simulation Mode');
-            startDemoSimulation();
+            if (videoRef.current && videoRef.current.videoWidth > 0 && (canvas.width !== videoRef.current.videoWidth || canvas.height !== videoRef.current.videoHeight)) {
+              canvas.width = videoRef.current.videoWidth;
+              canvas.height = videoRef.current.videoHeight;
+            }
+            toPixel = (pt) => ({ x: pt.x * canvas.width, y: pt.y * canvas.height });
           }
-        }, 1200);
+
+          // Landmark indices: Left eye outer: 33, inner: 133; Right eye outer: 263, inner: 362
+          const leftOuter = toPixel(lm[33]);
+          const rightOuter = toPixel(lm[263]);
+          const leftInner = toPixel(lm[133]);
+          const rightInner = toPixel(lm[362]);
+
+          // Calculate exact eye centerline to prevent glasses from sitting too high on mobile
+          const leftEyeCenterY = (leftOuter.y + leftInner.y) / 2;
+          const rightEyeCenterY = (rightOuter.y + rightInner.y) / 2;
+
+          // Frame width = outer-to-outer eye span × 1.72 multiplier
+          const eyeSpanWidth = Math.hypot(rightOuter.x - leftOuter.x, rightOuter.y - leftOuter.y);
+          const frameWidth = eyeSpanWidth * 1.72;
+
+          // Frame center X & Y anchored directly to horizontal eye line with nose bridge calibration
+          const frameCenterX = (leftOuter.x + rightOuter.x) / 2;
+          const frameCenterY = (leftEyeCenterY + rightEyeCenterY) / 2 + lensHeight * 0.12;
+
+          // Bridge width = inner corner distance × 1.1
+          const bridgeWidth = Math.hypot(rightInner.x - leftInner.x, rightInner.y - leftInner.y) * 1.1;
+
+          // Individual lens height
+          const lensWidth = (frameWidth - bridgeWidth) / 2;
+          const lensHeight = lensWidth * 0.65;
+
+          // Head yaw rotation angle
+          const yawAngle = Math.atan2(rightOuter.y - leftOuter.y, rightOuter.x - leftOuter.x);
+
+          // Apply EMA smoothing (alpha = 0.35)
+          const s = smoothRef.current;
+          s.frameCenterX = lerp(s.frameCenterX, frameCenterX, 0.35);
+          s.frameCenterY = lerp(s.frameCenterY, frameCenterY, 0.35);
+          s.frameWidth = lerp(s.frameWidth, frameWidth, 0.35);
+          s.bridgeWidth = lerp(s.bridgeWidth, bridgeWidth, 0.35);
+          s.lensHeight = lerp(s.lensHeight, lensHeight, 0.35);
+          s.yawAngle = lerp(s.yawAngle, yawAngle, 0.35);
+
+          if (modeRef.current !== 'photo') {
+            const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!isFrameErasedRef.current) {
+              drawGlassesFrame(ctx, s, FRAMES[selectedFrameIdxRef.current]);
+            }
+          }
+        });
+
+        faceMeshRef.current = faceMesh;
       }
-    } catch (err) {
-      console.warn('Camera access error:', err);
-      setStatus('fallback');
-      showToast('⚠️ Camera permission denied or offline. Launching simulation.');
-    }
-  };
-
-  // Initialize MediaPipe FaceMesh
-  const initMediaPipeFaceMesh = () => {
-    try {
-      const faceMesh = new window.FaceMesh({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
-      });
-
-      faceMesh.setOptions({
-        maxNumFaces: 1,
-        refineLandmarks: true, // Enables refined iris tracking
-        minDetectionConfidence: 0.65,
-        minTrackingConfidence: 0.65
-      });
-
-      faceMesh.onResults((results) => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
-          // Check if face lost for > 1.5 seconds
-          if (Date.now() - lastFaceTimeRef.current > 1500) {
-            setFaceDetected(false);
-          }
-          return;
-        }
-
-        lastFaceTimeRef.current = Date.now();
-        // Use refs to avoid stale closure — do NOT use faceDetected/status state directly in callback
-        if (!faceDetectedRef.current) {
-          faceDetectedRef.current = true;
-          setFaceDetected(true);
-        }
-        if (statusRef.current === 'loading') {
-          statusRef.current = 'active';
-          setStatus('active');
-        }
-
-        const lm = results.multiFaceLandmarks[0];
-        if (!lm || !lm[33] || !lm[263] || !lm[133] || !lm[362]) return;
-        const toPixel = (pt) => ({ x: pt.x * canvas.width, y: pt.y * canvas.height });
-
-        // Landmark indices from Prompt 5:
-        // Left eye outer: 33, inner: 133, iris: 468
-        // Right eye outer: 263, inner: 362, iris: 473
-        const leftOuter = toPixel(lm[33]);
-        const rightOuter = toPixel(lm[263]);
-        const leftInner = toPixel(lm[133]);
-        const rightInner = toPixel(lm[362]);
-        const leftIris = toPixel(lm[468] || lm[159]);
-        const rightIris = toPixel(lm[473] || lm[386]);
-
-        // Frame width = outer-to-outer eye span × 1.72 multiplier
-        const eyeSpanWidth = Math.hypot(rightOuter.x - leftOuter.x, rightOuter.y - leftOuter.y);
-        const frameWidth = eyeSpanWidth * 1.72;
-
-        // Frame center X & Y
-        const frameCenterX = (leftOuter.x + rightOuter.x) / 2;
-        const frameCenterY = (leftIris.y + rightIris.y) / 2;
-
-        // Bridge width = inner corner distance × 1.1
-        const bridgeWidth = Math.hypot(rightInner.x - leftInner.x, rightInner.y - leftInner.y) * 1.1;
-
-        // Individual lens height
-        const lensWidth = (frameWidth - bridgeWidth) / 2;
-        const lensHeight = lensWidth * 0.65;
-
-        // Head yaw rotation angle
-        const yawAngle = Math.atan2(rightOuter.y - leftOuter.y, rightOuter.x - leftOuter.x);
-
-        // Apply EMA smoothing (alpha = 0.35)
-        const s = smoothRef.current;
-        s.frameCenterX = lerp(s.frameCenterX, frameCenterX, 0.35);
-        s.frameCenterY = lerp(s.frameCenterY, frameCenterY, 0.35);
-        s.frameWidth = lerp(s.frameWidth, frameWidth, 0.35);
-        s.bridgeWidth = lerp(s.bridgeWidth, bridgeWidth, 0.35);
-        s.lensHeight = lerp(s.lensHeight, lensHeight, 0.35);
-        s.yawAngle = lerp(s.yawAngle, yawAngle, 0.35);
-
-        // Draw active eyewear — use ref to avoid stale closure on frame selection
-        drawGlassesFrame(ctx, s, FRAMES[selectedFrameIdxRef.current]);
-      });
-
-      faceMeshRef.current = faceMesh;
 
       if (videoRef.current) {
         const camera = new window.Camera(videoRef.current, {
@@ -1012,7 +1126,7 @@ const TryOnScreen = ({ onSelectTab }) => {
     offCtx.fill();
     offCtx.fillStyle = '#FFFFFF';
     offCtx.font = 'bold 15px sans-serif';
-    offCtx.fillText('✨ Lens Makers AR Studio', 40, offCanvas.height - 37);
+    offCtx.fillText('Lens Makers AR Studio', 40, offCanvas.height - 37);
 
     // Save data URL
     const dataUrl = offCanvas.toDataURL('image/png');
@@ -1160,11 +1274,11 @@ const TryOnScreen = ({ onSelectTab }) => {
             className="btn-secondary-pill w-100 mb-3"
             style={{ height: '50px', fontSize: '14px', fontWeight: '700', maxWidth: '340px', border: '1.5px solid #7C4DFF', background: 'rgba(124, 77, 255, 0.15)', color: '#FFFFFF' }}
             onClick={() => {
-              showToast('✨ Launching Live AI 3D Simulation');
+              showToast('Launching Live AI 3D Simulation');
               startDemoSimulation();
             }}
           >
-            <span>✨ Try Live Demo Simulation (No Camera Needed)</span>
+            <span>Try Live Demo Simulation (No Camera Needed)</span>
           </button>
 
           {/* Hidden File Input for Photo Upload */}
@@ -1226,7 +1340,7 @@ const TryOnScreen = ({ onSelectTab }) => {
             className="btn-primary-pill mb-3"
             style={{ padding: '14px 32px' }}
             onClick={() => {
-              showToast('✨ Starting simulation mode');
+              showToast('Starting simulation mode');
               startDemoSimulation();
             }}
           >
@@ -1263,7 +1377,8 @@ const TryOnScreen = ({ onSelectTab }) => {
             position: 'relative',
             width: '100%',
             height: '100%',
-            cursor: mode === '360' ? (isDragging360Ref.current ? 'grabbing' : 'grab') : 'default'
+            cursor: mode === '360' ? (isDragging360Ref.current ? 'grabbing' : 'grab') : 'default',
+            touchAction: mode === '360' ? 'none' : 'auto'
           }}
           onMouseDown={handle360MouseDown}
           onMouseMove={handle360MouseMove}
@@ -1291,6 +1406,92 @@ const TryOnScreen = ({ onSelectTab }) => {
             height={720}
             style={{ transform: mode === 'camera' ? 'scaleX(-1)' : 'none' }}
           />
+
+          {/* USER REQUESTED INTERACTIVE OVERLAYS (Like WhatsApp Screenshots) */}
+          {mode !== '360' && (
+            <>
+              {/* Top Left: Frame Fit / Adjust Badge ("L ✏️") */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '80px',
+                  left: '20px',
+                  zIndex: 25,
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: '#FFFFFF',
+                  borderRadius: '24px',
+                  padding: '4px 14px 4px 6px',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25)',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(0,0,0,0.08)',
+                  transition: 'transform 0.2s ease'
+                }}
+                onClick={() => {
+                  showToast('✏️ Adjust Mode: Select frames below to change style and fit!');
+                }}
+                title="Frame Style & Fit Adjust"
+              >
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: '#1E1B4B',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: '800',
+                  fontSize: '14px',
+                  marginRight: '8px',
+                  boxShadow: '0 2px 6px rgba(30, 27, 75, 0.4)'
+                }}>
+                  {currentFrameStyle.name.charAt(0)}
+                </div>
+                <span style={{ fontSize: '15px', fontWeight: '700', color: '#1E1B4B', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  ✎ Adjust Frame
+                </span>
+              </div>
+
+              {/* Top Right: "Erase Frame" Comparison Button */}
+              <button
+                type="button"
+                style={{
+                  position: 'absolute',
+                  top: '75px',
+                  right: '20px',
+                  zIndex: 25,
+                  background: isFrameErased ? '#FF4D8D' : 'rgba(28, 28, 30, 0.88)',
+                  border: '2px solid rgba(255, 255, 255, 0.25)',
+                  borderRadius: '16px',
+                  padding: '8px 16px',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseDown={() => { setIsFrameErased(true); isFrameErasedRef.current = true; }}
+                onMouseUp={() => { setIsFrameErased(false); isFrameErasedRef.current = false; }}
+                onMouseLeave={() => { if (isFrameErased) { setIsFrameErased(false); isFrameErasedRef.current = false; } }}
+                onTouchStart={(e) => { e.stopPropagation(); setIsFrameErased(true); isFrameErasedRef.current = true; }}
+                onTouchEnd={(e) => { e.stopPropagation(); setIsFrameErased(false); isFrameErasedRef.current = false; }}
+                onClick={() => {
+                  const next = !isFrameErasedRef.current;
+                  setIsFrameErased(next);
+                  isFrameErasedRef.current = next;
+                  showToast(next ? '👁️ Frame Erased: Comparing with natural face' : '👓 Frame Restored!');
+                }}
+                title="Erase Frame (Hold or Click to Compare)"
+              >
+                <span style={{ fontSize: '20px', marginBottom: '2px', lineHeight: 1 }}>⌫</span>
+                <span style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.5px' }}>{isFrameErased ? 'SHOW FRAME' : 'Erase Frame'}</span>
+              </button>
+            </>
+          )}
 
           {/* TOP TRANSPARENT BAR CONTROLS */}
           <div className="tryon-top-bar">
@@ -1323,11 +1524,11 @@ const TryOnScreen = ({ onSelectTab }) => {
                   type="button"
                   className={`tryon-mode-option ${mode === 'demo' || mode === 'photo' ? 'active' : ''}`}
                   onClick={() => {
-                    showToast('✨ Switched to 3D AI Simulation');
+                    showToast('Switched to 3D AI Simulation');
                     startDemoSimulation();
                   }}
                 >
-                  <span>✨ Simulation</span>
+                  <span>Simulation</span>
                 </button>
                 <button
                   type="button"
@@ -1435,19 +1636,18 @@ const TryOnScreen = ({ onSelectTab }) => {
               <button
                 type="button"
                 className={`tryon-360-chip ${isAutoSpinning ? 'active' : ''}`}
-                style={{ background: isAutoSpinning ? 'linear-gradient(135deg, #FF4D8D, #7C4DFF)' : undefined, borderColor: isAutoSpinning ? '#FF4D8D' : undefined }}
+                style={{ background: isAutoSpinning ? '#FF4D8D' : undefined, borderColor: isAutoSpinning ? '#FF4D8D' : undefined, color: isAutoSpinning ? '#FFFFFF' : undefined }}
                 onClick={() => {
                   setIsAutoSpinning(!isAutoSpinning);
-                  showToast(isAutoSpinning ? '⏸️ Auto-Spin Paused' : '▶️ Auto-Spin Resumed');
                 }}
               >
-                {isAutoSpinning ? '⏸️ Pause Spin' : '▶️ Auto-Spin'}
+                {isAutoSpinning ? '⏸️ Pause Auto-Spin' : '▶️ Auto-Spin 360°'}
               </button>
             </div>
           )}
 
           {/* "NO FACE DETECTED" GUIDE OVAL (When face lost or calibrating) */}
-          {!faceDetected && (
+          {mode !== '360' && !faceDetected && (
             <div className="tryon-face-guide">
               <div className="tryon-oval-outline" />
               <div className="tryon-guide-text">
@@ -1457,9 +1657,11 @@ const TryOnScreen = ({ onSelectTab }) => {
           )}
 
           {/* PERMANENT PRIVACY BADGE (~70% height) */}
-          <div className="tryon-privacy-badge">
-            🔒 Processed locally on device. Not recorded.
-          </div>
+          {mode !== '360' && (
+            <div className="tryon-privacy-badge">
+              🔒 Processed locally on device. Not recorded.
+            </div>
+          )}
 
           {/* BOTTOM CONTROL PANEL (Anchored to bottom, ~150px height) */}
           <div className="tryon-bottom-panel">
@@ -1481,7 +1683,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                 👁️ Biometric HUD
               </button>
               {[
-                { id: 'antireflective', label: '✨ Anti-Reflective' },
+                { id: 'antireflective', label: 'Anti-Reflective' },
                 { id: 'bluelight', label: '🛡️ Blue Light' },
                 { id: 'polarized', label: '🕶️ Polarized' },
                 { id: 'photochromic', label: '☀️ Photochromic' }
@@ -1497,7 +1699,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                   }}
                   onClick={() => {
                     setLensCoating(c.id);
-                    showToast(`✨ Applied ${c.label.replace(/^[^\s]+\s/, '')} Coating`);
+                    showToast(`Applied ${c.label.replace(/^[^\s]+\s/, '')} Coating`);
                   }}
                 >
                   {c.label}
