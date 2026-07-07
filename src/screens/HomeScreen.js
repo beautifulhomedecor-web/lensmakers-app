@@ -48,14 +48,14 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
   // bound to .screen-container in App.js. No local PTR implementation needed.
 
   return (
-    <div className="screen-transition-enter" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)', background: '#FAFAF9' }}>
+    <div className="screen-transition-enter" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)', background: '#FFFFFF' }}>
       {/* PTR handled globally by PullToRefresh in App.js — no local indicator needed */}
 
       {/* 1. SEAMLESS DARK HERO SECTION (Continues #070A13 from Top Header) */}
       <div
         className="hero-section dark-anchor"
         style={{
-          background: 'linear-gradient(180deg, #070A13 0%, #0A112A 60%, #0F1736 100%)',
+          background: 'linear-gradient(180deg, #070A13 0%, #0F1535 100%)',
           padding: '4px var(--screen-padding) 44px var(--screen-padding)',
           margin: 0,
           position: 'relative',
@@ -90,16 +90,16 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
               <div style={{ width: '60%', paddingRight: '10px', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <h1 style={{ fontSize: '30px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.15', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
                   See the world<br />
-                  in perfect <span style={{ color: '#84CC16' }}>clarity</span>
+                  in perfect <span style={{ color: '#9CCC65' }}>clarity</span>
                 </h1>
-                <p style={{ fontSize: '14px', color: '#C7C3D9', margin: '0 0 18px 0', lineHeight: '1.4', fontWeight: '500' }}>
+                <p style={{ fontSize: '14px', color: '#A5B4FC', margin: '0 0 18px 0', lineHeight: '1.4', fontWeight: '500', textShadow: 'none' }}>
                   Premium Lenses.<br />
                   Perfect Vision.
                 </p>
                 <button
                   onClick={() => onSelectTab('shop')}
                   style={{
-                    background: '#84CC16',
+                    background: '#9CCC65',
                     color: '#000000',
                     border: 'none',
                     borderRadius: '999px',
@@ -156,15 +156,15 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
                 <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.1', margin: '0 0 4px 0' }}>
                   Flat 25% Off
                 </h2>
-                <div style={{ fontSize: '32px', fontWeight: '900', color: '#84CC16', lineHeight: '1.0', marginBottom: '12px' }}>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#9CCC65', lineHeight: '1.0', marginBottom: '12px' }}>
                   ₹99/mo
                 </div>
-                <p style={{ fontSize: '13px', color: '#C7C3D9', margin: '0 0 16px 0', lineHeight: '1.4' }}>
+                <p style={{ fontSize: '13px', color: '#A5B4FC', margin: '0 0 16px 0', lineHeight: '1.4', textShadow: 'none' }}>
                   Free checkups & priority slots
                 </p>
                 <button
                   onClick={() => onSelectTab('membership')}
-                  style={{ background: '#84CC16', color: '#000000', border: 'none', borderRadius: '999px', padding: '0 22px', height: '42px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(132, 204, 22, 0.3)' }}
+                  style={{ background: '#9CCC65', color: '#000000', border: 'none', borderRadius: '999px', padding: '0 22px', height: '42px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(156, 204, 101, 0.3)' }}
                 >
                   <span>Join Now</span>
                   <i data-lucide="arrow-right" style={{ width: '16px', height: '16px', color: '#000000' }} />
@@ -203,7 +203,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
                 <div style={{ fontSize: '32px', fontWeight: '900', color: '#00E5FF', lineHeight: '1.0', marginBottom: '12px' }}>
                   Check-Up
                 </div>
-                <p style={{ fontSize: '13px', color: '#C7C3D9', margin: '0 0 16px 0', lineHeight: '1.4' }}>
+                <p style={{ fontSize: '13px', color: '#A5B4FC', margin: '0 0 16px 0', lineHeight: '1.4', textShadow: 'none' }}>
                   Certified optometrists from home
                 </p>
                 <button
@@ -237,7 +237,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
                 width: currentSlide === idx ? '20px' : '6px',
                 height: '6px',
                 borderRadius: '3px',
-                background: currentSlide === idx ? '#84CC16' : 'rgba(255, 255, 255, 0.3)',
+                background: currentSlide === idx ? '#9CCC65' : '#4A5568',
                 transition: 'all 300ms var(--spring-bezier)',
                 cursor: 'pointer',
                 display: 'inline-block'
@@ -251,37 +251,37 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       <div
         className="home-light-body"
         style={{
-          background: '#FAFAF9',
-          borderTopLeftRadius: '28px',
-          borderTopRightRadius: '28px',
-          marginTop: '-28px',
-          padding: '24px 0 0 0',
+          background: '#FFFFFF',
+          borderTopLeftRadius: '50% 40px',
+          borderTopRightRadius: '50% 40px',
+          marginTop: '-36px',
+          padding: '32px 0 0 0',
           position: 'relative',
           zIndex: 10,
-          boxShadow: '0 -8px 30px rgba(0, 0, 0, 0.15)'
+          boxShadow: 'none'
         }}
       >
         {/* A. 4 ACTION CARDS ROW (Eyeglasses, Lenses, Blue Cut, Store Locator) */}
         <div style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', background: '#FFFFFF', borderRadius: '20px', padding: '16px 4px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: '1px solid #F0F0F0' }}>
           {[
-            { icon: 'glasses', color: '#84CC16', bg: 'rgba(132, 204, 22, 0.12)', title: 'Eyeglasses', sub: 'Stylish Frames', tab: 'shop' },
-            { icon: 'disc', color: '#00E5FF', bg: 'rgba(0, 229, 255, 0.12)', title: 'Lenses', sub: 'Premium Quality', tab: 'shop' },
-            { icon: 'shield-check', color: '#10B981', bg: 'rgba(16, 185, 129, 0.12)', title: 'Blue Cut', sub: 'Screen Protection', tab: 'shop' },
-            { icon: 'map-pin', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)', title: 'Store Locator', sub: 'Find Near You', tab: 'stores' }
+            { icon: 'glasses', color: '#9CCC65', bg: 'rgba(156, 204, 101, 0.12)', title: 'Eyeglasses', sub: 'Stylish Frames', tab: 'shop' },
+            { icon: 'disc', color: '#1E88E5', bg: 'rgba(30, 136, 229, 0.12)', title: 'Lenses', sub: 'Premium Quality', tab: 'shop' },
+            { icon: 'shield-check', color: '#9CCC65', bg: 'rgba(156, 204, 101, 0.12)', title: 'Blue Cut', sub: 'Screen Protection', tab: 'shop' },
+            { icon: 'map-pin', color: '#1E88E5', bg: 'rgba(30, 136, 229, 0.12)', title: 'Store Locator', sub: 'Find Near You', tab: 'stores' }
           ].map((item, idx) => (
             <div
               key={idx}
               onClick={() => onSelectTab(item.tab)}
               style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', cursor: 'pointer',
-                borderRight: idx < 3 ? '1px solid #EAEAEA' : 'none', padding: '0 4px'
+                borderRight: idx < 3 ? '1px solid #F0F0F0' : 'none', padding: '0 4px'
               }}
             >
               <div style={{ width: '48px', height: '48px', borderRadius: '24px', background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
                 <i data-lucide={item.icon} style={{ width: '22px', height: '22px', color: item.color }} />
               </div>
-              <div style={{ fontSize: '12px', fontWeight: '800', color: '#1C1917', marginBottom: '2px' }}>{item.title}</div>
-              <div style={{ fontSize: '10px', color: '#64748B', fontWeight: '500', lineHeight: '1.2' }}>{item.sub}</div>
+              <div style={{ fontSize: '12px', fontWeight: '600', color: '#111111', marginBottom: '2px' }}>{item.title}</div>
+              <div style={{ fontSize: '10px', color: '#757575', fontWeight: '400', lineHeight: '1.2' }}>{item.sub}</div>
             </div>
           ))}
         </div>
@@ -289,53 +289,45 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
         {/* B. SHOP BY CATEGORY SECTION */}
         <div style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', padding: '0 4px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#1C1917', margin: 0 }}>Shop by Category</h2>
-            <span onClick={() => onSelectTab('shop')} style={{ fontSize: '13px', fontWeight: '700', color: '#84CC16', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}>
-              See All <i data-lucide="chevron-right" style={{ width: '16px', height: '16px' }} />
+            <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#111111', margin: 0 }}>Shop by Category</h2>
+            <span onClick={() => onSelectTab('shop')} style={{ fontSize: '13px', fontWeight: '700', color: '#9CCC65', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}>
+              See All &gt;
             </span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
             {[
-              { title: 'Men', sub: 'Collection', bg: '#F4F3EF', imgBg: 'radial-gradient(circle, #E2E8F0 0%, #F4F3EF 70%)', frameColor: '#1E293B', tab: 'shop' },
-              { title: 'Women', sub: 'Collection', bg: '#FDF2F8', imgBg: 'radial-gradient(circle, #FCE7F3 0%, #FDF2F8 70%)', frameColor: '#E11D48', tab: 'shop' },
-              { title: 'Sunglasses', sub: 'Collection', bg: '#F4F3EF', imgBg: 'radial-gradient(circle, #E2E8F0 0%, #F4F3EF 70%)', frameColor: '#0F172A', tab: 'shop', isSun: true },
-              { title: 'Blue Cut', sub: 'Lenses', bg: '#F0F9FF', imgBg: 'radial-gradient(circle, #E0F2FE 0%, #F0F9FF 70%)', frameColor: '#0284C7', tab: 'shop', isBlue: true }
+              { title: 'Men', sub: 'Collection', bg: '#F5F5F7', img: 'assets/category_eyeglasses_1783260180325.png', tab: 'shop' },
+              { title: 'Women', sub: 'Collection', bg: '#FFF0F5', img: 'assets/category_sunglasses_1783260195132.png', tab: 'shop' },
+              { title: 'Sunglasses', sub: 'Collection', bg: '#F5F5F7', img: 'assets/category_sunglasses_1783260195132.png', tab: 'shop' },
+              { title: 'Blue Cut', sub: 'Lenses', bg: '#F0F4F8', img: 'assets/category_computer_1783260205921.png', tab: 'shop' }
             ].map((cat, idx) => (
               <div
                 key={idx}
                 onClick={() => onSelectTab(cat.tab)}
                 style={{
                   background: cat.bg,
-                  borderRadius: '16px',
+                  borderRadius: '20px',
                   padding: '12px 10px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   cursor: 'pointer',
                   position: 'relative',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                  border: '1px solid rgba(0,0,0,0.03)',
+                  boxShadow: 'none',
+                  border: 'none',
                   minHeight: '140px'
                 }}
               >
-                <div style={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', background: cat.imgBg, borderRadius: '12px', position: 'relative', overflow: 'hidden' }}>
-                  <svg width="74" height="34" viewBox="0 0 100 45" fill="none">
-                    <circle cx="26" cy="22" r="16" stroke={cat.frameColor} strokeWidth="3.5" fill={cat.isSun ? 'rgba(15, 23, 42, 0.75)' : cat.isBlue ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255,255,255,0.4)'} />
-                    <circle cx="74" cy="22" r="16" stroke={cat.frameColor} strokeWidth="3.5" fill={cat.isSun ? 'rgba(15, 23, 42, 0.75)' : cat.isBlue ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255,255,255,0.4)'} />
-                    <path d="M42 22 C 46 18, 54 18, 58 22" stroke={cat.frameColor} strokeWidth="3.5" fill="none" />
-                    <path d="M10 22 L 2 15 M 90 22 L 98 15" stroke={cat.frameColor} strokeWidth="3.5" strokeLinecap="round" />
-                    {cat.isBlue && (
-                      <path d="M18 16 L 34 28 M 66 16 L 82 28" stroke="#00E5FF" strokeWidth="1.5" opacity="0.8" />
-                    )}
-                  </svg>
+                <div style={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', overflow: 'hidden' }}>
+                  <img src={cat.img} alt={cat.title} style={{ width: '85%', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' }} />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
                   <div>
-                    <div style={{ fontSize: '13px', fontWeight: '800', color: '#1C1917', marginBottom: '2px' }}>{cat.title}</div>
-                    <div style={{ fontSize: '10px', color: '#64748B', fontWeight: '500' }}>{cat.sub}</div>
+                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#111111', marginBottom: '2px' }}>{cat.title}</div>
+                    <div style={{ fontSize: '10px', color: '#757575', fontWeight: '400' }}>{cat.sub}</div>
                   </div>
-                  <span style={{ color: '#84CC16', fontSize: '14px', fontWeight: '800' }}>→</span>
+                  <span style={{ color: '#9CCC65', fontSize: '14px', fontWeight: '800' }}>→</span>
                 </div>
               </div>
             ))}
@@ -347,29 +339,29 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
           onClick={() => onSelectTab('shop')}
           style={{
             margin: '0 var(--screen-padding) 28px var(--screen-padding)',
-            background: 'linear-gradient(135deg, #070A13 0%, #0F1535 100%)',
-            borderRadius: '20px',
+            background: 'linear-gradient(135deg, #020813 0%, #0B1C3F 100%)',
+            borderRadius: '24px',
             padding: '20px 18px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '12px',
             cursor: 'pointer',
-            boxShadow: '0 10px 25px rgba(7, 10, 19, 0.2)',
+            boxShadow: '0 10px 25px rgba(2, 8, 19, 0.2)',
             position: 'relative',
             overflow: 'hidden'
           }}
         >
-          <div style={{ position: 'absolute', top: '-50%', left: '-10%', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(0, 229, 255, 0.3) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: '-50%', left: '-10%', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(33, 150, 243, 0.3) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', zIndex: 2 }}>
-            <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(0, 229, 255, 0.15)', border: '1.5px solid rgba(0, 229, 255, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(0, 229, 255, 0.4)', flexShrink: 0 }}>
-              <i data-lucide="shield" style={{ width: '24px', height: '24px', color: '#00E5FF' }} />
+            <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(33, 150, 243, 0.15)', border: '1.5px solid rgba(33, 150, 243, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 16px rgba(33, 150, 243, 0.4)', flexShrink: 0 }}>
+              <i data-lucide="shield" style={{ width: '24px', height: '24px', color: '#2196F3' }} />
             </div>
             <div>
               <div style={{ fontSize: '16px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.2', marginBottom: '4px' }}>
                 Protect your eyes<br />
-                from <span style={{ color: '#00E5FF' }}>digital strain</span>
+                from <span style={{ color: '#2196F3' }}>digital strain</span>
               </div>
               <div style={{ fontSize: '12px', color: '#A0A4C8', fontWeight: '500' }}>
                 Explore our Blue Cut Lenses
@@ -378,16 +370,16 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
           </div>
 
           <div style={{ width: '40px', height: '40px', borderRadius: '20px', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, zIndex: 2 }}>
-            <i data-lucide="arrow-right" style={{ width: '18px', height: '18px', color: '#FFFFFF' }} />
+            <span style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>→</span>
           </div>
         </div>
 
         {/* D. 4 TRUST BADGES ROW */}
         <div style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', background: '#FFFFFF', borderRadius: '20px', padding: '18px 4px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: '1px solid #F0F0F0' }}>
           {[
-            { icon: 'award', color: '#84CC16', bg: 'rgba(132, 204, 22, 0.12)', title: 'Premium Quality', sub: 'Assured' },
+            { icon: 'award', color: '#9CCC65', bg: 'rgba(156, 204, 101, 0.12)', title: 'Premium Quality', sub: 'Assured' },
             { icon: 'shield-check', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)', title: 'UV Protection', sub: '100%' },
-            { icon: 'check-circle', color: '#84CC16', bg: 'rgba(132, 204, 22, 0.12)', title: '1 Year Warranty', sub: 'On Lenses' },
+            { icon: 'check-circle', color: '#9CCC65', bg: 'rgba(156, 204, 101, 0.12)', title: '1 Year Warranty', sub: 'On Lenses' },
             { icon: 'headphones', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)', title: 'Expert Support', sub: 'Always Here' }
           ].map((badge, idx) => (
             <div

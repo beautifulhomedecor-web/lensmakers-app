@@ -67,7 +67,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activ
           width: '100%',
           maxWidth: '100%',
           zIndex: 100,
-          background: activeTab === 'home' ? '#070A13' : 'linear-gradient(180deg, #070A13 0%, #0B1026 100%)',
+          background: activeTab === 'home' ? '#070A13' : 'linear-gradient(180deg, #070A13 0%, #0F1535 100%)',
           border: 'none',
           borderRadius: 0,
           boxShadow: 'none',

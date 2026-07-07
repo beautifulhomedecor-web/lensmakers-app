@@ -96,10 +96,10 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
                 style={{
                   width: '22px',
                   height: '22px',
-                  color: isActive ? '#84CC16' : '#64748B',
+                  color: isActive ? '#9CCC65' : '#475569',
                   strokeWidth: isActive ? '2.5px' : '1.8px',
-                  transition: 'color 200ms ease, transform 280ms var(--spring-bezier)',
-                  transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                  transition: 'color 200ms ease',
+                  transform: 'none',
                   flexShrink: 0
                 }}
               />
@@ -109,7 +109,7 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
                     position: 'absolute',
                     top: '-5px',
                     right: '-10px',
-                    background: '#84CC16',
+                    background: '#9CCC65',
                     color: '#000000',
                     fontSize: '10px',
                     fontWeight: '900',
@@ -120,7 +120,7 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    boxShadow: 'none',
                     lineHeight: 1,
                     zIndex: 10
                   }}
@@ -133,7 +133,7 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
               style={{
                 fontSize: '11px',
                 fontWeight: isActive ? '700' : '500',
-                color: isActive ? '#84CC16' : '#64748B',
+                color: isActive ? '#9CCC65' : '#475569',
                 marginTop: '4px',
                 letterSpacing: '0.2px',
                 transition: 'color 200ms ease'
