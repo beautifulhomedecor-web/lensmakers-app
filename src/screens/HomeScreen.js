@@ -48,265 +48,362 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
   // bound to .screen-container in App.js. No local PTR implementation needed.
 
   return (
-    <div className="screen-transition-enter" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)' }}>
+    <div className="screen-transition-enter" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)', background: '#FAFAF9' }}>
       {/* PTR handled globally by PullToRefresh in App.js — no local indicator needed */}
 
-      {/* 2. HERO BANNER CAROUSEL (Section 2 - Exact 220px height, 60% left column, 40% right column per Item 2) */}
-      <div className="hero-carousel-wrapper" style={{ position: 'relative', margin: '0 var(--screen-padding) 32px var(--screen-padding)' }}>
+      {/* 1. SEAMLESS DARK HERO SECTION (Continues #070A13 from Top Header) */}
+      <div
+        className="hero-section dark-anchor"
+        style={{
+          background: 'linear-gradient(180deg, #070A13 0%, #0A112A 60%, #0F1736 100%)',
+          padding: '4px var(--screen-padding) 44px var(--screen-padding)',
+          margin: 0,
+          position: 'relative',
+          zIndex: 1,
+          color: '#FFFFFF'
+        }}
+      >
         <div
           className="hero-carousel"
+          style={{ position: 'relative', overflow: 'hidden', minHeight: '200px' }}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {/* SLIDE 1 — BOGO OFFER */}
+          {/* SLIDE 0 — EXACT MATCH OF USER IMAGE: "See the world in perfect clarity" */}
           {currentSlide === 0 && (
             <div
               className="carousel-slide-inner"
               style={{
-                background: 'rgba(255, 255, 255, 0.65)',
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 animation: slideDirection === 'next' ? 'slideInRight 400ms var(--spring-bezier)' : 'slideInLeft 400ms var(--spring-bezier)'
               }}
             >
-              <div style={{ position: 'absolute', top: '-40px', left: '10%', width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(255,77,141,0.25) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-              
               {/* Left Column: 60% Width */}
               <div style={{ width: '60%', paddingRight: '10px', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                <span className="badge-pill badge-orange" style={{ fontSize: '10px', padding: '4px 10px', marginBottom: '8px', display: 'inline-block' }}>LIMITED OFFER</span>
-                <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.1', margin: '0 0 4px 0' }}>
-                  Buy 1 Get 1
-                </h2>
-                <div style={{ fontSize: '32px', fontWeight: '900', color: '#FF4D8D', lineHeight: '1.0', marginBottom: '12px', letterSpacing: '-0.5px' }}>
-                  FREE
-                </div>
-                <p style={{ fontSize: '12px', color: '#A0A4C8', margin: '0 0 14px 0', lineHeight: '1.3' }}>
-                  On purchase of ₹1,699+
+                <h1 style={{ fontSize: '30px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.15', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
+                  See the world<br />
+                  in perfect <span style={{ color: '#84CC16' }}>clarity</span>
+                </h1>
+                <p style={{ fontSize: '14px', color: '#C7C3D9', margin: '0 0 18px 0', lineHeight: '1.4', fontWeight: '500' }}>
+                  Premium Lenses.<br />
+                  Perfect Vision.
                 </p>
                 <button
-                  className="btn-primary-pill"
-                  style={{ height: '38px', padding: '0 18px', fontSize: '13px', width: 'fit-content' }}
                   onClick={() => onSelectTab('shop')}
+                  style={{
+                    background: '#84CC16',
+                    color: '#000000',
+                    border: 'none',
+                    borderRadius: '999px',
+                    padding: '0 22px',
+                    height: '42px',
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 16px rgba(132, 204, 22, 0.3)',
+                    transition: 'transform 200ms ease'
+                  }}
                 >
-                  Shop Now →
+                  <span>Shop Now</span>
+                  <i data-lucide="arrow-right" style={{ width: '16px', height: '16px', color: '#000000' }} />
                 </button>
               </div>
 
-              {/* Right Column: 40% Width (max-height 180px illustration) */}
-              <div style={{ width: '40%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', overflow: 'hidden', maxHeight: '180px', height: '100%', zIndex: 1, position: 'relative' }}>
-                <svg width="110" height="90" viewBox="0 0 120 100" fill="none">
-                  <circle cx="32" cy="45" r="22" stroke="#1E88E5" strokeWidth="3.5" fill="rgba(30,136,229,0.15)" />
-                  <circle cx="88" cy="45" r="22" stroke="#1E88E5" strokeWidth="3.5" fill="rgba(30,136,229,0.15)" />
-                  <path d="M54 45 C 58 40, 62 40, 66 45" stroke="#1E88E5" strokeWidth="3.5" fill="none" />
-                  <path d="M10 45 L 2 35 M 110 45 L 118 35" stroke="#1E88E5" strokeWidth="3.5" strokeLinecap="round" />
-                  
-                  {/* Second pair overlapping behind */}
-                  <g transform="translate(-12, 22) scale(0.85)" opacity="0.65">
-                    <circle cx="32" cy="45" r="22" stroke="#FF4D8D" strokeWidth="3.5" fill="rgba(255,77,141,0.15)" />
-                    <circle cx="88" cy="45" r="22" stroke="#FF4D8D" strokeWidth="3.5" fill="rgba(255,77,141,0.15)" />
-                    <path d="M54 45 C 58 40, 62 40, 66 45" stroke="#FF4D8D" strokeWidth="3.5" fill="none" />
-                  </g>
+              {/* Right Column: 40% Width */}
+              <div style={{ width: '40%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', zIndex: 1, position: 'relative' }}>
+                <div style={{ position: 'absolute', width: '140px', height: '140px', background: 'radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, transparent 70%)', filter: 'blur(25px)', pointerEvents: 'none' }} />
+                <svg width="130" height="70" viewBox="0 0 120 65" fill="none" style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))' }}>
+                  <circle cx="30" cy="32" r="22" stroke="#1E293B" strokeWidth="4.5" fill="rgba(15, 23, 42, 0.85)" />
+                  <circle cx="90" cy="32" r="22" stroke="#1E293B" strokeWidth="4.5" fill="rgba(15, 23, 42, 0.85)" />
+                  <circle cx="30" cy="32" r="19" stroke="#00E5FF" strokeWidth="1.5" strokeDasharray="18 8" opacity="0.8" />
+                  <circle cx="90" cy="32" r="19" stroke="#3B82F6" strokeWidth="1.5" strokeDasharray="18 8" opacity="0.8" />
+                  <path d="M52 32 C 56 26, 64 26, 68 32" stroke="#1E293B" strokeWidth="4.5" fill="none" />
+                  <path d="M8 32 L 1 24 M 112 32 L 119 24" stroke="#1E293B" strokeWidth="4.5" strokeLinecap="round" />
+                  <path d="M20 24 L 38 38 M 80 24 L 98 38" stroke="#00E5FF" strokeWidth="2" opacity="0.7" strokeLinecap="round" />
                 </svg>
-                {/* Overlapping FREE Ribbon Badge */}
-                <div style={{ position: 'absolute', bottom: '8px', right: '-4px', background: 'linear-gradient(135deg, #43A047, #2E7D32)', color: '#FFFFFF', fontSize: '10px', fontWeight: '800', padding: '2px 8px', borderRadius: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.5)', transform: 'rotate(-6deg)' }}>
-                  ★ 2nd FREE
-                </div>
               </div>
             </div>
           )}
 
-          {/* SLIDE 2 — MEMBERSHIP CLUB */}
+          {/* SLIDE 1 — VIP CLUB */}
           {currentSlide === 1 && (
             <div
               className="carousel-slide-inner"
               style={{
-                background: 'rgba(255, 255, 255, 0.65)',
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 animation: slideDirection === 'next' ? 'slideInRight 400ms var(--spring-bezier)' : 'slideInLeft 400ms var(--spring-bezier)'
               }}
             >
-              <div style={{ position: 'absolute', top: '10%', right: '10%', width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(124,77,141,0.3) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-
-              {/* Left Column: 60% Width */}
               <div style={{ width: '60%', paddingRight: '10px', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                <span className="badge-pill badge-purple" style={{ fontSize: '10px', padding: '4px 10px', marginBottom: '8px', display: 'inline-block' }}>LENS MAKERS CLUB</span>
-                <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.1', margin: '0 0 4px 0' }}>
+                <span className="badge-pill badge-purple" style={{ fontSize: '10px', padding: '4px 10px', marginBottom: '8px', display: 'inline-block' }}>VIP CLUB</span>
+                <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.1', margin: '0 0 4px 0' }}>
                   Flat 25% Off
                 </h2>
-                <div style={{ fontSize: '32px', fontWeight: '900', color: '#7C4DFF', lineHeight: '1.0', marginBottom: '12px' }}>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#84CC16', lineHeight: '1.0', marginBottom: '12px' }}>
                   ₹99/mo
                 </div>
-                <p style={{ fontSize: '12px', color: '#A0A4C8', margin: '0 0 14px 0', lineHeight: '1.3' }}>
+                <p style={{ fontSize: '13px', color: '#C7C3D9', margin: '0 0 16px 0', lineHeight: '1.4' }}>
                   Free checkups & priority slots
                 </p>
                 <button
-                  className="btn-primary-pill"
-                  style={{ height: '38px', padding: '0 18px', fontSize: '13px', width: 'fit-content', background: 'linear-gradient(135deg, #7C4DFF, #512DA8)' }}
                   onClick={() => onSelectTab('membership')}
+                  style={{ background: '#84CC16', color: '#000000', border: 'none', borderRadius: '999px', padding: '0 22px', height: '42px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(132, 204, 22, 0.3)' }}
                 >
-                  Join Now →
+                  <span>Join Now</span>
+                  <i data-lucide="arrow-right" style={{ width: '16px', height: '16px', color: '#000000' }} />
                 </button>
               </div>
 
-              {/* Right Column: 40% Width (max-height 180px illustration) */}
-              <div style={{ width: '40%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', overflow: 'hidden', maxHeight: '180px', height: '100%', zIndex: 1, position: 'relative' }}>
-                <div style={{ width: '100px', height: '100px', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(124,77,255,0.25), rgba(255,77,141,0.25))', border: '1.5px solid rgba(255,255,255,0.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.4)', transform: 'rotate(6deg)' }}>
-                  <span style={{ fontSize: '36px' }}>👑</span>
-                  <span style={{ fontSize: '10px', fontWeight: '800', color: '#FFFFFF', marginTop: '4px', letterSpacing: '1px' }}>VIP CLUB</span>
+              <div style={{ width: '40%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', zIndex: 1, position: 'relative' }}>
+                <div style={{ width: '100px', height: '100px', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(132,204,22,0.2), rgba(0,229,255,0.2))', border: '1.5px solid rgba(132,204,22,0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.4)', transform: 'rotate(6deg)' }}>
+                  <span style={{ fontSize: '38px' }}>👑</span>
+                  <span style={{ fontSize: '11px', fontWeight: '800', color: '#FFFFFF', marginTop: '4px', letterSpacing: '1px' }}>VIP CLUB</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* SLIDE 3 — FREE EYE CHECK-UP */}
+          {/* SLIDE 2 — FREE EYE CHECK-UP */}
           {currentSlide === 2 && (
             <div
               className="carousel-slide-inner"
               style={{
-                background: 'rgba(255, 255, 255, 0.65)',
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 animation: slideDirection === 'next' ? 'slideInRight 400ms var(--spring-bezier)' : 'slideInLeft 400ms var(--spring-bezier)'
               }}
             >
-              <div style={{ position: 'absolute', top: '10%', right: '20%', width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(41,182,246,0.25) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-
-              {/* Left Column: 60% Width */}
               <div style={{ width: '60%', paddingRight: '10px', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <span className="badge-pill badge-cyan" style={{ fontSize: '10px', padding: '4px 10px', marginBottom: '8px', display: 'inline-block' }}>100% ONLINE</span>
-                <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.1', margin: '0 0 4px 0' }}>
+                <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.1', margin: '0 0 4px 0' }}>
                   Free Online
                 </h2>
-                <div style={{ fontSize: '32px', fontWeight: '900', color: '#29B6F6', lineHeight: '1.0', marginBottom: '12px' }}>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#00E5FF', lineHeight: '1.0', marginBottom: '12px' }}>
                   Check-Up
                 </div>
-                <p style={{ fontSize: '12px', color: '#A0A4C8', margin: '0 0 14px 0', lineHeight: '1.3' }}>
+                <p style={{ fontSize: '13px', color: '#C7C3D9', margin: '0 0 16px 0', lineHeight: '1.4' }}>
                   Certified optometrists from home
                 </p>
                 <button
-                  className="btn-primary-pill"
-                  style={{ height: '38px', padding: '0 18px', fontSize: '13px', width: 'fit-content', background: 'linear-gradient(135deg, #29B6F6, #0288D1)' }}
                   onClick={() => onSelectTab('eyetest')}
+                  style={{ background: '#00E5FF', color: '#000000', border: 'none', borderRadius: '999px', padding: '0 22px', height: '42px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0, 229, 255, 0.3)' }}
                 >
-                  Book Free →
+                  <span>Book Free</span>
+                  <i data-lucide="arrow-right" style={{ width: '16px', height: '16px', color: '#000000' }} />
                 </button>
               </div>
 
-              {/* Right Column: 40% Width (max-height 180px illustration) */}
-              <div style={{ width: '40%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', overflow: 'hidden', maxHeight: '180px', height: '100%', zIndex: 1, position: 'relative' }}>
-                <div style={{ width: '84px', height: '84px', borderRadius: '42px', background: 'rgba(41,182,246,0.18)', border: '2px solid rgba(41,182,246,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(41,182,246,0.3)' }}>
-                  <i data-lucide="eye" style={{ width: '42px', height: '42px', color: '#29B6F6' }} />
+              <div style={{ width: '40%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', zIndex: 1, position: 'relative' }}>
+                <div style={{ width: '90px', height: '90px', borderRadius: '45px', background: 'rgba(0,229,255,0.18)', border: '2px solid rgba(0,229,255,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(0,229,255,0.3)' }}>
+                  <i data-lucide="eye" style={{ width: '45px', height: '45px', color: '#00E5FF' }} />
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* CAROUSEL CONTROLS (8px below card edge per Item 2) */}
-        <div className="carousel-dots">
+        {/* CAROUSEL DOTS (At bottom of dark hero section) */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', marginTop: '24px' }}>
           {[0, 1, 2].map((idx) => (
-            <div
+            <span
               key={idx}
-              className={`carousel-dot ${currentSlide === idx ? 'active' : ''}`}
               onClick={() => {
                 setSlideDirection(idx > currentSlide ? 'next' : 'prev');
                 setCurrentSlide(idx);
+              }}
+              style={{
+                width: currentSlide === idx ? '20px' : '6px',
+                height: '6px',
+                borderRadius: '3px',
+                background: currentSlide === idx ? '#84CC16' : 'rgba(255, 255, 255, 0.3)',
+                transition: 'all 300ms var(--spring-bezier)',
+                cursor: 'pointer',
+                display: 'inline-block'
               }}
             />
           ))}
         </div>
       </div>
 
-      {/* 4. CATEGORY SECTION — "SHOP BY CATEGORY" (Section 4) */}
-      <div className="fade-up-item" style={{ animationDelay: '40ms' }}>
-        <h2 className="section-heading mb-2" style={{ padding: '0 var(--screen-padding)' }}>
-          Shop by Category
-        </h2>
-        <div className="category-grid">
-          {/* Card 1: Eyeglasses */}
-          <div
-            className="category-card"
-            style={{ 
-              background: `linear-gradient(to bottom, rgba(15,21,53,0) 40%, rgba(15,21,53,0.95) 100%), url('assets/category_eyeglasses_1783260180325.png') center/cover no-repeat`, 
-              border: '1px solid rgba(30,136,229,0.4)',
-              justifyContent: 'flex-end',
-              paddingBottom: '16px'
-            }}
-            onClick={() => onSelectTab('shop')}
-          >
-            <div style={{ fontSize: '12px', fontWeight: '700', color: '#FFFFFF', textAlign: 'center', width: '100%', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Eyeglasses</div>
+      {/* 2. LIGHT BODY CONTAINER WITH ROUNDED TOP CORNERS OVERLAPPING HERO */}
+      <div
+        className="home-light-body"
+        style={{
+          background: '#FAFAF9',
+          borderTopLeftRadius: '28px',
+          borderTopRightRadius: '28px',
+          marginTop: '-28px',
+          padding: '24px 0 0 0',
+          position: 'relative',
+          zIndex: 10,
+          boxShadow: '0 -8px 30px rgba(0, 0, 0, 0.15)'
+        }}
+      >
+        {/* A. 4 ACTION CARDS ROW (Eyeglasses, Lenses, Blue Cut, Store Locator) */}
+        <div style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', background: '#FFFFFF', borderRadius: '20px', padding: '16px 4px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: '1px solid #F0F0F0' }}>
+          {[
+            { icon: 'glasses', color: '#84CC16', bg: 'rgba(132, 204, 22, 0.12)', title: 'Eyeglasses', sub: 'Stylish Frames', tab: 'shop' },
+            { icon: 'disc', color: '#00E5FF', bg: 'rgba(0, 229, 255, 0.12)', title: 'Lenses', sub: 'Premium Quality', tab: 'shop' },
+            { icon: 'shield-check', color: '#10B981', bg: 'rgba(16, 185, 129, 0.12)', title: 'Blue Cut', sub: 'Screen Protection', tab: 'shop' },
+            { icon: 'map-pin', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)', title: 'Store Locator', sub: 'Find Near You', tab: 'stores' }
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              onClick={() => onSelectTab(item.tab)}
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', cursor: 'pointer',
+                borderRight: idx < 3 ? '1px solid #EAEAEA' : 'none', padding: '0 4px'
+              }}
+            >
+              <div style={{ width: '48px', height: '48px', borderRadius: '24px', background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                <i data-lucide={item.icon} style={{ width: '22px', height: '22px', color: item.color }} />
+              </div>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: '#1C1917', marginBottom: '2px' }}>{item.title}</div>
+              <div style={{ fontSize: '10px', color: '#64748B', fontWeight: '500', lineHeight: '1.2' }}>{item.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* B. SHOP BY CATEGORY SECTION */}
+        <div style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', padding: '0 4px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#1C1917', margin: 0 }}>Shop by Category</h2>
+            <span onClick={() => onSelectTab('shop')} style={{ fontSize: '13px', fontWeight: '700', color: '#84CC16', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}>
+              See All <i data-lucide="chevron-right" style={{ width: '16px', height: '16px' }} />
+            </span>
           </div>
 
-          {/* Card 2: Sunglasses */}
-          <div
-            className="category-card"
-            style={{ 
-              background: `linear-gradient(to bottom, rgba(15,21,53,0) 40%, rgba(15,21,53,0.95) 100%), url('assets/category_sunglasses_1783260195132.png') center/cover no-repeat`, 
-              border: '1px solid rgba(255,122,48,0.4)',
-              justifyContent: 'flex-end',
-              paddingBottom: '16px'
-            }}
-            onClick={() => onSelectTab('shop')}
-          >
-            <div style={{ fontSize: '12px', fontWeight: '700', color: '#FFFFFF', textAlign: 'center', width: '100%', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Sunglasses</div>
-            <span className="badge-pill badge-orange" style={{ position: 'absolute', bottom: '-9px', left: '50%', transform: 'translateX(-50%)', fontSize: '9px', height: '18px', padding: '0 8px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap', zIndex: 10 }}>NEW</span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
+            {[
+              { title: 'Men', sub: 'Collection', bg: '#F4F3EF', imgBg: 'radial-gradient(circle, #E2E8F0 0%, #F4F3EF 70%)', frameColor: '#1E293B', tab: 'shop' },
+              { title: 'Women', sub: 'Collection', bg: '#FDF2F8', imgBg: 'radial-gradient(circle, #FCE7F3 0%, #FDF2F8 70%)', frameColor: '#E11D48', tab: 'shop' },
+              { title: 'Sunglasses', sub: 'Collection', bg: '#F4F3EF', imgBg: 'radial-gradient(circle, #E2E8F0 0%, #F4F3EF 70%)', frameColor: '#0F172A', tab: 'shop', isSun: true },
+              { title: 'Blue Cut', sub: 'Lenses', bg: '#F0F9FF', imgBg: 'radial-gradient(circle, #E0F2FE 0%, #F0F9FF 70%)', frameColor: '#0284C7', tab: 'shop', isBlue: true }
+            ].map((cat, idx) => (
+              <div
+                key={idx}
+                onClick={() => onSelectTab(cat.tab)}
+                style={{
+                  background: cat.bg,
+                  borderRadius: '16px',
+                  padding: '12px 10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                  border: '1px solid rgba(0,0,0,0.03)',
+                  minHeight: '140px'
+                }}
+              >
+                <div style={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', background: cat.imgBg, borderRadius: '12px', position: 'relative', overflow: 'hidden' }}>
+                  <svg width="74" height="34" viewBox="0 0 100 45" fill="none">
+                    <circle cx="26" cy="22" r="16" stroke={cat.frameColor} strokeWidth="3.5" fill={cat.isSun ? 'rgba(15, 23, 42, 0.75)' : cat.isBlue ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255,255,255,0.4)'} />
+                    <circle cx="74" cy="22" r="16" stroke={cat.frameColor} strokeWidth="3.5" fill={cat.isSun ? 'rgba(15, 23, 42, 0.75)' : cat.isBlue ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255,255,255,0.4)'} />
+                    <path d="M42 22 C 46 18, 54 18, 58 22" stroke={cat.frameColor} strokeWidth="3.5" fill="none" />
+                    <path d="M10 22 L 2 15 M 90 22 L 98 15" stroke={cat.frameColor} strokeWidth="3.5" strokeLinecap="round" />
+                    {cat.isBlue && (
+                      <path d="M18 16 L 34 28 M 66 16 L 82 28" stroke="#00E5FF" strokeWidth="1.5" opacity="0.8" />
+                    )}
+                  </svg>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: '800', color: '#1C1917', marginBottom: '2px' }}>{cat.title}</div>
+                    <div style={{ fontSize: '10px', color: '#64748B', fontWeight: '500' }}>{cat.sub}</div>
+                  </div>
+                  <span style={{ color: '#84CC16', fontSize: '14px', fontWeight: '800' }}>→</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* C. BLUE CUT DARK BANNER CARD */}
+        <div
+          onClick={() => onSelectTab('shop')}
+          style={{
+            margin: '0 var(--screen-padding) 28px var(--screen-padding)',
+            background: 'linear-gradient(135deg, #070A13 0%, #0F1535 100%)',
+            borderRadius: '20px',
+            padding: '20px 18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            cursor: 'pointer',
+            boxShadow: '0 10px 25px rgba(7, 10, 19, 0.2)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          <div style={{ position: 'absolute', top: '-50%', left: '-10%', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(0, 229, 255, 0.3) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', zIndex: 2 }}>
+            <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(0, 229, 255, 0.15)', border: '1.5px solid rgba(0, 229, 255, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(0, 229, 255, 0.4)', flexShrink: 0 }}>
+              <i data-lucide="shield" style={{ width: '24px', height: '24px', color: '#00E5FF' }} />
+            </div>
+            <div>
+              <div style={{ fontSize: '16px', fontWeight: '800', color: '#FFFFFF', lineHeight: '1.2', marginBottom: '4px' }}>
+                Protect your eyes<br />
+                from <span style={{ color: '#00E5FF' }}>digital strain</span>
+              </div>
+              <div style={{ fontSize: '12px', color: '#A0A4C8', fontWeight: '500' }}>
+                Explore our Blue Cut Lenses
+              </div>
+            </div>
           </div>
 
-          {/* Card 3: Computer */}
-          <div
-            className="category-card"
-            style={{ 
-              background: `linear-gradient(to bottom, rgba(15,21,53,0) 40%, rgba(15,21,53,0.95) 100%), url('assets/category_computer_1783260205921.png') center/cover no-repeat`, 
-              border: '1px solid rgba(124,77,255,0.4)',
-              justifyContent: 'flex-end',
-              paddingBottom: '16px'
-            }}
-            onClick={() => onSelectTab('shop')}
-          >
-            <div style={{ fontSize: '12px', fontWeight: '700', color: '#FFFFFF', textAlign: 'center', width: '100%', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Computer</div>
-            <span className="badge-pill badge-purple" style={{ position: 'absolute', bottom: '-9px', left: '50%', transform: 'translateX(-50%)', fontSize: '9px', height: '18px', padding: '0 8px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap', zIndex: 10 }}>PRO</span>
+          <div style={{ width: '40px', height: '40px', borderRadius: '20px', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, zIndex: 2 }}>
+            <i data-lucide="arrow-right" style={{ width: '18px', height: '18px', color: '#FFFFFF' }} />
           </div>
+        </div>
 
-          {/* Card 4: Contact Lenses */}
-          <div
-            className="category-card"
-            style={{ 
-              background: `linear-gradient(to bottom, rgba(15,21,53,0) 40%, rgba(15,21,53,0.95) 100%), url('assets/category_contacts_1783260215985.png') center/cover no-repeat`, 
-              border: '1px solid rgba(41,182,246,0.4)',
-              justifyContent: 'flex-end',
-              paddingBottom: '16px'
-            }}
-            onClick={() => onSelectTab('shop')}
-          >
-            <div style={{ fontSize: '12px', fontWeight: '700', color: '#FFFFFF', textAlign: 'center', width: '100%', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Contact Lenses</div>
-          </div>
-
-          {/* Card 5: Kids */}
-          <div
-            className="category-card"
-            style={{ 
-              background: `linear-gradient(to bottom, rgba(15,21,53,0) 40%, rgba(15,21,53,0.95) 100%), url('assets/category_kids_1783260226602.png') center/cover no-repeat`, 
-              border: '1px solid rgba(41,182,246,0.4)',
-              justifyContent: 'flex-end',
-              paddingBottom: '16px'
-            }}
-            onClick={() => onSelectTab('shop')}
-          >
-            <div style={{ fontSize: '12px', fontWeight: '700', color: '#FFFFFF', textAlign: 'center', width: '100%', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Kids</div>
-            <span className="badge-pill badge-cyan" style={{ position: 'absolute', bottom: '-9px', left: '50%', transform: 'translateX(-50%)', fontSize: '9px', height: '18px', padding: '0 8px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap', zIndex: 10 }}>KIDS</span>
-          </div>
-
-          {/* Card 6: Sale */}
-          <div
-            className="category-card"
-            style={{ 
-              background: `linear-gradient(to bottom, rgba(15,21,53,0) 40%, rgba(15,21,53,0.95) 100%), url('assets/category_sale_1783260237737.png') center/cover no-repeat`, 
-              border: '1px solid rgba(255,77,141,0.4)',
-              justifyContent: 'flex-end',
-              paddingBottom: '16px'
-            }}
-            onClick={() => onSelectTab('shop')}
-          >
-            <div style={{ fontSize: '12px', fontWeight: '700', color: '#FFFFFF', textAlign: 'center', width: '100%', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Sale</div>
-            <span className="badge-pill badge-pink" style={{ position: 'absolute', bottom: '-9px', left: '50%', transform: 'translateX(-50%)', fontSize: '9px', height: '18px', padding: '0 8px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap', zIndex: 10 }}>60% OFF</span>
-          </div>
+        {/* D. 4 TRUST BADGES ROW */}
+        <div style={{ margin: '0 var(--screen-padding) 28px var(--screen-padding)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', background: '#FFFFFF', borderRadius: '20px', padding: '18px 4px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: '1px solid #F0F0F0' }}>
+          {[
+            { icon: 'award', color: '#84CC16', bg: 'rgba(132, 204, 22, 0.12)', title: 'Premium Quality', sub: 'Assured' },
+            { icon: 'shield-check', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)', title: 'UV Protection', sub: '100%' },
+            { icon: 'check-circle', color: '#84CC16', bg: 'rgba(132, 204, 22, 0.12)', title: '1 Year Warranty', sub: 'On Lenses' },
+            { icon: 'headphones', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)', title: 'Expert Support', sub: 'Always Here' }
+          ].map((badge, idx) => (
+            <div
+              key={idx}
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+                borderRight: idx < 3 ? '1px solid #EAEAEA' : 'none', padding: '0 4px'
+              }}
+            >
+              <div style={{ width: '44px', height: '44px', borderRadius: '22px', background: badge.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                <i data-lucide={badge.icon} style={{ width: '22px', height: '22px', color: badge.color }} />
+              </div>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: '#1C1917', marginBottom: '2px' }}>{badge.title}</div>
+              <div style={{ fontSize: '10px', color: '#64748B', fontWeight: '500' }}>{badge.sub}</div>
+            </div>
+          ))}
         </div>
       </div>
 

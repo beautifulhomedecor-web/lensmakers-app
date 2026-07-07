@@ -96,7 +96,7 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
                 style={{
                   width: '22px',
                   height: '22px',
-                  color: isActive ? '#9CCC65' : '#4A5F94',
+                  color: isActive ? '#84CC16' : '#64748B',
                   strokeWidth: isActive ? '2.5px' : '1.8px',
                   transition: 'color 200ms ease, transform 280ms var(--spring-bezier)',
                   transform: isActive ? 'scale(1.1)' : 'scale(1)',
@@ -109,7 +109,7 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
                     position: 'absolute',
                     top: '-5px',
                     right: '-10px',
-                    background: '#9CCC65',
+                    background: '#84CC16',
                     color: '#000000',
                     fontSize: '10px',
                     fontWeight: '900',
@@ -133,7 +133,7 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
               style={{
                 fontSize: '11px',
                 fontWeight: isActive ? '700' : '500',
-                color: isActive ? '#9CCC65' : '#4A5F94',
+                color: isActive ? '#84CC16' : '#64748B',
                 marginTop: '4px',
                 letterSpacing: '0.2px',
                 transition: 'color 200ms ease'

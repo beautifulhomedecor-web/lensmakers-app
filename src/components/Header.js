@@ -67,11 +67,11 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activ
           width: '100%',
           maxWidth: '100%',
           zIndex: 100,
-          background: 'linear-gradient(180deg, #070A13 0%, #0B1026 100%)',
+          background: activeTab === 'home' ? '#070A13' : 'linear-gradient(180deg, #070A13 0%, #0B1026 100%)',
           border: 'none',
           borderRadius: 0,
           boxShadow: 'none',
-          padding: '16px var(--screen-padding) 12px var(--screen-padding)',
+          padding: activeTab === 'home' ? '16px var(--screen-padding) 4px var(--screen-padding)' : '16px var(--screen-padding) 12px var(--screen-padding)',
           transition: 'all 300ms var(--spring-bezier)'
         }}
       >

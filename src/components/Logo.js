@@ -107,11 +107,11 @@ const Logo = ({ iconOnly = false, size = 36, onClick }) => {
             whiteSpace: 'nowrap',
             display: 'inline-flex',
             alignItems: 'center',
-            lineHeight: 1,
-            color: '#FFFFFF'
+            lineHeight: 1
           }}
         >
-          lensmakers
+          <span style={{ color: '#FFFFFF' }}>lens</span>
+          <span style={{ color: '#A8FF00' }}>makers</span>
         </span>
       )}
     </div>
