@@ -85,11 +85,11 @@ const Onboarding = ({ onComplete }) => {
           <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
             {/* Laptop outline */}
             <rect x="40" y="55" width="140" height="95" rx="10" stroke="#FFFFFF" strokeWidth="3" fill="rgba(36, 40, 88, 0.6)" />
-            <path d="M 25 150 L 195 150 L 205 165 C 205 168, 202 170, 198 170 L 22 170 C 18 170, 15 168, 15 165 L 25 150 Z" fill="#242858" stroke="#FFFFFF" strokeWidth="2" />
+            <path d="M 25 150 L 195 150 L 205 165 C 205 168, 202 170, 198 170 L 22 170 C 18 170, 15 168, 15 165 L 25 150 Z" fill="#ECEAE3" stroke="#FFFFFF" strokeWidth="2" />
             {/* Eye Icon on screen */}
             <g transform="translate(110, 102)">
               <path d="M -35 0 C -20 -22, 20 -22, 35 0 C 20 22, -20 22, -35 0 Z" stroke="#29B6F6" strokeWidth="3.5" fill="rgba(41, 182, 246, 0.15)" />
-              <circle cx="0" cy="0" r="12" stroke="#FF4D8D" strokeWidth="3" fill="#1B1F4A" />
+              <circle cx="0" cy="0" r="12" stroke="#FF4D8D" strokeWidth="3" fill="#F4F3EF" />
               <circle cx="0" cy="0" r="5" fill="#29B6F6" />
             </g>
             {/* Free badge */}

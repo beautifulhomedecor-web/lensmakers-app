@@ -7,7 +7,7 @@
   <title>Lens Makers — Premium 3D AR Eyewear & Club App</title>
   <meta name="title" content="Lens Makers — Premium 3D AR Eyewear & Club App">
   <meta name="description" content="Shop luxury eyeglasses & UV400 sunglasses with real-time 3D AR Virtual Try-On and flat 25% off Club membership.">
-  <meta name="theme-color" content="#0F1535">
+  <meta name="theme-color" content="#FAFAF9">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Lens Makers">
@@ -30,14 +30,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous" defer onerror="window.mediaPipeLoadError = true;"></script>
 
   <!-- Vanilla Design System & Animation Law CSS -->
-  <link rel="stylesheet" href="./styles.css?v=20260706_nocart_v5">
+  <link rel="stylesheet" href="./styles.css?v=20260706_lighttheme_v1">
 
   <!-- React 18 & Babel Standalone CDN -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
 </head>
-<body style="background-color: #0F1535; margin: 0; padding: 0; overflow: hidden;">
+<body style="background-color: #FAFAF9; margin: 0; padding: 0; overflow: hidden;">
   <div id="root">
     <!-- Zero spinners. Splash screen mounts instantly via React orchestrator. -->
   </div>
@@ -87,7 +87,7 @@
       try {
         // Fetch all modules simultaneously in parallel over network for maximum loading speed
         const moduleResponses = await Promise.all(modules.map(async (mod) => {
-          const res = await fetch(mod + '?v=20260706_nocart_v5', { cache: 'no-cache' });
+          const res = await fetch(mod + '?v=20260706_lighttheme_v1', { cache: 'no-cache' });
           if (!res.ok) throw new Error(`HTTP ${res.status} when loading ${mod}`);
           const text = await res.text();
           return { mod, text };

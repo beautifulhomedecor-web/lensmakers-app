@@ -26,7 +26,7 @@ window.TryOnBanner = function TryOnBanner({ onTriggerTryOn }) {
                 <h2 className="font-heading font-extrabold text-2xl text-white tracking-tight">
                   Virtual Try-On
                 </h2>
-                <span className="bg-gradient-to-r from-[#00E5FF] to-[#7C4DFF] text-[#0F1535] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-[0_0_10px_rgba(0,229,255,0.8)]">
+                <span className="bg-gradient-to-r from-[#00E5FF] to-[#7C4DFF] text-[#0B2A6B] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-[0_0_10px_rgba(0,229,255,0.8)]">
                   AI Studio Pro
                 </span>
               </div>

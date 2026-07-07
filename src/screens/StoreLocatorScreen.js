@@ -234,7 +234,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
             className="glass-card-elevated mb-4"
             style={{
               position: 'relative', height: '300px', borderRadius: '20px', overflow: 'hidden',
-              background: '#0F1535', border: '1.5px solid rgba(255,255,255,0.15)',
+              background: '#FAFAF9', border: '1.5px solid rgba(255,255,255,0.15)',
               boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
             }}
           >
@@ -315,7 +315,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                       height: isSel ? '44px' : '34px',
                       background: isSel
                         ? 'linear-gradient(135deg, #FF4D8D 0%, #C2185B 100%)'
-                        : 'linear-gradient(135deg, #FBC02D 0%, #F57F17 100%)',
+                        : 'linear-gradient(135deg, #C9A876 0%, #B8935E 100%)',
                       borderRadius: '50% 50% 50% 0',
                       transform: 'rotate(-45deg)',
                       display: 'flex',
@@ -411,7 +411,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                         position: 'absolute', bottom: '-2px', right: '-2px',
                         width: '12px', height: '12px', borderRadius: '50%',
                         background: st.isOpen ? '#66BB6A' : '#EF5350',
-                        border: '2px solid #0F1535'
+                        border: '2px solid #FFFFFF'
                       }}
                       title={st.isOpen ? 'Open Now' : 'Closed'}
                     />
@@ -434,7 +434,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                         <span>📍</span>
                         <span>{st.distance}</span>
                       </span>
-                      <span className="badge-pill" style={{ background: 'rgba(251,192,45,0.15)', color: '#FBC02D', fontSize: '10px', fontWeight: '800' }}>
+                      <span className="badge-pill" style={{ background: 'rgba(201,168,118,0.15)', color: '#C9A876', fontSize: '10px', fontWeight: '800' }}>
                         ★ {st.rating} ({st.reviews})
                       </span>
                     </div>
@@ -502,7 +502,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
           <div
             style={{
               position: 'relative', height: '160px', borderRadius: '20px', marginBottom: '18px', overflow: 'hidden',
-              background: 'linear-gradient(135deg, #1B1F4A 0%, #2D1B4A 100%)', border: '1.5px solid rgba(255,255,255,0.15)',
+              background: 'rgba(255, 255, 255, 0.65)', border: '1.5px solid rgba(255,255,255,0.15)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
             }}
           >
@@ -518,7 +518,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
 
             {/* Top Right Pill: Star Rating */}
             <div style={{ position: 'absolute', top: '12px', right: '12px', zIndex: 2 }}>
-              <span className="badge-pill" style={{ background: 'rgba(251,192,45,0.2)', border: '1px solid #FBC02D', color: '#FBC02D', fontSize: '11px', fontWeight: '800', padding: '4px 10px', backdropFilter: 'blur(8px)' }}>
+              <span className="badge-pill" style={{ background: 'rgba(201,168,118,0.2)', border: '1px solid #C9A876', color: '#C9A876', fontSize: '11px', fontWeight: '800', padding: '4px 10px', backdropFilter: 'blur(8px)' }}>
                 ★ {activeStore.rating} ({activeStore.reviews} reviews)
               </span>
             </div>
@@ -580,7 +580,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                 onClick={() => setShowHoursTable(!showHoursTable)}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ fontSize: '20px', color: '#FBC02D' }}>⏰</span>
+                  <span style={{ fontSize: '20px', color: '#C9A876' }}>⏰</span>
                   <div>
                     <div style={{ fontSize: '11px', fontWeight: '800', color: '#A0A4C8' }}>OPERATING HOURS</div>
                     <div style={{ fontSize: '13px', fontWeight: '800', color: activeStore.isOpen ? '#66BB6A' : '#EF5350' }}>

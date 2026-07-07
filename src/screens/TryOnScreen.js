@@ -442,7 +442,7 @@ const TryOnScreen = ({ onSelectTab }) => {
       // Metallic barrel hinge joint at frame connection
       ctx.beginPath();
       ctx.arc(pHinge.x, pHinge.y, armW * 0.75, 0, Math.PI * 2);
-      ctx.fillStyle = style.hingeAccent || '#FFD700';
+      ctx.fillStyle = style.hingeAccent || '#C9A876';
       ctx.fill();
       ctx.lineWidth = 1;
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
@@ -574,7 +574,7 @@ const TryOnScreen = ({ onSelectTab }) => {
 
       // Draw simulated studio mirror gradient background
       const bgGrad = ctx.createRadialGradient(w / 2, h / 2, 50, w / 2, h / 2, w * 0.7);
-      bgGrad.addColorStop(0, '#1B1F4A');
+      bgGrad.addColorStop(0, '#F4F3EF');
       bgGrad.addColorStop(1, '#0A0D22');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, w, h);
@@ -1004,7 +1004,7 @@ const TryOnScreen = ({ onSelectTab }) => {
     } else {
       // Draw dark studio background
       const bgGrad = offCtx.createRadialGradient(offCanvas.width / 2, offCanvas.height / 2, 50, offCanvas.width / 2, offCanvas.height / 2, offCanvas.width * 0.7);
-      bgGrad.addColorStop(0, '#1B1F4A');
+      bgGrad.addColorStop(0, '#F4F3EF');
       bgGrad.addColorStop(1, '#0A0D22');
       offCtx.fillStyle = bgGrad;
       offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
@@ -1142,7 +1142,7 @@ const TryOnScreen = ({ onSelectTab }) => {
             <span style={{ fontSize: '32px' }}>👓</span>
           </div>
           <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#FFFFFF' }}>Setting up your mirror...</h2>
-          <p style={{ fontSize: '13px', color: '#A0A4C8', marginTop: '8px' }}>Calibrating 468 facial mesh landmarks</p>
+          <p style={{ fontSize: '13px', color: '#A0A4C8', marginTop: '8px' }}>Starting live AR studio...</p>
         </div>
       )}
 

@@ -449,7 +449,7 @@ const CartScreen = ({ onSelectTab }) => {
                         <span style={{ fontSize: '15px', fontWeight: '900', color: '#FFFFFF' }}>{addr.label} — {addr.name}</span>
                         {addr.isDefault && <span className="badge-pill badge-green" style={{ fontSize: '9px' }}>DEFAULT</span>}
                       </div>
-                      <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF4D8D' : '2px solid #A0A4C8', background: '#1B1F4A' }} />
+                      <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF4D8D' : '2px solid #A0A4C8', background: 'rgba(255, 255, 255, 0.95)' }} />
                     </div>
                     <div style={{ fontSize: '13px', color: '#A0A4C8', lineHeight: '1.4', margin: '6px 0 8px' }}>
                       {addr.address}, {addr.city}
@@ -646,7 +646,7 @@ const CartScreen = ({ onSelectTab }) => {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span className="badge-pill badge-purple" style={{ fontSize: '9px' }}>{pay.badge}</span>
-                        <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF4D8D' : '2px solid #A0A4C8', background: '#1B1F4A' }} />
+                        <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF4D8D' : '2px solid #A0A4C8', background: 'rgba(255, 255, 255, 0.95)' }} />
                       </div>
                     </div>
                     <div style={{ fontSize: '12px', color: '#A0A4C8', paddingLeft: '32px' }}>{pay.sub}</div>
@@ -1107,7 +1107,7 @@ const CartScreen = ({ onSelectTab }) => {
                   <div style={{ position: 'absolute', top: '50%', right: '20px', pointerEvents: 'none' }}>
                     <span className="confetti-dot" style={{ background: '#FF4D8D', '--dx': '-25px', '--dy': '-25px' }} />
                     <span className="confetti-dot" style={{ background: '#43A047', '--dx': '20px', '--dy': '-30px' }} />
-                    <span className="confetti-dot" style={{ background: '#FBC02D', '--dx': '25px', '--dy': '15px' }} />
+                    <span className="confetti-dot" style={{ background: '#C9A876', '--dx': '25px', '--dy': '15px' }} />
                     <span className="confetti-dot" style={{ background: '#29B6F6', '--dx': '-20px', '--dy': '20px' }} />
                     <span className="confetti-dot" style={{ background: '#7C4DFF', '--dx': '0px', '--dy': '-35px' }} />
                   </div>

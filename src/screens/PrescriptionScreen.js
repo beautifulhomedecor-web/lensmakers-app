@@ -415,7 +415,7 @@ const PrescriptionScreen = ({ onSelectTab, initialViewMode = 'list' }) => {
                           {/* Menu Sheet Dropdown */}
                           {isMenuOpen && (
                             <div
-                              style={{ position: 'absolute', top: '38px', right: '0', width: '180px', background: '#1B1F4A', border: '1.5px solid rgba(255,255,255,0.2)', borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.6)', zIndex: 100, padding: '6px 0', overflow: 'hidden' }}
+                              style={{ position: 'absolute', top: '38px', right: '0', width: '180px', background: 'rgba(255, 255, 255, 0.95)', border: '1.5px solid rgba(255,255,255,0.2)', borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.6)', zIndex: 100, padding: '6px 0', overflow: 'hidden' }}
                               onClick={(e) => e.stopPropagation()}
                             >
                               <button type="button" className="menu-item-btn" style={{ width: '100%', padding: '10px 14px', textAlign: 'left', background: 'transparent', border: 'none', color: '#FFFFFF', fontSize: '13px', cursor: 'pointer', display: 'flex', gap: '8px' }} onClick={() => { setSelectedRx(rx); setViewMode('detail'); setShowMenuRxId(null); }}>
@@ -676,7 +676,7 @@ const PrescriptionScreen = ({ onSelectTab, initialViewMode = 'list' }) => {
 
               {/* UNUSUAL VALUE WARNING TOOLTIP */}
               {unusualWarning && (
-                <div style={{ background: 'rgba(251,192,45,0.15)', border: '1.5px solid #FBC02D', padding: '12px', borderRadius: '10px', color: '#FBC02D', fontSize: '12px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', animation: 'fadeIn 200ms ease' }}>
+                <div style={{ background: 'rgba(201,168,118,0.15)', border: '1.5px solid #C9A876', padding: '12px', borderRadius: '10px', color: '#C9A876', fontSize: '12px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', animation: 'fadeIn 200ms ease' }}>
                   <span>⚠️</span>
                   <span>{unusualWarning}</span>
                 </div>
@@ -1029,7 +1029,7 @@ const PrescriptionScreen = ({ onSelectTab, initialViewMode = 'list' }) => {
                 </div>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {selectedRx.recommendations.map((rec, i) => (
-                    <span key={i} style={{ background: '#00E5FF', color: '#0F1535', fontSize: '11px', fontWeight: '800', padding: '4px 12px', borderRadius: '14px' }}>
+                    <span key={i} style={{ background: '#00E5FF', color: '#0B2A6B', fontSize: '11px', fontWeight: '800', padding: '4px 12px', borderRadius: '14px' }}>
                       ✓ {rec}
                     </span>
                   ))}
@@ -1053,7 +1053,7 @@ const PrescriptionScreen = ({ onSelectTab, initialViewMode = 'list' }) => {
                     <div style={{ fontSize: '10px', color: '#29B6F6' }}>{selectedRx.scanFile}</div>
                   </div>
                 </div>
-                <button type="button" style={{ padding: '6px 12px', borderRadius: '999px', background: '#29B6F6', border: 'none', color: '#0F1535', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }} onClick={() => alert(`🔍 Opening full-screen zoom preview of medical OCR scan: ${selectedRx.scanFile}`)}>
+                <button type="button" style={{ padding: '6px 12px', borderRadius: '999px', background: '#29B6F6', border: 'none', color: '#0B2A6B', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }} onClick={() => alert(`🔍 Opening full-screen zoom preview of medical OCR scan: ${selectedRx.scanFile}`)}>
                   View Scan
                 </button>
               </div>
@@ -1148,7 +1148,7 @@ const PrescriptionScreen = ({ onSelectTab, initialViewMode = 'list' }) => {
           </div>
 
           {/* MISSING PRESCRIPTION ALERT DEMO CARD */}
-          <div className="glass-card-glow-cyan mb-4" style={{ padding: '18px', border: '1.5px solid #FBC02D', background: 'rgba(251,192,45,0.06)' }}>
+          <div className="glass-card-glow-cyan mb-4" style={{ padding: '18px', border: '1.5px solid #C9A876', background: 'rgba(201,168,118,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
               <span style={{ fontSize: '20px' }}>⚠️</span>
               <span style={{ fontSize: '15px', fontWeight: '800', color: '#FFFFFF' }}>Need a new prescription for this order?</span>

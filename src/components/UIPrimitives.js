@@ -239,7 +239,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px', textAlign: 'center', background: '#0F1535' }}>
+        <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px', textAlign: 'center', background: '#FAFAF9' }}>
           <div style={{ width: '80px', height: '80px', borderRadius: '40px', background: 'rgba(255, 77, 141, 0.15)', border: '2px solid rgba(255, 77, 141, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '38px', marginBottom: '20px', boxShadow: '0 0 30px rgba(255, 77, 141, 0.3)' }}>
             ⚠️
           </div>

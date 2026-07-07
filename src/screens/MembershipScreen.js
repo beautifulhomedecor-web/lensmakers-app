@@ -304,7 +304,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
             ].map((t, idx) => (
               <div key={idx} className="glass-card-standard" style={{ minWidth: '260px', padding: '18px', flexShrink: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ color: '#FBC02D', fontSize: '14px', marginBottom: '8px' }}>★★★★★</div>
+                  <div style={{ color: '#C9A876', fontSize: '14px', marginBottom: '8px' }}>★★★★★</div>
                   <p style={{ fontSize: '13px', color: '#FFFFFF', fontStyle: 'italic', lineHeight: '1.5', marginBottom: '16px' }}>
                     "{t.quote}"
                   </p>
@@ -459,7 +459,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           {/* Confetti Particles */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5 }}>
             {[...Array(24)].map((_, i) => {
-              const colors = ['#FF4D8D', '#7C4DFF', '#29B6F6', '#43A047', '#FBC02D'];
+              const colors = ['#FF4D8D', '#7C4DFF', '#29B6F6', '#43A047', '#C9A876'];
               const col = colors[i % colors.length];
               const left = Math.random() * 95;
               const delay = Math.random() * 0.8;

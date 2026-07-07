@@ -271,7 +271,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
                       <div
                         style={{
                           width: '24px', height: '24px', borderRadius: '50%',
-                          background: (isCompleted || isCurrent) ? '#FF4D8D' : '#1B1F4A',
+                          background: (isCompleted || isCurrent) ? '#FF4D8D' : 'rgba(11, 42, 107, 0.15)',
                           border: `2px solid ${color}`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           color: '#FFFFFF', fontSize: '11px', fontWeight: '800',
@@ -501,7 +501,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
                     <label style={{ fontSize: '12px', fontWeight: '700', color: '#A0A4C8', display: 'block', marginBottom: '6px' }}>Preferred Consultation Language</label>
                     <select
                       className="glass-input"
-                      style={{ background: '#1B1F4A', color: '#FFFFFF', cursor: 'pointer' }}
+                      style={{ background: 'rgba(255, 255, 255, 0.95)', color: '#FFFFFF', cursor: 'pointer' }}
                       value={formData.language}
                       onChange={(e) => setFormData({ ...formData, language: e.target.value })}
                     >
@@ -841,7 +841,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
               </button>
               <button
                 type="button"
-                style={{ padding: '8px 14px', borderRadius: '999px', background: 'rgba(251, 192, 45, 0.15)', border: '1px solid rgba(251, 192, 45, 0.4)', color: '#FBC02D', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
+                style={{ padding: '8px 14px', borderRadius: '999px', background: 'rgba(201, 168, 118, 0.15)', border: '1px solid rgba(201, 168, 118, 0.4)', color: '#C9A876', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
                 onClick={() => showToast('🛠️ Issue reported to priority escalation team')}
               >
                 Report Issue
@@ -895,7 +895,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
               <div style={{ fontSize: '11px', fontWeight: '700', color: '#29B6F6', uppercase: 'true' }}>OPTOMETRY SPECIALIST</div>
               <div style={{ fontSize: '16px', fontWeight: '800', color: '#FFFFFF', margin: '2px 0' }}>Dr. Ananya Sharma</div>
               <div style={{ fontSize: '12px', color: '#A0A4C8' }}>AIOC Certified · 12 yrs clinical exp</div>
-              <div style={{ color: '#FFB300', fontSize: '12px', marginTop: '4px' }}>★ 4.9 (1,420 consults)</div>
+              <div style={{ color: '#C9A876', fontSize: '12px', marginTop: '4px' }}>★ 4.9 (1,420 consults)</div>
             </div>
           </div>
 

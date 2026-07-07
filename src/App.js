@@ -11,7 +11,9 @@ window.App = function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [user, setUser] = useState({ name: 'Alex Rivera', member: true });
+  const [user, setUser] = useState(null); // Default to null to enforce strict authentication policy
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState('Hyderabad');
 
   const handleRefresh = () => {
     if (isRefreshing) return;
@@ -21,39 +23,54 @@ window.App = function App() {
     }, 1400);
   };
 
-  // Check localStorage for onboarding and auth on startup
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('lensmakers_token');
+      localStorage.removeItem('guest_mode');
+      localStorage.removeItem('user_session');
+      window.userIsMember = false;
+    } catch (e) {}
+    setUser(null);
+    setShowAuthModal(true);
+  };
+
+  // Enforce strict authentication policy on startup & disable auto-login from shared links
   useEffect(() => {
     try {
-      // Strict Authentication Policy: Disable automatic login from shared links
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasSharedLinkParams = urlParams.has('token') || urlParams.has('guest') || urlParams.has('auth') || urlParams.has('shared') || urlParams.has('user') || urlParams.has('ref') || urlParams.has('auto_login') || window.location.hash.includes('token=') || window.location.hash.includes('auth=') || window.location.hash.includes('shared=');
+      const urlSearch = window.location.search || '';
+      const urlHash = window.location.hash || '';
+      const isSharedLink = urlSearch.length > 1 || urlHash.includes('share') || urlHash.includes('ref') || urlHash.includes('product');
       
-      if (hasSharedLinkParams) {
-        // Strip shared link parameters so automatic login from shared links is disabled
-        ['token', 'guest', 'auth', 'shared', 'user', 'ref', 'auto_login'].forEach(param => urlParams.delete(param));
-        const newSearch = urlParams.toString();
-        const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash.replace(/[\?&](token|auth|shared|guest)=[^&]*/g, '');
-        window.history.replaceState({}, document.title, newUrl);
-        
-        // Ensure every new device or shared link visit is strictly prompted to log in or sign up
+      // If accessed via shared link or query param, strictly disable automatic login / guest persistence!
+      if (isSharedLink) {
         localStorage.removeItem('lensmakers_token');
         localStorage.removeItem('guest_mode');
-        setShowAuthModal(true);
-        return;
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
 
+      const token = localStorage.getItem('lensmakers_token');
+      const guest = localStorage.getItem('guest_mode');
       const isComplete = localStorage.getItem('onboardingComplete');
+
+      if (!token && !guest) {
+        setUser(null); // Enforce no automatic login on new devices or shared links
+        setShowAuthModal(true);
+      } else if (guest) {
+        setUser({ name: 'Guest User', member: false, isGuest: true });
+        window.userIsMember = false;
+      } else {
+        setUser({ name: 'Alex Rivera', member: true });
+        window.userIsMember = true;
+      }
+
       if (!isComplete) {
         setShowOnboarding(true);
-      } else {
-        const token = localStorage.getItem('lensmakers_token');
-        const guest = localStorage.getItem('guest_mode');
-        if (!token && !guest) {
-          setShowAuthModal(true);
-        }
       }
     } catch (e) {
       console.warn('LocalStorage error:', e);
+      setShowAuthModal(true);
     }
   }, []);
 
@@ -123,15 +140,6 @@ window.App = function App() {
     setShowOnboarding(true);
   };
 
-  const handleLogout = () => {
-    try {
-      localStorage.removeItem('lensmakers_token');
-      localStorage.removeItem('guest_mode');
-    } catch (e) {}
-    setUser(null);
-    setShowAuthModal(true);
-  };
-
   return (
     <div className="app-shell">
       {/* 1. AMBIENT BACKGROUND GLOW BLOBS (Prompt 4 Section 4) */}
@@ -157,12 +165,16 @@ window.App = function App() {
       {!showSplash && !showOnboarding && showAuthModal && (
         <window.AuthModal
           onLoginSuccess={(userData) => {
+            try { localStorage.setItem('lensmakers_token', 'valid_token_' + Date.now()); } catch(e) {}
             setUser(userData);
+            window.userIsMember = userData.member !== false;
             setShowAuthModal(false);
             setActiveTab('home');
           }}
           onExploreGuest={() => {
             try { localStorage.setItem('guest_mode', 'true'); } catch(e) {}
+            setUser({ name: 'Guest User', member: false, isGuest: true });
+            window.userIsMember = false;
             setShowAuthModal(false);
             setActiveTab('home');
           }}
@@ -171,35 +183,40 @@ window.App = function App() {
 
       {/* 5. MAIN APP SHELL (Section 6) */}
       {!showSplash && !showOnboarding && !showAuthModal && (
-        <div className="main-content-wrapper screen-transition-enter" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          {/* TOP FIXED NAVIGATION HEADER */}
-          <window.Header
-            activeTab={activeTab}
-            onSelectTab={handleSelectTab}
-            cartCount={2}
-            user={user}
-            onOpenAuth={() => setShowAuthModal(true)}
-          />
+        <>
+          {/* Scrollable Screen Container */}
+          <main className="screen-container">
+            {/* Top Header */}
+            <div 
+              className="top-header-outer-wrapper"
+              onClick={handleRefresh} 
+              title="Double click header or pull down to refresh content"
+              style={{ display: 'contents' }}
+            >
+              <window.Header
+              onLogoClick={() => handleSelectTab('home')}
+              onSelectTab={handleSelectTab}
+              onNotificationClick={() => alert('🔔 No new notifications. Your ₹99 Club membership is active!')}
+              onLogout={handleLogout}
+              activeTab={activeTab}
+              selectedLocation={selectedLocation}
+              onOpenLocation={() => setShowLocationModal(true)}
+            />
+          </div>
 
-          {/* DYNAMIC SCREEN CONTENT CONTAINER (with iOS Edge Swipe back pattern) */}
-          <main className="screen-container" style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
-            {/* AMBIENT BACKGROUND GLOW BLOBS IN MAIN CONTENT AREA */}
-            <div className="ambient-blobs-container" style={{ pointerEvents: 'none' }}>
-              <div className="ambient-blob-1" style={{ width: '380px', height: '380px', top: '15%', left: '-80px' }} />
-              <div className="ambient-blob-2" style={{ width: '420px', height: '420px', bottom: '20%', right: '-100px' }} />
-            </div>
-
-            {/* PULL TO REFRESH is handled natively by PullToRefresh class in spring.js */}
-            {/* The native PTR indicator appears above the scroll container automatically */}
-            <window.ErrorBoundary onReturnHome={() => handleSelectTab('home')}>
-              {activeTab === 'home' && (
-                <window.HomeScreen
-                  onSelectTab={handleSelectTab}
-                  onReplaySplash={handleReplaySplash}
-                  onReplayOnboarding={handleReplayOnboarding}
-                  onOpenAuth={() => setShowAuthModal(true)}
-                />
-              )}
+          {/* PULL TO REFRESH is handled natively by PullToRefresh class in spring.js */}
+          {/* The native PTR indicator appears above the scroll container automatically */}
+          <window.ErrorBoundary onReturnHome={() => handleSelectTab('home')}>
+            {activeTab === 'home' && (
+              <window.HomeScreen
+                onSelectTab={handleSelectTab}
+                onReplaySplash={handleReplaySplash}
+                onReplayOnboarding={handleReplayOnboarding}
+                onOpenAuth={() => setShowAuthModal(true)}
+                selectedLocation={selectedLocation}
+                onOpenLocation={() => setShowLocationModal(true)}
+              />
+            )}
               {activeTab === 'shop' && (
                 <window.ShopScreen onSelectTab={handleSelectTab} />
               )}
@@ -266,6 +283,72 @@ window.App = function App() {
             />
           )}
         </>
+      )}
+
+      {/* GLOBAL LOCATION SELECTOR MODAL */}
+      {showLocationModal && (
+        <div className="modal-backdrop" onClick={() => setShowLocationModal(false)} style={{ zIndex: 99999 }}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ background: '#FAFAF9', color: '#1C1917', zIndex: 100000 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1C1917', margin: 0 }}>Select Delivery Location</h3>
+              <button
+                style={{ background: 'transparent', border: 'none', color: '#64748B', fontSize: '20px', cursor: 'pointer' }}
+                onClick={() => setShowLocationModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+              {[
+                'Hyderabad, Telangana (Default)',
+                'Bangalore, Karnataka • Indiranagar 100ft Rd',
+                'Mumbai, Maharashtra • Bandra West',
+                'New Delhi, NCR • Connaught Place',
+                'Chennai, Tamil Nadu • T. Nagar'
+              ].map((loc, idx) => (
+                <div
+                  key={idx}
+                  className="glass-card-standard"
+                  style={{
+                    padding: '14px 16px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: selectedLocation.startsWith(loc.split(' ')[0]) ? 'rgba(156, 204, 101, 0.15)' : '#FFFFFF',
+                    border: selectedLocation.startsWith(loc.split(' ')[0]) ? '1.5px solid #9CCC65' : '1px solid #EAEAEA',
+                    borderRadius: '16px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                  }}
+                  onClick={() => {
+                    setSelectedLocation(loc.split(' (')[0]);
+                    setShowLocationModal(false);
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <i data-lucide="map-pin" style={{ width: '18px', height: '18px', color: selectedLocation.startsWith(loc.split(' ')[0]) ? '#9CCC65' : '#64748B' }} />
+                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#1C1917' }}>{loc}</span>
+                  </div>
+                  {selectedLocation.startsWith(loc.split(' ')[0]) && (
+                    <span style={{ background: '#9CCC65', color: '#000000', fontSize: '10px', fontWeight: '800', padding: '4px 8px', borderRadius: '999px' }}>ACTIVE</span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <button
+              className="btn-primary-pill"
+              style={{ width: '100%', background: '#0F1535', color: '#FFFFFF', border: 'none', height: '48px', borderRadius: '999px', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
+              onClick={() => {
+                alert('📍 GPS Auto-detection enabled! Using current device coordinates.');
+                setShowLocationModal(false);
+              }}
+            >
+              📍 Use Current GPS Location
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

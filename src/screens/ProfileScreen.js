@@ -124,24 +124,6 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
             className="glass-card-elevated mb-3"
             style={{ padding: '24px 18px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
           >
-            {/* Quick Logout Button (Top Right corner of identity card) */}
-            <button
-              type="button"
-              style={{
-                position: 'absolute', top: '16px', right: '16px',
-                padding: '6px 12px', borderRadius: '999px',
-                background: 'rgba(239, 83, 80, 0.15)', border: '1px solid rgba(239, 83, 80, 0.4)',
-                color: '#EF5350', fontSize: '12px', fontWeight: '800',
-                display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer',
-                transition: 'all 200ms ease', zIndex: 10
-              }}
-              onClick={() => setShowLogoutModal(true)}
-              title="Log Out of Account"
-            >
-              <i data-lucide="log-out" style={{ width: '14px', height: '14px' }} />
-              <span>Log Out</span>
-            </button>
-
             {/* Background Ambient Blob */}
             <div style={{ position: 'absolute', top: '-40px', left: '50%', transform: 'translateX(-50%)', width: '140px', height: '140px', background: 'radial-gradient(circle, rgba(255,77,141,0.25) 0%, transparent 70%)', filter: 'blur(20px)', pointerEvents: 'none' }} />
 
@@ -150,7 +132,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
               <div
                 style={{
                   width: '88px', height: '88px', borderRadius: '44px',
-                  background: 'linear-gradient(135deg, #1B1F4A 0%, #2D1B4A 50%, #7C4DFF 100%)',
+                  background: 'linear-gradient(135deg, rgba(124, 77, 255, 0.15) 0%, rgba(255, 255, 255, 0.85) 100%)',
                   border: '2.5px solid #FF4D8D',
                   boxShadow: '0 0 24px rgba(255,77,141,0.5)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -167,7 +149,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
                   position: 'absolute', bottom: '0px', right: '0px',
                   width: '28px', height: '28px', borderRadius: '14px',
                   background: 'linear-gradient(135deg, #FF4D8D, #C2185B)',
-                  border: '2px solid #0F1535', color: '#FFFFFF',
+                  border: '2px solid #FFFFFF', color: '#FFFFFF',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   cursor: 'pointer', boxShadow: '0 4px 10px rgba(255,77,141,0.6)'
                 }}
@@ -205,6 +187,22 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
                 <span style={{ color: '#7C4DFF' }}>→</span>
               </div>
             )}
+
+            {/* Accessible Quick Logout Option */}
+            <div style={{ marginTop: '14px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <button
+                type="button"
+                style={{
+                  padding: '6px 18px', borderRadius: '999px', background: 'rgba(239, 83, 80, 0.15)',
+                  border: '1px solid rgba(239, 83, 80, 0.4)', color: '#EF5350', fontSize: '12px', fontWeight: '800',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 200ms ease'
+                }}
+                onClick={() => setShowLogoutModal(true)}
+              >
+                <i data-lucide="log-out" style={{ width: '14px', height: '14px' }} />
+                <span>Log Out of Account</span>
+              </button>
+            </div>
           </div>
 
           {/* STATS ROW (3 Equal Sections in Glass Card Strip) */}
@@ -229,7 +227,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
 
             {/* Reviews */}
             <div style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => setShowRatingModal(true)}>
-              <div style={{ fontSize: '22px', fontWeight: '900', color: '#FBC02D' }}>{userProfile.reviewsCount}</div>
+              <div style={{ fontSize: '22px', fontWeight: '900', color: '#C9A876' }}>{userProfile.reviewsCount}</div>
               <div style={{ fontSize: '11px', fontWeight: '700', color: '#A0A4C8', marginTop: '2px' }}>Reviews ★</div>
             </div>
           </div>
@@ -329,7 +327,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
             <div className="glass-card-standard" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               <div className="menu-row-item" onClick={() => setViewMode('addresses')}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '18px', background: 'rgba(251,192,45,0.2)', border: '1px solid #FBC02D', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FBC02D' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '18px', background: 'rgba(201,168,118,0.2)', border: '1px solid #C9A876', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#C9A876' }}>
                     <i data-lucide="map-pin" style={{ width: '18px', height: '18px' }} />
                   </div>
                   <span style={{ fontSize: '14px', fontWeight: '800', color: '#FFFFFF' }}>Delivery Addresses</span>
@@ -447,21 +445,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
               ←
             </button>
             <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#FFFFFF' }}>Settings</h1>
-            <button
-              type="button"
-              style={{
-                padding: '6px 12px', borderRadius: '999px',
-                background: 'rgba(239, 83, 80, 0.15)', border: '1px solid rgba(239, 83, 80, 0.4)',
-                color: '#EF5350', fontSize: '12px', fontWeight: '800',
-                display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer',
-                transition: 'all 200ms ease'
-              }}
-              onClick={() => setShowLogoutModal(true)}
-              title="Log Out of Account"
-            >
-              <i data-lucide="log-out" style={{ width: '13px', height: '13px' }} />
-              <span>Log Out</span>
-            </button>
+            <span style={{ width: '36px' }} />
           </div>
 
           {/* 1. ACCOUNT SECTION (Grouped Glass Card) */}
@@ -618,7 +602,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
               <div className="menu-row-item" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} onClick={() => setShowRatingModal(true)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ fontSize: '16px' }}>⭐</span>
-                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#FBC02D' }}>Rate Lens Makers 5 Stars</span>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#C9A876' }}>Rate Lens Makers 5 Stars</span>
                 </div>
                 <span style={{ color: '#6B6E9A', fontWeight: '800' }}>→</span>
               </div>
@@ -1056,7 +1040,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
          ========================================================================== */}
       {showRatingModal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(15,21,53,0.85)', backdropFilter: 'blur(14px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', animation: 'fadeIn 200ms ease' }}>
-          <div className="glass-card-elevated" style={{ width: '100%', maxWidth: '340px', padding: '26px', textAlign: 'center', border: '1.5px solid #FBC02D', animation: 'scaleUp 250ms var(--spring-bezier)' }}>
+          <div className="glass-card-elevated" style={{ width: '100%', maxWidth: '340px', padding: '26px', textAlign: 'center', border: '1.5px solid #C9A876', animation: 'scaleUp 250ms var(--spring-bezier)' }}>
             <div style={{ fontSize: '48px', marginBottom: '8px' }}>🎉</div>
             <h3 style={{ fontSize: '20px', fontWeight: '900', color: '#FFFFFF', marginBottom: '6px' }}>Enjoying Lens Makers?</h3>
             <p style={{ fontSize: '12px', color: '#A0A4C8', marginBottom: '20px' }}>Tap a star to rate your AI Virtual Try-On & shopping experience!</p>
@@ -1065,7 +1049,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
               {[1, 2, 3, 4, 5].map(star => (
                 <span
                   key={star}
-                  style={{ fontSize: '32px', cursor: 'pointer', color: star <= ratingStars ? '#FBC02D' : 'rgba(255,255,255,0.2)', transition: 'transform 150ms ease', transform: star <= ratingStars ? 'scale(1.15)' : 'scale(1)' }}
+                  style={{ fontSize: '32px', cursor: 'pointer', color: star <= ratingStars ? '#C9A876' : 'rgba(255,255,255,0.2)', transition: 'transform 150ms ease', transform: star <= ratingStars ? 'scale(1.15)' : 'scale(1)' }}
                   onClick={() => setRatingStars(star)}
                 >
                   ★
@@ -1075,7 +1059,7 @@ const ProfileScreen = ({ onLogout, onReplayOnboarding, onSelectTab, initialViewM
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <button type="button" className="btn-secondary-pill" style={{ flex: 1, height: '44px', fontSize: '13px' }} onClick={() => setShowRatingModal(false)}>Later</button>
-              <button type="button" className="btn-primary-pill" style={{ flex: 1, height: '44px', fontSize: '13px', background: 'linear-gradient(135deg, #FBC02D, #F57F17)', color: '#0F1535' }} onClick={() => { setShowRatingModal(false); showToast(`🌟 Thank you for rating us ${ratingStars} stars! Your feedback fuels our optometry team.`); }}>Submit Rating</button>
+              <button type="button" className="btn-primary-pill" style={{ flex: 1, height: '44px', fontSize: '13px', background: 'linear-gradient(135deg, #C9A876, #B8935E)', color: '#0B2A6B' }} onClick={() => { setShowRatingModal(false); showToast(`🌟 Thank you for rating us ${ratingStars} stars! Your feedback fuels our optometry team.`); }}>Submit Rating</button>
             </div>
           </div>
         </div>

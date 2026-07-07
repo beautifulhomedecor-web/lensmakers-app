@@ -822,7 +822,7 @@ const ShopScreen = ({ onSelectTab }) => {
 
             {/* Rating Row */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', cursor: 'pointer' }} onClick={() => setPdpAccordion('reviews')}>
-              <span style={{ color: '#FFB300', fontSize: '14px', letterSpacing: '2px' }}>★★★★☆</span>
+              <span style={{ color: '#C9A876', fontSize: '14px', letterSpacing: '2px' }}>★★★★☆</span>
               <span style={{ fontSize: '13px', color: '#A0A4C8', fontWeight: '600' }}>
                 <strong style={{ color: '#FFFFFF' }}>{pdpItem.rating}</strong> · {pdpItem.reviews} reviews
               </span>
@@ -1035,7 +1035,7 @@ const ShopScreen = ({ onSelectTab }) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '36px', fontWeight: '900', color: '#FFFFFF', lineHeight: '1' }}>{pdpItem.rating}</div>
-                <div style={{ color: '#FFB300', fontSize: '14px', margin: '4px 0' }}>★★★★☆</div>
+                <div style={{ color: '#C9A876', fontSize: '14px', margin: '4px 0' }}>★★★★☆</div>
                 <div style={{ fontSize: '11px', color: '#A0A4C8' }}>Based on {pdpItem.reviews} reviews</div>
               </div>
 
@@ -1069,7 +1069,7 @@ const ShopScreen = ({ onSelectTab }) => {
                   <span style={{ fontSize: '13px', fontWeight: '800', color: '#FFFFFF' }}>{rev.name}</span>
                   <span style={{ fontSize: '11px', color: '#6B6E9A' }}>{rev.date}</span>
                 </div>
-                <div style={{ color: '#FFB300', fontSize: '12px', marginBottom: '6px' }}>{rev.stars}</div>
+                <div style={{ color: '#C9A876', fontSize: '12px', marginBottom: '6px' }}>{rev.stars}</div>
                 <p style={{ fontSize: '12px', color: '#A0A4C8', lineHeight: '1.4' }}>{rev.text}</p>
               </div>
             ))}

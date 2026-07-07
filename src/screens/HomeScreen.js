@@ -1,16 +1,12 @@
 // Home Screen Component — Prompt 2 Complete Flagship Implementation
 const { useState, useEffect, useRef } = React;
 
-const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAuth }) => {
+const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAuth, selectedLocation = 'Hyderabad', onOpenLocation }) => {
   // Carousel slide state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState(0);
   const [slideDirection, setSlideDirection] = useState('next');
-
-  // Location / Address Bottom Sheet
-  const [showLocationModal, setShowLocationModal] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState('Khammam, Telangana');
 
   // Auto-advance carousel every 5s unless paused
   useEffect(() => {
@@ -22,12 +18,12 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
     return () => clearInterval(timer);
   }, [isPaused, currentSlide]);
 
-  // Re-initialize Lucide icons on slide change or modal toggle
+  // Re-initialize Lucide icons on slide change
   useEffect(() => {
     if (window.lucide && window.lucide.createIcons) {
       setTimeout(() => window.lucide.createIcons(), 30);
     }
-  }, [currentSlide, showLocationModal]);
+  }, [currentSlide]);
 
   // Touch swipe handling for carousel
   const handleTouchStart = (e) => {
@@ -55,28 +51,6 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
     <div className="screen-transition-enter" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)' }}>
       {/* PTR handled globally by PullToRefresh in App.js — no local indicator needed */}
 
-      {/* 1. LOCATION DELIVERY BAR (Section 3 - Placed above Hero Carousel per Item 1 & Item 4) */}
-      <div
-        className="location-delivery-bar fade-up-item"
-        style={{ height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', margin: '0 var(--screen-padding) 32px var(--screen-padding)' }}
-        onClick={() => setShowLocationModal(true)}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '16px', background: 'rgba(251,192,45,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <i data-lucide="map-pin" style={{ width: '16px', height: '16px', color: '#FBC02D' }} />
-          </div>
-          <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
-            <div style={{ fontSize: '9px', fontWeight: '700', color: '#A0A4C8', letterSpacing: '1.2px', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              DELIVER TO
-            </div>
-            <div style={{ fontSize: '14px', fontWeight: '700', color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'calc(100% - 10px)' }}>
-              {selectedLocation}
-            </div>
-          </div>
-        </div>
-        <i data-lucide="chevron-down" style={{ width: '20px', height: '20px', color: '#A0A4C8', flexShrink: 0, marginLeft: 'auto' }} />
-      </div>
-
       {/* 2. HERO BANNER CAROUSEL (Section 2 - Exact 220px height, 60% left column, 40% right column per Item 2) */}
       <div className="hero-carousel-wrapper" style={{ position: 'relative', margin: '0 var(--screen-padding) 32px var(--screen-padding)' }}>
         <div
@@ -91,7 +65,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
             <div
               className="carousel-slide-inner"
               style={{
-                background: 'linear-gradient(135deg, #1B1F4A 0%, #2D1B4A 100%)',
+                background: 'rgba(255, 255, 255, 0.65)',
                 animation: slideDirection === 'next' ? 'slideInRight 400ms var(--spring-bezier)' : 'slideInLeft 400ms var(--spring-bezier)'
               }}
             >
@@ -146,7 +120,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
             <div
               className="carousel-slide-inner"
               style={{
-                background: 'linear-gradient(135deg, #1B1F4A 0%, #1A1040 100%)',
+                background: 'rgba(255, 255, 255, 0.65)',
                 animation: slideDirection === 'next' ? 'slideInRight 400ms var(--spring-bezier)' : 'slideInLeft 400ms var(--spring-bezier)'
               }}
             >
@@ -188,7 +162,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
             <div
               className="carousel-slide-inner"
               style={{
-                background: 'linear-gradient(135deg, #1B1F4A 0%, #0D2440 100%)',
+                background: 'rgba(255, 255, 255, 0.65)',
                 animation: slideDirection === 'next' ? 'slideInRight 400ms var(--spring-bezier)' : 'slideInLeft 400ms var(--spring-bezier)'
               }}
             >
@@ -588,62 +562,6 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
           Lens Makers Club • Built with Vanilla CSS & React
         </div>
       </div>
-
-      {/* LOCATION / ADDRESS SELECTOR BOTTOM SHEET */}
-      {showLocationModal && (
-        <div className={`modal-backdrop`} onClick={() => setShowLocationModal(false)}>
-          <div className={`modal-sheet`} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#FFFFFF' }}>Select Delivery Location</h3>
-              <button
-                style={{ background: 'transparent', border: 'none', color: '#A0A4C8', fontSize: '20px', cursor: 'pointer' }}
-                onClick={() => setShowLocationModal(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-              {[
-                'Khammam, Telangana (Default)',
-                'Hyderabad, Telangana • Gachibowli Tech Park',
-                'Bangalore, Karnataka • Indiranagar 100ft Rd',
-                'Mumbai, Maharashtra • Bandra West',
-                'New Delhi, NCR • Connaught Place'
-              ].map((loc, idx) => (
-                <div
-                  key={idx}
-                  className="glass-card-standard"
-                  style={{ padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: selectedLocation.startsWith(loc.split(' ')[0]) ? '1.5px solid #FF4D8D' : '1.5px solid rgba(255,255,255,0.08)' }}
-                  onClick={() => {
-                    setSelectedLocation(loc.split(' (')[0]);
-                    setShowLocationModal(false);
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <i data-lucide="map-pin" style={{ width: '18px', height: '18px', color: selectedLocation.startsWith(loc.split(' ')[0]) ? '#FF4D8D' : '#A0A4C8' }} />
-                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#FFFFFF' }}>{loc}</span>
-                  </div>
-                  {selectedLocation.startsWith(loc.split(' ')[0]) && (
-                    <span className="badge-pill badge-pink">ACTIVE</span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <button
-              className="btn-primary-pill"
-              style={{ width: '100%' }}
-              onClick={() => {
-                alert('📍 GPS Auto-detection enabled! Using current device coordinates.');
-                setShowLocationModal(false);
-              }}
-            >
-              📍 Use Current GPS Location
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

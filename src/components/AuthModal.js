@@ -83,7 +83,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
 
   const strengthScore = getPasswordStrength(signupPassword || loginPassword);
   const strengthLabels = ['Weak', 'Weak', 'Fair', 'Good', 'Strong'];
-  const strengthColors = ['#EF5350', '#EF5350', '#FF7A30', '#FFB300', '#43A047'];
+  const strengthColors = ['#EF5350', '#EF5350', '#FF7A30', '#C9A876', '#43A047'];
 
   // Field Blur Validation
   const handleBlur = (field) => {
@@ -269,7 +269,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
   };
 
   return (
-    <div className="auth-container screen-transition-enter">
+    <div className="auth-container">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="lens-toast">
@@ -277,12 +277,6 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
           <span>{toastMessage}</span>
         </div>
       )}
-
-      {/* AMBIENT BACKGROUND GLOW BLOBS */}
-      <div className="ambient-blobs-container" style={{ pointerEvents: 'none' }}>
-        <div className="ambient-blob-1" style={{ width: '450px', height: '450px', top: '10%', left: '15%' }} />
-        <div className="ambient-blob-2" style={{ width: '400px', height: '400px', bottom: '15%', right: '10%' }} />
-      </div>
 
       <div className="auth-card-wrapper">
         {/* TOP SECTION: Pulsing Logo & Welcome Header */}
@@ -476,19 +470,16 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
               </div>
             </div>
 
-            {/* Bottom Switch to Signup */}
-            <div style={{ textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '18px' }}>
-              <span style={{ fontSize: '13px', color: '#A0A4C8' }}>Don't have an account? </span>
-              <span
-                style={{ fontSize: '13px', color: '#FF4D8D', fontWeight: '700', cursor: 'pointer' }}
+            {/* Bottom Actions: Create Account & Continue as Guest */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
+              <button
+                type="button"
+                className="btn-primary-pill"
+                style={{ width: '100%', height: '44px', fontSize: '13px', background: 'linear-gradient(135deg, #7C4DFF 0%, #FF4D8D 100%)', boxShadow: '0 4px 15px rgba(124,77,255,0.4)' }}
                 onClick={() => handleTabSwitch('signup')}
               >
-                Sign Up
-              </span>
-            </div>
-
-            {/* Continue as Guest */}
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                <span>✨ Create Account</span>
+              </button>
               <button
                 type="button"
                 className="btn-secondary-pill"
@@ -680,18 +671,16 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
               </button>
             </form>
 
-            <div style={{ textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: '22px', paddingTop: '16px' }}>
-              <span style={{ fontSize: '13px', color: '#A0A4C8' }}>Already a member? </span>
-              <span
-                style={{ fontSize: '13px', color: '#FF4D8D', fontWeight: '700', cursor: 'pointer' }}
-                onClick={() => handleTabSwitch('login')}
-              >
-                Log In
-              </span>
-            </div>
-
-            {/* Continue as Guest */}
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '22px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontSize: '13px', color: '#A0A4C8' }}>Already a member? </span>
+                <span
+                  style={{ fontSize: '13px', color: '#FF4D8D', fontWeight: '700', cursor: 'pointer' }}
+                  onClick={() => handleTabSwitch('login')}
+                >
+                  Log In
+                </span>
+              </div>
               <button
                 type="button"
                 className="btn-secondary-pill"

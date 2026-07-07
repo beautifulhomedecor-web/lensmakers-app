@@ -1,7 +1,7 @@
 // Top Header Bar Component — Exact Mobile App Layout (Image 3)
 const { useState, useEffect } = React;
 
-const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
+const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activeTab, selectedLocation = 'Hyderabad', onOpenLocation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [hasUnreadNotifs, setHasUnreadNotifs] = useState(true);
@@ -20,7 +20,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
     if (window.lucide && window.lucide.createIcons) {
       setTimeout(() => window.lucide.createIcons(), 30);
     }
-  }, [isListening, searchQuery]);
+  }, [isListening, searchQuery, activeTab]);
 
 
 
@@ -56,75 +56,164 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
 
   return (
     <>
-      <header 
-        className="top-header-wrapper" 
-      style={{ 
-        position: 'sticky', 
-        top: '16px', 
-        left: 0,
-        right: 0,
-        margin: '10px auto 20px auto',
-        width: 'calc(100% - 16px)',
-        maxWidth: '480px',
-        zIndex: 100,
-        background: 'rgba(27, 31, 74, 0.72)',
-        backdropFilter: 'blur(24px) saturate(1.6)',
-        WebkitBackdropFilter: 'blur(24px) saturate(1.6)',
-        border: '1px solid rgba(255, 255, 255, 0.18)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.32)',
-        borderRadius: '36px',
-        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 8px 24px rgba(255, 77, 141, 0.2), 0 0 12px rgba(255, 77, 141, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.45)',
-        padding: '10px 12px',
-        transition: 'all 300ms var(--spring-bezier)'
-      }}
-    >
-      {/* ROW 1: Logo on left, AI Virtual Try-On Label on right */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '6px' }}>
-        <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 1, minWidth: 0 }}>
-          <window.Logo size={26} />
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          {/* Well-Defined Label for AI Try-On Feature */}
+      <header
+        className="top-header-wrapper dark-anchor"
+        style={{
+          position: 'relative',
+          top: 0,
+          left: 0,
+          right: 0,
+          margin: 0,
+          width: '100%',
+          maxWidth: '100%',
+          zIndex: 100,
+          background: 'linear-gradient(180deg, #070A13 0%, #0B1026 100%)',
+          border: 'none',
+          borderRadius: 0,
+          boxShadow: 'none',
+          padding: '16px var(--screen-padding) 12px var(--screen-padding)',
+          transition: 'all 300ms var(--spring-bezier)'
+        }}
+      >
+        {/* =========================================================================
+            TOP HEADER ASSETS (Row 1: Hamburger, Logo, Bell per Section 1)
+            ========================================================================= */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '14px' }}>
+          {/* Top-left hamburger menu bars (Solid white #FFFFFF) */}
           <button
             type="button"
-            className="ai-tryon-header-badge"
-            onClick={() => onSelectTab && onSelectTab('tryon')}
-            title="Launch Studio AI Virtual Try-On"
-            style={{ padding: '0 12px', height: '34px', display: 'flex', alignItems: 'center', gap: '6px' }}
+            onClick={() => onSelectTab && onSelectTab('explore')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: '6px',
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              gap: '5px',
+              width: '36px',
+              height: '36px',
+              flexShrink: 0
+            }}
+            title="Menu / Explore"
           >
-            <span className="ai-tryon-text-full">AI Virtual Try-On</span>
-            <span className="ai-tryon-text-mobile">AI Try-On</span>
-            <span style={{ background: 'linear-gradient(135deg, #FF0055, #FF4D8D)', color: '#FFF', fontSize: '9px', padding: '2px 5px', borderRadius: '8px', fontWeight: '900', letterSpacing: '0.4px', lineHeight: 1 }}>LIVE</span>
+            <span style={{ width: '22px', height: '2.5px', background: '#FFFFFF', borderRadius: '2px', display: 'block' }} />
+            <span style={{ width: '16px', height: '2.5px', background: '#FFFFFF', borderRadius: '2px', display: 'block' }} />
+            <span style={{ width: '22px', height: '2.5px', background: '#FFFFFF', borderRadius: '2px', display: 'block' }} />
+          </button>
+
+          {/* Centered Logo */}
+          <div onClick={onLogoClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <window.Logo size={26} />
+          </div>
+
+          {/* Top-right notification bell (Solid white #FFFFFF with lime badge '2') */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            {onLogout && (
+              <button
+                type="button"
+                style={{
+                  width: '32px', height: '32px', borderRadius: '16px',
+                  background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', transition: 'all 200ms ease'
+                }}
+                onClick={onLogout}
+                title="Log Out"
+              >
+                <i data-lucide="log-out" style={{ width: '15px', height: '15px', color: '#FFFFFF' }} />
+              </button>
+            )}
+            <button
+              type="button"
+              style={{
+                position: 'relative', width: '36px', height: '36px',
+                borderRadius: '18px', background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                setHasUnreadNotifs(false);
+                if (onNotificationClick) onNotificationClick();
+              }}
+              title="Notifications"
+            >
+              <i data-lucide="bell" style={{ width: '18px', height: '18px', color: '#FFFFFF' }} />
+              {hasUnreadNotifs && (
+                <span
+                  style={{
+                    position: 'absolute', top: '-2px', right: '-2px',
+                    minWidth: '18px', height: '18px', borderRadius: '9px',
+                    background: '#9CCC65', color: '#000000',
+                    fontSize: '11px', fontWeight: '900',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: '0 4px', boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
+                    lineHeight: 1
+                  }}
+                >
+                  2
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* =========================================================================
+            LOCATION DROPDOWN (Centered below logo per Section 1)
+            ========================================================================= */}
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <button
+            type="button"
+            onClick={() => onOpenLocation && onOpenLocation()}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              borderRadius: '999px',
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              color: '#FFFFFF',
+              fontSize: '13px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 200ms ease'
+            }}
+          >
+            <i data-lucide="map-pin" style={{ width: '14px', height: '14px', color: '#FFFFFF' }} />
+            <span>{selectedLocation || 'Hyderabad'}</span>
+            <i data-lucide="chevron-down" style={{ width: '14px', height: '14px', color: '#FFFFFF' }} />
           </button>
         </div>
-      </div>
       </header>
 
-      {/* STANDALONE SEARCH BAR (Scrolls with page) */}
-      <div className="standalone-search-container fade-up-item" style={{ padding: '0 20px', marginTop: '6px', marginBottom: '24px', position: 'relative', zIndex: 90 }}>
-        <div style={{ position: 'relative', width: '100%', height: '48px', display: 'flex', alignItems: 'center' }}>
-          <i
-          data-lucide="search"
-          style={{
-            position: 'absolute', left: '16px', width: '18px', height: '18px',
-            color: '#FF7A30', pointerEvents: 'none', zIndex: 2
-          }}
-        />
-        <input
-          type="text"
-          style={{
-            width: '100%',
-            height: '48px',
-            paddingLeft: '44px',
-            paddingRight: searchQuery ? '110px' : '82px',
-            margin: 0,
-            borderRadius: '999px',
-            fontSize: '14px',
-            background: 'rgba(255, 255, 255, 0.08)',
-            border: isListening ? '1.5px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.18)',
-            color: '#FFFFFF',
-            outline: 'none',
+      {/* STANDALONE SEARCH BAR (Scrolls with page, shown on Explore/Shop tabs) */}
+      {activeTab !== 'home' && (
+        <div className="standalone-search-container fade-up-item" style={{ padding: '0 20px', marginTop: '6px', marginBottom: '24px', position: 'relative', zIndex: 90 }}>
+          <div style={{ position: 'relative', width: '100%', height: '48px', display: 'flex', alignItems: 'center' }}>
+            <i
+              data-lucide="search"
+              style={{
+                position: 'absolute', left: '16px', width: '18px', height: '18px',
+                color: '#FF7A30', pointerEvents: 'none', zIndex: 2
+              }}
+            />
+            <input
+              type="text"
+              style={{
+                width: '100%',
+                height: '48px',
+                paddingLeft: '44px',
+                paddingRight: searchQuery ? '110px' : '82px',
+                margin: 0,
+                borderRadius: '999px',
+                fontSize: '14px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: isListening ? '1.5px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.18)',
+                color: '#FFFFFF',
+                outline: 'none',
             boxShadow: isListening ? '0 0 16px rgba(0, 229, 255, 0.3), inset 0 2px 4px rgba(0,0,0,0.2)' : 'inset 0 2px 4px rgba(0,0,0,0.2)',
             transition: 'all 280ms var(--spring-bezier)'
           }}
@@ -325,6 +414,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick }) => {
         </div>
       )}
       </div>
+      )}
     </>
   );
 };

@@ -1,37 +1,31 @@
-// Bottom Navigation Bar Component — Section 11 (Floating Tablet Capsule Dock with Liquid Animation & No Cart Badge)
+// Bottom Navigation Bar Component — Section 6 (Solid Pure White Dock with 1px solid #EAEAEA)
 const { useState, useEffect } = React;
 
 const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
   const [pressedTabId, setPressedTabId] = useState(null);
-  const [liquidAnim, setLiquidAnim] = useState(false);
 
-  // Map sub-routes / detail screens to their primary navigation tab (Part A6)
+  // Map sub-routes / detail screens to their primary navigation tab per Section 6
   const getMainTabId = (route) => {
-    if (['home', 'stores', 'eyetest', 'membership', 'welcomeclub', 'manageclub'].includes(route)) return 'home';
-    if (['shop'].includes(route)) return 'shop';
-    if (['tryon'].includes(route)) return 'tryon';
-    if (['cart', 'trackorder'].includes(route)) return 'cart';
+    if (['home', 'stores', 'eyetest', 'membership', 'welcomeclub', 'manageclub', 'tryon'].includes(route)) return 'home';
+    if (['shop', 'explore', 'category'].includes(route)) return 'explore';
+    if (['wishlist'].includes(route)) return 'wishlist';
+    if (['cart', 'trackorder', 'orders'].includes(route)) return 'orders';
     if (['profile', 'prescription', 'rx_add', 'rx_checkout', 'settings', 'trackappt'].includes(route)) return 'profile';
     return route;
   };
 
   const activeMainTab = getMainTabId(activeTab);
 
+  // 5 Flat Navigation Items per Section 6
   const tabs = [
     { id: 'home', label: 'Home', icon: 'home' },
-    { id: 'shop', label: 'Shop', icon: 'glasses' },
-    { id: 'tryon', label: 'AI Try-On', icon: 'camera', isCenter: true },
-    { id: 'cart', label: 'Cart', icon: 'shopping-cart', badge: cartCount > 0 ? cartCount : 2 }, // Clearly display item count!
+    { id: 'explore', label: 'Explore', icon: 'compass' },
+    { id: 'wishlist', label: 'Wishlist', icon: 'heart' },
+    { id: 'orders', label: 'Orders', icon: 'shopping-bag', badge: cartCount > 0 ? cartCount : 2 },
     { id: 'profile', label: 'Profile', icon: 'user' },
   ];
 
-  useEffect(() => {
-    setLiquidAnim(true);
-    const timer = setTimeout(() => setLiquidAnim(false), 600);
-    return () => clearTimeout(timer);
-  }, [activeMainTab]);
-
-  // Only run icon creation when the active main tab changes (NEVER on click/press animation ticks to prevent icon flickering/flashing!)
+  // Create Lucide icons whenever activeMainTab changes
   useEffect(() => {
     if (window.lucide && window.lucide.createIcons) {
       window.lucide.createIcons();
@@ -44,101 +38,109 @@ const BottomNav = ({ activeTab, onSelectTab, cartCount = 2 }) => {
   const handleTabClick = (tabId) => {
     setPressedTabId(tabId);
     setTimeout(() => setPressedTabId(null), 250);
-    if (onSelectTab) onSelectTab(tabId);
-  };
-
-  const handleTryOnTap = () => {
-    setPressedTabId('tryon');
-    setTimeout(() => setPressedTabId(null), 250);
-    if (onSelectTab) onSelectTab('tryon');
+    if (onSelectTab) {
+      // Map display tab back to internal screen routing
+      if (tabId === 'explore') onSelectTab('shop');
+      else if (tabId === 'orders') onSelectTab('cart');
+      else if (tabId === 'wishlist') onSelectTab('profile');
+      else onSelectTab(tabId);
+    }
   };
 
   return (
-    <nav className={`bottom-nav nav-visible ${liquidAnim ? 'liquid-morph-bar' : ''} ${pressedTabId ? 'liquid-pulse' : ''}`}>
+    <nav
+      className="bottom-nav nav-visible dark-anchor"
+      style={{
+        background: '#FFFFFF',
+        borderTop: '1px solid #EAEAEA',
+        boxShadow: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        padding: '8px 4px 16px 4px',
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        maxWidth: '480px',
+        margin: '0 auto',
+        zIndex: 1000
+      }}
+    >
       {tabs.map((tab) => {
         const isActive = activeMainTab === tab.id;
         const isPressed = pressedTabId === tab.id;
 
-        // CENTER RAISED BUTTON (AI TRY-ON - Protrudes above capsule with AI Radar Halo & Pedestal)
-        if (tab.isCenter) {
-          return (
-            <div
-              key={tab.id}
-              className={`nav-center-tryon-wrapper ${isActive ? 'active' : ''}`}
-              style={{
-                transform: isPressed ? 'scale(0.88)' : 'scale(1)',
-                transition: 'transform 280ms var(--spring-bezier)'
-              }}
-              onClick={handleTryOnTap}
-            >
-              <div className="tryon-dock-pedestal" />
-              <div className="tryon-radar-ring" />
-              <div className="nav-center-tryon-btn">
-                <i data-lucide="camera" style={{ width: '22px', height: '22px', color: '#FFFFFF' }} />
-                <span className="tryon-ai-sparkle" title="AI 3D Scan">
-                  <i data-lucide="sparkles" style={{ width: '11px', height: '11px', color: '#000000', strokeWidth: '2.5px' }} />
-                </span>
-              </div>
-            </div>
-          );
-        }
-
-        // STANDARD TABS (Home, Shop, Cart, Profile)
         return (
           <div
             key={tab.id}
-            className={`nav-item ${isActive ? 'active' : ''}`}
-            style={{
-              transform: isPressed ? 'scale(0.88)' : 'scale(1)',
-              transition: 'transform 280ms var(--spring-bezier)'
-            }}
             onClick={() => handleTabClick(tab.id)}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              cursor: 'pointer',
+              userSelect: 'none',
+              transform: isPressed ? 'scale(0.88)' : 'scale(1)',
+              transition: 'transform 280ms var(--spring-bezier)',
+              padding: '4px 0',
+              position: 'relative'
+            }}
           >
-            <div className="nav-item-pill">
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justify: 'center' }}>
-                <i
-                  data-lucide={tab.icon}
-                  className="nav-icon"
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justify: 'center' }}>
+              <i
+                data-lucide={tab.icon}
+                style={{
+                  width: '22px',
+                  height: '22px',
+                  color: isActive ? '#9CCC65' : '#4A5F94',
+                  strokeWidth: isActive ? '2.5px' : '1.8px',
+                  transition: 'color 200ms ease, transform 280ms var(--spring-bezier)',
+                  transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                  flexShrink: 0
+                }}
+              />
+              {tab.badge > 0 && (
+                <span
                   style={{
-                    width: '20px',
-                    height: '20px',
-                    color: isActive ? '#FF4D8D' : '#A0A4C8',
-                    transition: 'transform 350ms var(--spring-bezier), color 200ms ease',
-                    transform: isActive ? 'scale(1.15)' : 'scale(1)',
-                    flexShrink: 0
+                    position: 'absolute',
+                    top: '-5px',
+                    right: '-10px',
+                    background: '#9CCC65',
+                    color: '#000000',
+                    fontSize: '10px',
+                    fontWeight: '900',
+                    minWidth: '16px',
+                    height: '16px',
+                    borderRadius: '8px',
+                    padding: '0 4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    lineHeight: 1,
+                    zIndex: 10
                   }}
-                />
-                {tab.badge > 0 && (
-                  <span
-                    className="nav-badge"
-                    style={{
-                      position: 'absolute',
-                      top: '-4px',
-                      right: '-8px',
-                      background: 'linear-gradient(135deg, #FF4D8D 0%, #FF0055 100%)',
-                      color: '#FFFFFF',
-                      fontSize: '10px',
-                      fontWeight: '900',
-                      minWidth: '18px',
-                      height: '18px',
-                      borderRadius: '9px',
-                      padding: '0 4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 2px 8px rgba(255, 77, 141, 0.85), 0 0 0 2px #0F1535',
-                      zIndex: 10,
-                      animation: 'breatheGlow 2s infinite ease-in-out'
-                    }}
-                  >
-                    {tab.badge}
-                  </span>
-                )}
-              </div>
-              <span className="nav-label">
-                {tab.label}
-              </span>
+                >
+                  {tab.badge}
+                </span>
+              )}
             </div>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: isActive ? '700' : '500',
+                color: isActive ? '#9CCC65' : '#4A5F94',
+                marginTop: '4px',
+                letterSpacing: '0.2px',
+                transition: 'color 200ms ease'
+              }}
+            >
+              {tab.label}
+            </span>
           </div>
         );
       })}

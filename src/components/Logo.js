@@ -56,22 +56,22 @@ const Logo = ({ iconOnly = false, size = 36, onClick }) => {
   }, []);
 
   return (
-    <div 
-      className="logo-container" 
-      onClick={onClick} 
-      style={{ 
-        display: 'inline-flex', 
-        alignItems: 'center', 
-        gap: '6px', 
+    <div
+      className="logo-container"
+      onClick={onClick}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
         cursor: onClick ? 'pointer' : 'default',
         userSelect: 'none',
         padding: '2px'
       }}
     >
       {/* =========================================================================
-          EXACT TRANSPARENT LENS MAKERS LOGO WITH ZERO-GRAVITY DRIFT EFFECT
+          SVG DUAL-CIRCLE BRANDING (Cyan/Blue & Lime-Green strokes per Section 1)
           ========================================================================= */}
-      <div 
+      <div
         className="anti-gravity-floating"
         style={{
           display: 'flex',
@@ -81,32 +81,24 @@ const Logo = ({ iconOnly = false, size = 36, onClick }) => {
         }}
         title="Lens Makers — Floating in Zero Gravity"
       >
-        <img
-          src="logo-3d.png"
-          alt="Lens Makers Exact Brand Logo"
-          style={{
-            height: `${h}px`,
-            width: 'auto',
-            maxHeight: '64px',
-            objectFit: 'contain',
-            display: 'block'
-          }}
-          onError={(e) => {
-            // Fallback to /logo-3d.png if relative loading fails
-            if (!e.target.dataset.retried) {
-              e.target.dataset.retried = 'true';
-              e.target.src = '/logo-3d.png';
-            }
-          }}
-        />
+        <svg width={h * 1.35} height={h} viewBox="0 0 44 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Left Lens Circle - Cyan/Blue */}
+          <circle cx="13" cy="14" r="9" stroke="#00E5FF" strokeWidth="3" fill="rgba(0, 229, 255, 0.15)" />
+          {/* Right Lens Circle - Lime Green */}
+          <circle cx="31" cy="14" r="9" stroke="#9CCC65" strokeWidth="3" fill="rgba(156, 204, 101, 0.15)" />
+          {/* Bridge Connecting Circles */}
+          <path d="M22 14 C 22.5 11, 23.5 11, 24 14" stroke="#00E5FF" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Outer Temples/Arms */}
+          <path d="M4 13 L 2 10 M 40 13 L 42 10" stroke="#9CCC65" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
       </div>
 
       {/* =========================================================================
-          LOWERCASE WORDMARK: "lensmakers" ("lens" in white, "makers" in lime)
+          CRISP WHITE SANS-SERIF TEXT: "lensmakers" per Section 1
           ========================================================================= */}
       {!iconOnly && (
-        <span 
-          className="logo-wordmark" 
+        <span
+          className="logo-wordmark"
           style={{
             fontFamily: "'Outfit', 'Inter', -apple-system, sans-serif",
             fontWeight: 800,
@@ -115,18 +107,11 @@ const Logo = ({ iconOnly = false, size = 36, onClick }) => {
             whiteSpace: 'nowrap',
             display: 'inline-flex',
             alignItems: 'center',
-            lineHeight: 1
+            lineHeight: 1,
+            color: '#FFFFFF'
           }}
         >
-          <span style={{ color: '#FFFFFF' }}>lens</span>
-          <span style={{ 
-            background: 'linear-gradient(90deg, #CCFF00 0%, #76FF03 50%, #00E676 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            color: '#76FF03'
-          }}>
-            makers
-          </span>
+          lensmakers
         </span>
       )}
     </div>
