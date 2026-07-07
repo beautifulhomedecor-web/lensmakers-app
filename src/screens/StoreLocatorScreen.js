@@ -96,9 +96,9 @@ const STORES_DATA = [
 
 const ALL_SERVICES_SYSTEM = [
   { id: 'Eye Test', label: 'Eye Test', icon: 'eye', color: '#29B6F6' },
-  { id: 'AR Try-On', label: 'AR Try-On', icon: 'camera', color: '#FF4D8D' },
+  { id: 'AR Try-On', label: 'AR Try-On', icon: 'camera', color: '#FF7873' },
   { id: 'Frame Repair', label: 'Frame Repair', icon: 'wrench', color: '#FF7A30' },
-  { id: 'Lens Fitting', label: 'Lens Fitting', icon: 'disc', color: '#7C4DFF' },
+  { id: 'Lens Fitting', label: 'Lens Fitting', icon: 'disc', color: '#8140DC' },
   { id: 'Contact Lens Consultation', label: 'Contact Lenses', icon: 'smile', color: '#43A047' },
   { id: 'Home Delivery', label: 'Home Delivery', icon: 'truck', color: '#66BB6A' }
 ];
@@ -167,7 +167,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
     <div className="screen-transition-enter" style={{ padding: '16px var(--screen-padding)', paddingBottom: 'calc(72px + env(safe-area-inset-bottom) + 24px)' }}>
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="glass-card-glow-pink" style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '12px 24px', borderRadius: '999px', fontSize: '13px', fontWeight: '800', color: '#FFFFFF', whiteSpace: 'nowrap', boxShadow: '0 8px 32px rgba(255,77,141,0.5)', animation: 'fadeIn 200ms ease' }}>
+        <div className="glass-card-glow-pink" style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '12px 24px', borderRadius: '999px', fontSize: '13px', fontWeight: '800', color: '#FFFFFF', whiteSpace: 'nowrap', boxShadow: '0 8px 32px rgba(226,47,128,0.5)', animation: 'fadeIn 200ms ease' }}>
           {toastMessage}
         </div>
       )}
@@ -209,7 +209,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
               placeholder="Search by city, area, or pincode..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ width: '100%', height: '46px', paddingLeft: '44px', paddingRight: '14px', borderRadius: '14px', background: 'rgba(27,31,74,0.75)', border: '1.5px solid rgba(255,122,48,0.3)', color: '#FFFFFF', fontSize: '13px', outline: 'none', backdropFilter: 'blur(10px)' }}
+              style={{ width: '100%', height: '46px', paddingLeft: '44px', paddingRight: '14px', borderRadius: '14px', background: 'rgba(255,240,224,0.75)', border: '1.5px solid rgba(255,122,48,0.3)', color: '#FFFFFF', fontSize: '13px', outline: 'none', backdropFilter: 'blur(10px)' }}
             />
           </div>
 
@@ -245,8 +245,8 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                 transform: `scale(${mapZoom})`,
                 transition: 'transform 400ms var(--spring-bezier)',
                 backgroundImage: `
-                  linear-gradient(rgba(27,31,74,0.7) 2px, transparent 2px),
-                  linear-gradient(90deg, rgba(27,31,74,0.7) 2px, transparent 2px),
+                  linear-gradient(rgba(255,240,224,0.7) 2px, transparent 2px),
+                  linear-gradient(90deg, rgba(255,240,224,0.7) 2px, transparent 2px),
                   linear-gradient(rgba(255,255,255,0.08) 4px, transparent 4px),
                   linear-gradient(90deg, rgba(255,255,255,0.08) 4px, transparent 4px)
                 `,
@@ -257,7 +257,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
               {/* Stylized Park & Water Zones */}
               <div style={{ position: 'absolute', top: '15%', left: '10%', width: '35%', height: '30%', background: 'rgba(102,187,106,0.12)', borderRadius: '16px', border: '1px dashed rgba(102,187,106,0.3)' }} />
               <div style={{ position: 'absolute', bottom: '10%', right: '15%', width: '40%', height: '35%', background: 'rgba(41,182,246,0.12)', borderRadius: '20px', border: '1px dashed rgba(41,182,246,0.3)' }} />
-              <div style={{ position: 'absolute', top: '55%', left: '20%', width: '25%', height: '20%', background: 'rgba(124,77,255,0.1)', borderRadius: '12px' }} />
+              <div style={{ position: 'absolute', top: '55%', left: '20%', width: '25%', height: '20%', background: 'rgba(129,64,220,0.1)', borderRadius: '12px' }} />
               
               {/* Diagonal Express Road */}
               <div style={{ position: 'absolute', top: '-10%', left: '0%', width: '120%', height: '8px', background: 'rgba(255,255,255,0.12)', transform: 'rotate(18deg)', transformOrigin: 'top left' }} />
@@ -284,8 +284,8 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                     <div
                       style={{
                         position: 'absolute', bottom: '38px', left: '50%', transform: 'translateX(-50%)',
-                        background: 'rgba(15,21,53,0.95)', border: '1.5px solid #FF4D8D', borderRadius: '12px',
-                        padding: '10px 14px', minWidth: '170px', boxShadow: '0 8px 24px rgba(255,77,141,0.4)',
+                        background: 'rgba(255,245,236,0.95)', border: '1.5px solid #FF7873', borderRadius: '12px',
+                        padding: '10px 14px', minWidth: '170px', boxShadow: '0 8px 24px rgba(226,47,128,0.4)',
                         animation: 'fadeIn 200ms ease', backdropFilter: 'blur(10px)', zIndex: 30
                       }}
                       onClick={(e) => { e.stopPropagation(); setViewMode('detail'); }}
@@ -299,12 +299,12 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                       <div style={{ fontSize: '11px', fontWeight: '800', color: st.isOpen ? '#66BB6A' : '#EF5350', marginBottom: '6px' }}>
                         {st.hoursText}
                       </div>
-                      <div style={{ fontSize: '11px', fontWeight: '800', color: '#FF4D8D', textDecoration: 'underline', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ fontSize: '11px', fontWeight: '800', color: '#FF7873', textDecoration: 'underline', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <span>View Store Details</span>
                         <span>→</span>
                       </div>
                       {/* Triangle Pointer */}
-                      <div style={{ position: 'absolute', bottom: '-6px', left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: '10px', height: '10px', background: 'rgba(15,21,53,0.95)', borderRight: '1.5px solid #FF4D8D', borderBottom: '1.5px solid #FF4D8D' }} />
+                      <div style={{ position: 'absolute', bottom: '-6px', left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: '10px', height: '10px', background: 'rgba(255,245,236,0.95)', borderRight: '1.5px solid #FF7873', borderBottom: '1.5px solid #FF7873' }} />
                     </div>
                   )}
 
@@ -314,7 +314,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                       width: isSel ? '36px' : '28px',
                       height: isSel ? '44px' : '34px',
                       background: isSel
-                        ? 'linear-gradient(135deg, #FF4D8D 0%, #C2185B 100%)'
+                        ? 'linear-gradient(135deg, #FF7873 0%, #E22F80 100%)'
                         : 'linear-gradient(135deg, #C9A876 0%, #B8935E 100%)',
                       borderRadius: '50% 50% 50% 0',
                       transform: 'rotate(-45deg)',
@@ -322,7 +322,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: isSel
-                        ? '0 6px 20px rgba(255,77,141,0.6)'
+                        ? '0 6px 20px rgba(226,47,128,0.6)'
                         : '0 4px 12px rgba(0,0,0,0.5)',
                       transition: 'all 250ms var(--spring-bezier)'
                     }}
@@ -341,7 +341,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                   </div>
                   {/* Pin Base Shadow Pulse */}
                   {isSel && (
-                    <div style={{ position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)', width: '18px', height: '6px', background: 'rgba(255,77,141,0.5)', borderRadius: '50%', filter: 'blur(2px)' }} />
+                    <div style={{ position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)', width: '18px', height: '6px', background: 'rgba(226,47,128,0.5)', borderRadius: '50%', filter: 'blur(2px)' }} />
                   )}
                 </div>
               );
@@ -351,14 +351,14 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
             <div style={{ position: 'absolute', bottom: '12px', right: '12px', display: 'flex', flexDirection: 'column', gap: '6px', zIndex: 15 }}>
               <button
                 type="button"
-                style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(27,31,74,0.9)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', fontWeight: '800', cursor: 'pointer' }}
+                style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,240,224,0.9)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', fontWeight: '800', cursor: 'pointer' }}
                 onClick={() => setMapZoom(prev => Math.min(prev + 0.2, 1.8))}
               >
                 +
               </button>
               <button
                 type="button"
-                style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(27,31,74,0.9)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', fontWeight: '800', cursor: 'pointer' }}
+                style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,240,224,0.9)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', fontWeight: '800', cursor: 'pointer' }}
                 onClick={() => setMapZoom(prev => Math.max(prev - 0.2, 0.8))}
               >
                 -
@@ -366,7 +366,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
             </div>
 
             {/* Map Legend Tag */}
-            <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(15,21,53,0.85)', padding: '4px 10px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.12)', fontSize: '10px', fontWeight: '700', color: '#A0A4C8', backdropFilter: 'blur(6px)' }}>
+            <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(255,245,236,0.85)', padding: '4px 10px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.12)', fontSize: '10px', fontWeight: '700', color: '#A0A4C8', backdropFilter: 'blur(6px)' }}>
               📍 4 Verified Flagship Eye Clinics
             </div>
           </div>
@@ -388,9 +388,9 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                   style={{
                     padding: '16px',
                     cursor: 'pointer',
-                    border: isSel ? '2px solid #FF4D8D' : '1px solid rgba(255,255,255,0.1)',
-                    background: isSel ? 'rgba(255,77,141,0.06)' : 'transparent',
-                    boxShadow: isSel ? '0 0 20px rgba(255,77,141,0.25)' : 'none',
+                    border: isSel ? '2px solid #FF7873' : '1px solid rgba(255,255,255,0.1)',
+                    background: isSel ? 'rgba(226,47,128,0.06)' : 'transparent',
+                    boxShadow: isSel ? '0 0 20px rgba(226,47,128,0.25)' : 'none',
                     transition: 'all 200ms ease',
                     display: 'flex',
                     alignItems: 'flex-start',
@@ -469,7 +469,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                     <span className={`badge-pill ${st.isOpen ? 'badge-green' : 'badge-orange'}`} style={{ fontSize: '10px', padding: '2px 8px' }}>
                       {st.isOpen ? 'OPEN' : 'CLOSED'}
                     </span>
-                    <span style={{ color: isSel ? '#FF4D8D' : '#6B6E9A', fontWeight: '800', fontSize: '16px' }}>
+                    <span style={{ color: isSel ? '#FF7873' : '#6B6E9A', fontWeight: '800', fontSize: '16px' }}>
                       →
                     </span>
                   </div>
@@ -507,7 +507,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
             }}
           >
             <div style={{ fontSize: '64px', opacity: 0.8 }}>{activeStore.image}</div>
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,21,53,0.8) 0%, transparent 60%)' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(255,245,236,0.8) 0%, transparent 60%)' }} />
 
             {/* Top Left Pill: Status & Hours */}
             <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 2 }}>
@@ -604,11 +604,11 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
                       style={{
                         padding: '8px 12px',
                         borderRadius: '8px',
-                        background: row.isToday ? 'rgba(255,77,141,0.15)' : 'rgba(255,255,255,0.03)',
-                        border: row.isToday ? '1px solid #FF4D8D' : '1px solid transparent'
+                        background: row.isToday ? 'rgba(226,47,128,0.15)' : 'rgba(255,255,255,0.03)',
+                        border: row.isToday ? '1px solid #FF7873' : '1px solid transparent'
                       }}
                     >
-                      <span style={{ fontSize: '12px', fontWeight: row.isToday ? '800' : '600', color: row.isToday ? '#FF4D8D' : '#FFFFFF' }}>
+                      <span style={{ fontSize: '12px', fontWeight: row.isToday ? '800' : '600', color: row.isToday ? '#FF7873' : '#FFFFFF' }}>
                         {row.day} {row.isToday && ' (Today)'}
                       </span>
                       <span style={{ fontSize: '12px', fontWeight: '700', color: row.time === 'Closed' ? '#EF5350' : '#FFFFFF' }}>
@@ -687,7 +687,7 @@ const StoreLocatorScreen = ({ onSelectTab }) => {
             <button
               type="button"
               className="btn-primary-pill w-100"
-              style={{ height: '52px', fontSize: '15px', fontWeight: '900', background: 'linear-gradient(135deg, #FF4D8D, #7C4DFF)', boxShadow: '0 0 24px rgba(255,77,141,0.5)' }}
+              style={{ height: '52px', fontSize: '15px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7873, #8140DC)', boxShadow: '0 0 24px rgba(226,47,128,0.5)' }}
               onClick={() => {
                 showToast(`🏥 Pre-selecting ${activeStore.name} for your clinic appointment...`);
                 setTimeout(() => {

@@ -30,7 +30,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous" defer onerror="window.mediaPipeLoadError = true;"></script>
 
   <!-- Vanilla Design System & Animation Law CSS -->
-  <link rel="stylesheet" href="./styles.css?v=20260706_lighttheme_v1">
+  <link rel="stylesheet" href="./styles.css?v=20260707_warmpalette_v1">
 
   <!-- React 18 & Babel Standalone CDN -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -46,10 +46,12 @@
   <script>
     (async function initializeLensMakers() {
       // Ensure service worker is updated and active
+      // Unregister ALL old service workers first, then register fresh
       if ('serviceWorker' in navigator) {
         try {
-          const reg = await navigator.serviceWorker.register('./sw.js');
-          reg.update();
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(r => r.unregister()));
+          await navigator.serviceWorker.register('./sw.js');
         } catch (swErr) {
           console.warn('SW registration info:', swErr);
         }
@@ -87,7 +89,7 @@
       try {
         // Fetch all modules simultaneously in parallel over network for maximum loading speed
         const moduleResponses = await Promise.all(modules.map(async (mod) => {
-          const res = await fetch(mod + '?v=20260706_lighttheme_v1', { cache: 'no-cache' });
+          const res = await fetch(mod + '?v=20260707_warmpalette_v1', { cache: 'no-store' });
           if (!res.ok) throw new Error(`HTTP ${res.status} when loading ${mod}`);
           const text = await res.text();
           return { mod, text };

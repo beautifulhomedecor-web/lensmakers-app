@@ -371,8 +371,8 @@ const TryOnScreen = ({ onSelectTab }) => {
     ctx.scale(1, 0.28);
     const pedGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, 240 * pCenter.scale);
     pedGrad.addColorStop(0, 'rgba(0, 229, 255, 0.45)');
-    pedGrad.addColorStop(0.5, 'rgba(255, 77, 141, 0.18)');
-    pedGrad.addColorStop(1, 'rgba(15, 21, 53, 0)');
+    pedGrad.addColorStop(0.5, 'rgba(226,47,128, 0.18)');
+    pedGrad.addColorStop(1, 'rgba(255,245,236, 0)');
     ctx.fillStyle = pedGrad;
     ctx.beginPath();
     ctx.arc(0, 0, 240 * pCenter.scale, 0, Math.PI * 2);
@@ -1014,7 +1014,7 @@ const TryOnScreen = ({ onSelectTab }) => {
     offCtx.drawImage(canvas, 0, 0);
 
     // Add Lens Makers watermarked badge in corner
-    offCtx.fillStyle = 'rgba(15, 21, 53, 0.8)';
+    offCtx.fillStyle = 'rgba(255,245,236, 0.8)';
     offCtx.roundRect(24, offCanvas.height - 60, 210, 36, 18);
     offCtx.fill();
     offCtx.fillStyle = '#FFFFFF';
@@ -1138,7 +1138,7 @@ const TryOnScreen = ({ onSelectTab }) => {
          ========================================================================== */}
       {status === 'loading' && !faceDetected && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px' }}>
-          <div style={{ width: '80px', height: '80px', borderRadius: '50%', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: '#FF4D8D', animation: 'spin 1s infinite linear', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+          <div style={{ width: '80px', height: '80px', borderRadius: '50%', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: '#FF7873', animation: 'spin 1s infinite linear', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
             <span style={{ fontSize: '32px' }}>👓</span>
           </div>
           <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#FFFFFF' }}>Setting up your mirror...</h2>
@@ -1327,7 +1327,7 @@ const TryOnScreen = ({ onSelectTab }) => {
               <button
                 type="button"
                 className={`tryon-360-chip ${isAutoSpinning ? 'active' : ''}`}
-                style={{ background: isAutoSpinning ? '#FF4D8D' : undefined, borderColor: isAutoSpinning ? '#FF4D8D' : undefined, color: isAutoSpinning ? '#FFFFFF' : undefined }}
+                style={{ background: isAutoSpinning ? '#FF7873' : undefined, borderColor: isAutoSpinning ? '#FF7873' : undefined, color: isAutoSpinning ? '#FFFFFF' : undefined }}
                 onClick={() => {
                   setIsAutoSpinning(!isAutoSpinning);
                 }}
@@ -1419,7 +1419,7 @@ const TryOnScreen = ({ onSelectTab }) => {
                   onClick={handleToggleWishlist}
                   title="Save to Wishlist"
                 >
-                  <span style={{ fontSize: '18px', color: wishlist.includes(currentFrameStyle.id) ? '#FF4D8D' : '#FFFFFF' }}>
+                  <span style={{ fontSize: '18px', color: wishlist.includes(currentFrameStyle.id) ? '#FF7873' : '#FFFFFF' }}>
                     {wishlist.includes(currentFrameStyle.id) ? '♥' : '♡'}
                   </span>
                 </button>
@@ -1492,7 +1492,7 @@ const TryOnScreen = ({ onSelectTab }) => {
           <div className="flex-between" style={{ position: 'absolute', top: '16px', left: '16px', right: '16px', zIndex: 20 }}>
             <button
               type="button"
-              style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(15, 21, 53, 0.75)', border: '1px solid rgba(255,255,255,0.25)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', cursor: 'pointer', backdropFilter: 'blur(10px)' }}
+              style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(255,245,236, 0.75)', border: '1px solid rgba(255,255,255,0.25)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', cursor: 'pointer', backdropFilter: 'blur(10px)' }}
               onClick={() => setStatus('active')}
               title="Retake Snapshot"
             >
@@ -1500,7 +1500,7 @@ const TryOnScreen = ({ onSelectTab }) => {
             </button>
             <button
               type="button"
-              style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(15, 21, 53, 0.75)', border: '1px solid rgba(255,255,255,0.25)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(10px)' }}
+              style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(255,245,236, 0.75)', border: '1px solid rgba(255,255,255,0.25)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(10px)' }}
               onClick={() => showToast('📤 Opening native share sheet...')}
               title="Share Snapshot"
             >

@@ -110,7 +110,7 @@ if (typeof document !== 'undefined') {
 function burstHeartParticles(heartBtn) {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!heartBtn) return;
-  const colors = ['#FF4D8D','#FF85AD','#FF4D8D','#FFC2D4','#FF4D8D','#C2185B','#FF85AD','#FF4D8D'];
+  const colors = ['#FF7873','#FF85AD','#FF7873','#FFC2D4','#FF7873','#E22F80','#FF85AD','#FF7873'];
   const rect = heartBtn.getBoundingClientRect();
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
@@ -178,7 +178,7 @@ function animateAddToCart(sourceElement, cartBadge) {
     position: fixed;
     width: 48px; height: 48px;
     border-radius: 12px;
-    background: ${thumbSrc ? thumbSrc : 'linear-gradient(135deg,#FF4D8D,#7C4DFF)'};
+    background: ${thumbSrc ? thumbSrc : 'linear-gradient(135deg,#FF7873,#8140DC)'};
     background-size: cover;
     background-position: center;
     left: ${sourceRect.left + sourceRect.width/2 - 24}px;

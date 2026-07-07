@@ -76,7 +76,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
       )}
 
       {/* SUB-NAV MODE SWITCHER (Allows testing Landing vs Welcome vs Manage directly) */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '16px var(--screen-padding) 8px', scrollbarWidth: 'none', background: 'rgba(15,21,53,0.9)', position: 'sticky', top: '0', zIndex: 50, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '16px var(--screen-padding) 8px', scrollbarWidth: 'none', background: 'rgba(255,245,236,0.9)', position: 'sticky', top: '0', zIndex: 50, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         {[
           { id: 'landing', label: '👑 Club Overview', badge: '₹99/MO' },
           { id: 'welcome', label: '🎉 Welcome Card Demo', badge: 'ACTIVE' },
@@ -89,7 +89,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
               type="button"
               style={{
                 padding: '8px 16px', borderRadius: '999px', fontSize: '13px', fontWeight: '700', flexShrink: 0,
-                background: isActive ? 'linear-gradient(135deg, #7C4DFF 0%, #FF4D8D 100%)' : 'rgba(27,31,74,0.65)',
+                background: isActive ? 'linear-gradient(135deg, #8140DC 0%, #FF7873 100%)' : 'rgba(255,240,224,0.65)',
                 color: isActive ? '#FFFFFF' : '#A0A4C8',
                 border: isActive ? 'none' : '1px solid rgba(255,255,255,0.15)',
                 display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', transition: 'all 200ms ease'
@@ -98,7 +98,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
             >
               <span>{tab.label}</span>
               {tab.badge && (
-                <span style={{ background: isActive ? 'rgba(0,0,0,0.25)' : '#7C4DFF', color: '#FFFFFF', padding: '2px 6px', borderRadius: '999px', fontSize: '9px', fontWeight: '900' }}>
+                <span style={{ background: isActive ? 'rgba(0,0,0,0.25)' : '#8140DC', color: '#FFFFFF', padding: '2px 6px', borderRadius: '999px', fontSize: '9px', fontWeight: '900' }}>
                   {tab.badge}
                 </span>
               )}
@@ -147,7 +147,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
                 </div>
                 <span style={{ fontSize: '13px', fontWeight: '800', color: '#FFFFFF', letterSpacing: '1px' }}>LENS MAKERS</span>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: '900', color: '#7C4DFF', letterSpacing: '3px', textTransform: 'uppercase' }}>CLUB VIP</span>
+              <span style={{ fontSize: '12px', fontWeight: '900', color: '#8140DC', letterSpacing: '3px', textTransform: 'uppercase' }}>CLUB VIP</span>
             </div>
 
             {/* Center: Large Pricing Display */}
@@ -185,9 +185,9 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           {/* BENEFIT LIST (Stacked rows with left accents) */}
           <div className="glass-card-standard mb-4" style={{ padding: '8px 16px' }}>
             {[
-              { icon: '🏷️', color: '#FF4D8D', title: 'Flat 25% Off All Eyewear', desc: 'Every frame, every order — no minimum, no exceptions.' },
+              { icon: '🏷️', color: '#FF7873', title: 'Flat 25% Off All Eyewear', desc: 'Every frame, every order — no minimum, no exceptions.' },
               { icon: '👁️', color: '#29B6F6', title: '1 Free Online Eye Check-Up/Month', desc: 'Book your monthly vision check — completely free.' },
-              { icon: '📸', color: '#7C4DFF', title: 'Priority AR Try-On Slots', desc: 'Get first access to new frames before general release.' },
+              { icon: '📸', color: '#8140DC', title: 'Priority AR Try-On Slots', desc: 'Get first access to new frames before general release.' },
               { icon: '🎁', color: '#FF7A30', title: 'Exclusive Member-Only Offers', desc: 'Special BOGO deals, flash sales, and birthday offers.' },
               { icon: '📞', color: '#43A047', title: 'Dedicated Support Line', desc: 'Skip the queue — member-only priority 24/7 support.' }
             ].map((ben, idx) => (
@@ -213,7 +213,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           </h3>
           <div className="grid-2 mb-3" style={{ gap: '14px' }}>
             {/* Left: Monthly Plan */}
-            <div className="glass-card-standard" style={{ padding: '18px 14px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: selectedPlan === 'monthly' ? '2px solid #FF4D8D' : '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }} onClick={() => setSelectedPlan('monthly')}>
+            <div className="glass-card-standard" style={{ padding: '18px 14px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: selectedPlan === 'monthly' ? '2px solid #FF7873' : '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }} onClick={() => setSelectedPlan('monthly')}>
               <div>
                 <div style={{ fontSize: '13px', fontWeight: '800', color: '#A0A4C8', uppercase: 'true' }}>MONTHLY PLAN</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', margin: '8px 0' }}>
@@ -226,7 +226,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
               <button
                 type="button"
                 className="btn-secondary-pill w-100 mt-3"
-                style={{ height: '40px', fontSize: '12px', borderColor: '#FF4D8D', color: '#FF4D8D' }}
+                style={{ height: '40px', fontSize: '12px', borderColor: '#FF7873', color: '#FF7873' }}
                 onClick={(e) => { e.stopPropagation(); handleStartPayment('monthly'); }}
               >
                 Join Monthly →
@@ -234,12 +234,12 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
             </div>
 
             {/* Right: Annual Plan (BEST VALUE) */}
-            <div className="glass-card-glow-pink" style={{ padding: '18px 14px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #FF4D8D', position: 'relative', cursor: 'pointer' }} onClick={() => setSelectedPlan('annual')}>
+            <div className="glass-card-glow-pink" style={{ padding: '18px 14px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #FF7873', position: 'relative', cursor: 'pointer' }} onClick={() => setSelectedPlan('annual')}>
               <span style={{ position: 'absolute', top: '10px', right: '10px', background: '#FF7A30', color: '#FFFFFF', padding: '3px 8px', borderRadius: '999px', fontSize: '9px', fontWeight: '900', letterSpacing: '0.5px' }}>
                 BEST VALUE 🔥
               </span>
               <div>
-                <div style={{ fontSize: '13px', fontWeight: '800', color: '#FF4D8D', uppercase: 'true' }}>ANNUAL PLAN</div>
+                <div style={{ fontSize: '13px', fontWeight: '800', color: '#FF7873', uppercase: 'true' }}>ANNUAL PLAN</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', margin: '8px 0' }}>
                   <span style={{ fontSize: '28px', fontWeight: '900', color: '#FFFFFF' }}>₹799</span>
                   <span style={{ fontSize: '13px', color: '#A0A4C8' }}>/ year</span>
@@ -250,7 +250,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
               <button
                 type="button"
                 className="btn-primary-pill w-100 mt-3"
-                style={{ height: '40px', fontSize: '12px', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)' }}
+                style={{ height: '40px', fontSize: '12px', background: 'linear-gradient(135deg, #FF7A30, #FF7873)' }}
                 onClick={(e) => { e.stopPropagation(); handleStartPayment('annual'); }}
               >
                 Join Annual →
@@ -268,7 +268,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', fontSize: '13px' }}>
               {/* Table Header */}
-              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1.2fr', paddingBottom: '10px', borderBottom: '1.5px solid rgba(255,255,255,0.15)', fontWeight: '800', color: '#FF4D8D' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1.2fr', paddingBottom: '10px', borderBottom: '1.5px solid rgba(255,255,255,0.15)', fontWeight: '800', color: '#FF7873' }}>
                 <span>Feature</span>
                 <span>Non-Member</span>
                 <span style={{ color: '#43A047' }}>VIP Member</span>
@@ -286,7 +286,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
                 >
                   <span style={{ color: '#FFFFFF', fontWeight: '700' }}>{row.feat}</span>
                   <span style={{ color: '#A0A4C8' }}>{row.std}</span>
-                  <span style={{ color: row.highlight ? '#43A047' : '#FF4D8D', fontWeight: '900' }}>{row.vip}</span>
+                  <span style={{ color: row.highlight ? '#43A047' : '#FF7873', fontWeight: '900' }}>{row.vip}</span>
                 </div>
               ))}
             </div>
@@ -298,8 +298,8 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           </h3>
           <div style={{ display: 'flex', gap: '14px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '32px', scrollbarWidth: 'none' }}>
             {[
-              { quote: "I save ₹600+ every order on my family's glasses. The free monthly eye checkup is a blessing!", author: "Priya R.", since: "Member since 2025", initials: "PR", color: "#FF4D8D" },
-              { quote: "Got 2 premium titanium frames at 25% off plus BOGO. Paid less than half of what optical shops charge.", author: "Rahul M.", since: "Member since 2024", initials: "RM", color: "#7C4DFF" },
+              { quote: "I save ₹600+ every order on my family's glasses. The free monthly eye checkup is a blessing!", author: "Priya R.", since: "Member since 2025", initials: "PR", color: "#FF7873" },
+              { quote: "Got 2 premium titanium frames at 25% off plus BOGO. Paid less than half of what optical shops charge.", author: "Rahul M.", since: "Member since 2024", initials: "RM", color: "#8140DC" },
               { quote: "Priority AR Try-on and instant delivery tracking makes Lens Makers feel like an Apple product.", author: "Vikram S.", since: "Member since 2026", initials: "VS", color: "#29B6F6" }
             ].map((t, idx) => (
               <div key={idx} className="glass-card-standard" style={{ minWidth: '260px', padding: '18px', flexShrink: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -343,7 +343,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
                   onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
                 >
                   <div className="flex-between">
-                    <span style={{ fontSize: '14px', fontWeight: '800', color: isOpen ? '#FF4D8D' : '#FFFFFF' }}>{faq.q}</span>
+                    <span style={{ fontSize: '14px', fontWeight: '800', color: isOpen ? '#FF7873' : '#FFFFFF' }}>{faq.q}</span>
                     <span style={{ fontSize: '16px', color: '#A0A4C8', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 200ms ease' }}>▼</span>
                   </div>
                   {isOpen && (
@@ -361,7 +361,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
             <button
               type="button"
               className="btn-primary-pill w-100"
-              style={{ height: '56px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #7C4DFF, #FF4D8D)', boxShadow: '0 8px 28px rgba(255,77,141,0.6)' }}
+              style={{ height: '56px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #8140DC, #FF7873)', boxShadow: '0 8px 28px rgba(226,47,128,0.6)' }}
               onClick={() => handleStartPayment(selectedPlan)}
             >
               <span>🚀 Join Club for {selectedPlan === 'annual' ? '₹799/year' : '₹99/month'} →</span>
@@ -389,7 +389,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           </div>
 
           {/* Pre-filled Order Context Card */}
-          <div className="glass-card-glow-pink mb-4" style={{ padding: '20px', borderLeft: '4px solid #FF4D8D' }}>
+          <div className="glass-card-glow-pink mb-4" style={{ padding: '20px', borderLeft: '4px solid #FF7873' }}>
             <div className="flex-between mb-1">
               <span style={{ fontSize: '11px', fontWeight: '700', color: '#A0A4C8', uppercase: 'true' }}>SUBSCRIPTION ORDER SUMMARY</span>
               <span className="badge-pill badge-green">INSTANT ACCESS</span>
@@ -402,7 +402,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
             </div>
             <div className="flex-between" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px', fontSize: '16px', fontWeight: '800', color: '#FFFFFF' }}>
               <span>Total Amount Due:</span>
-              <span style={{ fontSize: '24px', fontWeight: '900', color: '#FF4D8D' }}>{selectedPlan === 'annual' ? '₹799' : '₹99'}</span>
+              <span style={{ fontSize: '24px', fontWeight: '900', color: '#FF7873' }}>{selectedPlan === 'annual' ? '₹799' : '₹99'}</span>
             </div>
           </div>
 
@@ -421,15 +421,15 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
                 <div
                   key={m.id}
                   className="glass-card-standard"
-                  style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: isSel ? '1.5px solid #FF4D8D' : '1px solid rgba(255,255,255,0.15)', background: isSel ? 'rgba(255,77,141,0.08)' : 'transparent', cursor: 'pointer' }}
+                  style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: isSel ? '1.5px solid #FF7873' : '1px solid rgba(255,255,255,0.15)', background: isSel ? 'rgba(226,47,128,0.08)' : 'transparent', cursor: 'pointer' }}
                   onClick={() => setPaymentMethod(m.id)}
                 >
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: '800', color: '#FFFFFF' }}>{m.label}</div>
                     <div style={{ fontSize: '12px', color: '#A0A4C8' }}>{m.desc}</div>
                   </div>
-                  <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: `2px solid ${isSel ? '#FF4D8D' : '#A0A4C8'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {isSel && <div style={{ width: '10px', height: '10px', borderRadius: '5px', background: '#FF4D8D' }} />}
+                  <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: `2px solid ${isSel ? '#FF7873' : '#A0A4C8'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {isSel && <div style={{ width: '10px', height: '10px', borderRadius: '5px', background: '#FF7873' }} />}
                   </div>
                 </div>
               );
@@ -459,7 +459,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           {/* Confetti Particles */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5 }}>
             {[...Array(24)].map((_, i) => {
-              const colors = ['#FF4D8D', '#7C4DFF', '#29B6F6', '#43A047', '#C9A876'];
+              const colors = ['#FF7873', '#8140DC', '#29B6F6', '#43A047', '#C9A876'];
               const col = colors[i % colors.length];
               const left = Math.random() * 95;
               const delay = Math.random() * 0.8;
@@ -476,7 +476,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           {/* Animated Membership Card (Flips in from above) */}
           <div
             className="vip-card-visual mb-4"
-            style={{ width: '320px', height: '190px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', animation: 'slideInDown 600ms var(--spring-bezier)', boxShadow: '0 20px 50px rgba(124,77,255,0.6)' }}
+            style={{ width: '320px', height: '190px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', animation: 'slideInDown 600ms var(--spring-bezier)', boxShadow: '0 20px 50px rgba(129,64,220,0.6)' }}
           >
             <div className="flex-between">
               <span style={{ fontSize: '12px', fontWeight: '900', color: '#FFFFFF', letterSpacing: '1px' }}>LENS MAKERS CLUB</span>
@@ -504,7 +504,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           <button
             type="button"
             className="btn-primary-pill"
-            style={{ width: '280px', height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #7C4DFF, #FF4D8D)', zIndex: 10 }}
+            style={{ width: '280px', height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #8140DC, #FF7873)', zIndex: 10 }}
             onClick={() => {
               showToast("🛍️ Applying 25% VIP savings to shop catalog...");
               if (onSelectTab) onSelectTab('shop');
@@ -536,7 +536,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
           {/* Active Status Card */}
           <div className="glass-card-glow-purple mb-4" style={{ padding: '20px' }}>
             <div className="flex-between mb-2">
-              <span style={{ fontSize: '12px', fontWeight: '800', color: '#7C4DFF', letterSpacing: '1px' }}>VIP PRIVILEGE STATUS</span>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: '#8140DC', letterSpacing: '1px' }}>VIP PRIVILEGE STATUS</span>
               <span className={`badge-pill ${window.userIsMember ? 'badge-green' : 'badge-orange'}`}>
                 {window.userIsMember ? 'ACTIVE MEMBER ✓' : 'INACTIVE ✕'}
               </span>
@@ -552,7 +552,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
               <button
                 type="button"
                 className="btn-primary-pill"
-                style={{ flex: 1, height: '40px', fontSize: '13px', background: window.userIsMember ? 'rgba(255,255,255,0.1)' : '#7C4DFF', border: window.userIsMember ? '1px solid rgba(255,255,255,0.2)' : 'none' }}
+                style={{ flex: 1, height: '40px', fontSize: '13px', background: window.userIsMember ? 'rgba(255,255,255,0.1)' : '#8140DC', border: window.userIsMember ? '1px solid rgba(255,255,255,0.2)' : 'none' }}
                 onClick={() => {
                   window.userIsMember = !window.userIsMember;
                   if (onUpdateMembership) onUpdateMembership(window.userIsMember);
@@ -565,7 +565,7 @@ const MembershipScreen = ({ onSelectTab, initialViewMode = 'landing', onUpdateMe
               <button
                 type="button"
                 className="btn-secondary-pill"
-                style={{ flex: 1, height: '40px', fontSize: '13px', borderColor: '#FF4D8D', color: '#FF4D8D' }}
+                style={{ flex: 1, height: '40px', fontSize: '13px', borderColor: '#FF7873', color: '#FF7873' }}
                 onClick={() => showToast('💳 Opening encrypted payment method updater...')}
               >
                 💳 Change Card

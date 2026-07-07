@@ -110,7 +110,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
       )}
 
       {/* SUB-NAV MODE SWITCHER BAR (Allows user to switch between Booking, Order Tracking & Appointment Tracking) */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '16px var(--screen-padding) 8px', scrollbarWidth: 'none', background: 'rgba(15,21,53,0.9)', position: 'sticky', top: '0', zIndex: 50, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '16px var(--screen-padding) 8px', scrollbarWidth: 'none', background: 'rgba(255,245,236,0.9)', position: 'sticky', top: '0', zIndex: 50, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         {[
           { id: 'landing', label: '👁️ Free Eye Test', badge: 'FREE' },
           { id: 'order_tracking', label: '📦 Order #LM-20482', badge: 'LIVE' },
@@ -123,7 +123,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
               type="button"
               style={{
                 padding: '8px 16px', borderRadius: '999px', fontSize: '13px', fontWeight: '700', flexShrink: 0,
-                background: isActive ? 'linear-gradient(135deg, #FF4D8D 0%, #C2185B 100%)' : 'rgba(27,31,74,0.65)',
+                background: isActive ? 'linear-gradient(135deg, #FF7873 0%, #E22F80 100%)' : 'rgba(255,240,224,0.65)',
                 color: isActive ? '#FFFFFF' : '#A0A4C8',
                 border: isActive ? 'none' : '1px solid rgba(255,255,255,0.15)',
                 display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', transition: 'all 200ms ease'
@@ -262,7 +262,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
               ].map((item, idx) => {
                 const isCompleted = bookingStep > item.step;
                 const isCurrent = bookingStep === item.step;
-                const color = (isCompleted || isCurrent) ? '#FF4D8D' : 'rgba(255,255,255,0.25)';
+                const color = (isCompleted || isCurrent) ? '#FF7873' : 'rgba(255,255,255,0.25)';
 
                 return (
                   <React.Fragment key={item.step}>
@@ -271,11 +271,11 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
                       <div
                         style={{
                           width: '24px', height: '24px', borderRadius: '50%',
-                          background: (isCompleted || isCurrent) ? '#FF4D8D' : 'rgba(11, 42, 107, 0.15)',
+                          background: (isCompleted || isCurrent) ? '#FF7873' : 'rgba(11, 42, 107, 0.15)',
                           border: `2px solid ${color}`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           color: '#FFFFFF', fontSize: '11px', fontWeight: '800',
-                          boxShadow: isCurrent ? '0 0 16px rgba(255,77,141,0.8)' : 'none',
+                          boxShadow: isCurrent ? '0 0 16px rgba(226,47,128,0.8)' : 'none',
                           animation: isCurrent ? 'pulseGlowAnim 1.5s infinite ease-in-out' : 'none'
                         }}
                       >
@@ -288,7 +288,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
 
                     {/* Connecting Line between dots */}
                     {idx < 2 && (
-                      <div style={{ flex: 1, height: '3px', background: bookingStep > idx + 1 ? '#FF4D8D' : 'rgba(255,255,255,0.15)', margin: '0 8px', transform: 'translateY(-10px)', transition: 'background 300ms ease' }} />
+                      <div style={{ flex: 1, height: '3px', background: bookingStep > idx + 1 ? '#FF7873' : 'rgba(255,255,255,0.15)', margin: '0 8px', transform: 'translateY(-10px)', transition: 'background 300ms ease' }} />
                     )}
                   </React.Fragment>
                 );
@@ -440,14 +440,14 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
                   </div>
 
                   {/* Wear Glasses Toggle */}
-                  <div className="flex-between" style={{ background: 'rgba(27,31,74,0.5)', padding: '12px 14px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div className="flex-between" style={{ background: 'rgba(255,240,224,0.5)', padding: '12px 14px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.1)' }}>
                     <div>
                       <div style={{ fontSize: '13px', fontWeight: '800', color: '#FFFFFF' }}>Do you currently wear glasses?</div>
                       <div style={{ fontSize: '11px', color: '#A0A4C8' }}>Helps optometrist calibrate baseline power</div>
                     </div>
                     <button
                       type="button"
-                      style={{ padding: '6px 14px', borderRadius: '999px', fontSize: '12px', fontWeight: '800', background: formData.wearGlasses ? '#FF4D8D' : 'rgba(255,255,255,0.1)', color: '#FFFFFF', border: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
+                      style={{ padding: '6px 14px', borderRadius: '999px', fontSize: '12px', fontWeight: '800', background: formData.wearGlasses ? '#FF7873' : 'rgba(255,255,255,0.1)', color: '#FFFFFF', border: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
                       onClick={() => setFormData({ ...formData, wearGlasses: !formData.wearGlasses })}
                     >
                       {formData.wearGlasses ? 'YES ✓' : 'NO ✕'}
@@ -456,8 +456,8 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
 
                   {/* Expandable Current Prescription field */}
                   {formData.wearGlasses && (
-                    <div style={{ background: 'rgba(36,40,88,0.6)', padding: '14px', borderRadius: '14px', border: '1px dashed rgba(255,77,141,0.4)', animation: 'slideInRight 300ms ease' }}>
-                      <label style={{ fontSize: '12px', fontWeight: '700', color: '#FF4D8D', display: 'block', marginBottom: '6px' }}>Current Prescription (Optional)</label>
+                    <div style={{ background: 'rgba(255,235,210,0.6)', padding: '14px', borderRadius: '14px', border: '1px dashed rgba(226,47,128,0.4)', animation: 'slideInRight 300ms ease' }}>
+                      <label style={{ fontSize: '12px', fontWeight: '700', color: '#FF7873', display: 'block', marginBottom: '6px' }}>Current Prescription (Optional)</label>
                       <input
                         type="text"
                         className="glass-input mb-2"
@@ -486,7 +486,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
                           <button
                             key={idx}
                             type="button"
-                            style={{ padding: '8px 14px', borderRadius: '999px', fontSize: '12px', fontWeight: '700', background: isSel ? '#FF4D8D' : 'rgba(255,255,255,0.06)', color: '#FFFFFF', border: isSel ? 'none' : '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }}
+                            style={{ padding: '8px 14px', borderRadius: '999px', fontSize: '12px', fontWeight: '700', background: isSel ? '#FF7873' : 'rgba(255,255,255,0.06)', color: '#FFFFFF', border: isSel ? 'none' : '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }}
                             onClick={() => setFormData({ ...formData, reason: rs })}
                           >
                             {rs}
@@ -587,7 +587,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
                   type="checkbox"
                   checked={termsChecked}
                   onChange={(e) => setTermsChecked(e.target.checked)}
-                  style={{ width: '18px', height: '18px', accentColor: '#FF4D8D', marginTop: '2px', cursor: 'pointer' }}
+                  style={{ width: '18px', height: '18px', accentColor: '#FF7873', marginTop: '2px', cursor: 'pointer' }}
                 />
                 <span style={{ fontSize: '12px', color: '#A0A4C8', lineHeight: '1.5' }}>
                   I agree to receive reminders via SMS/Email and understand this is a free digital screening and consultation, not a substitute for an emergency hospital visit.
@@ -784,13 +784,13 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '28px', position: 'relative' }}>
                 <div className="tracking-dot current" style={{ position: 'absolute', left: '-32px', top: '-2px' }}>●</div>
                 <div style={{ width: '100%' }}>
-                  <div style={{ fontSize: '15px', fontWeight: '900', color: '#FF4D8D' }}>Out for Delivery 🚀</div>
+                  <div style={{ fontSize: '15px', fontWeight: '900', color: '#FF7873' }}>Out for Delivery 🚀</div>
                   <div style={{ fontSize: '12px', color: '#FFFFFF', fontWeight: '600', marginBottom: '12px' }}>
                     July 3 · Expected arrival between 2:00 PM - 6:00 PM
                   </div>
 
                   {/* Courier Info Sub-Card */}
-                  <div style={{ background: 'rgba(27,31,74,0.8)', padding: '14px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                  <div style={{ background: 'rgba(255,240,224,0.8)', padding: '14px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
                     <div>
                       <div style={{ fontSize: '13px', fontWeight: '800', color: '#FFFFFF' }}>Courier: Bluedart Express</div>
                       <div style={{ fontSize: '11px', color: '#A0A4C8' }}>Tracking ID: BD-7829310</div>
@@ -857,7 +857,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
             <button
               type="button"
               className="btn-secondary-pill w-100"
-              style={{ height: '46px', fontSize: '14px', border: '1.5px solid #FF4D8D', color: '#FFFFFF' }}
+              style={{ height: '46px', fontSize: '14px', border: '1.5px solid #FF7873', color: '#FFFFFF' }}
               onClick={() => showToast('💬 Opening live chat with Lens Makers Support Agent...')}
             >
               💬 Chat with Support (24/7)
@@ -944,7 +944,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '24px', position: 'relative' }}>
                 <div className="tracking-dot current" style={{ position: 'absolute', left: '-32px', top: '-2px' }}>●</div>
                 <div>
-                  <div style={{ fontSize: '15px', fontWeight: '900', color: '#FF4D8D' }}>Video Call Room Active 🎥</div>
+                  <div style={{ fontSize: '15px', fontWeight: '900', color: '#FF7873' }}>Video Call Room Active 🎥</div>
                   <div style={{ fontSize: '12px', color: '#FFFFFF', fontWeight: '600' }}>
                     Doctor is in the room waiting for you to join.
                   </div>
@@ -965,7 +965,7 @@ const EyeCheckupScreen = ({ onSelectTab, initialViewMode = 'landing' }) => {
                 <div className="tracking-dot upcoming" style={{ position: 'absolute', left: '-32px', top: '-2px' }}>○</div>
                 <div>
                   <div style={{ fontSize: '14px', fontWeight: '600', color: '#A0A4C8' }}>Digital Prescription Issued</div>
-                  <div style={{ fontSize: '12px', color: '#FF4D8D', fontWeight: '700', cursor: 'pointer', marginTop: '2px', textDecoration: 'underline' }} onClick={() => showToast('📋 Prescription will appear here immediately after your call!')}>
+                  <div style={{ fontSize: '12px', color: '#FF7873', fontWeight: '700', cursor: 'pointer', marginTop: '2px', textDecoration: 'underline' }} onClick={() => showToast('📋 Prescription will appear here immediately after your call!')}>
                     View Digital Prescription →
                   </div>
                 </div>

@@ -240,7 +240,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px', textAlign: 'center', background: '#FAFAF9' }}>
-          <div style={{ width: '80px', height: '80px', borderRadius: '40px', background: 'rgba(255, 77, 141, 0.15)', border: '2px solid rgba(255, 77, 141, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '38px', marginBottom: '20px', boxShadow: '0 0 30px rgba(255, 77, 141, 0.3)' }}>
+          <div style={{ width: '80px', height: '80px', borderRadius: '40px', background: 'rgba(226,47,128, 0.15)', border: '2px solid rgba(226,47,128, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '38px', marginBottom: '20px', boxShadow: '0 0 30px rgba(226,47,128, 0.3)' }}>
             ⚠️
           </div>
           <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#FFFFFF', marginBottom: '8px' }}>
@@ -253,7 +253,7 @@ class ErrorBoundary extends React.Component {
             <button
               type="button"
               className="btn-primary-pill"
-              style={{ height: '44px', padding: '0 24px', fontSize: '14px', background: 'linear-gradient(135deg, #7C4DFF, #FF4D8D)' }}
+              style={{ height: '44px', padding: '0 24px', fontSize: '14px', background: 'linear-gradient(135deg, #8140DC, #FF7873)' }}
               onClick={() => window.location.reload()}
             >
               Reload Lens Makers

@@ -55,7 +55,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       <div
         className="hero-section dark-anchor"
         style={{
-          background: 'linear-gradient(180deg, #070A13 0%, #0F1535 100%)',
+          background: 'linear-gradient(180deg, #070A13 0%, #FFF5EC 100%)',
           padding: '4px var(--screen-padding) 44px var(--screen-padding)',
           margin: 0,
           position: 'relative',
@@ -446,7 +446,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
             <button
               className="btn-primary-pill"
-              style={{ height: '42px', padding: '0 20px', fontSize: '14px', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)' }}
+              style={{ height: '42px', padding: '0 20px', fontSize: '14px', background: 'linear-gradient(135deg, #FF7A30, #FF7873)' }}
               onClick={() => onSelectTab('shop')}
             >
               Shop the Offer →
@@ -461,7 +461,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
       {/* 7. MEMBERSHIP TEASER CARD (Section 7 per Item 1) */}
       <div className="purple-shimmer-card fade-up-item" style={{ margin: '0 var(--screen-padding) 32px var(--screen-padding)', animationDelay: '160ms' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
-          <span style={{ fontSize: '12px', fontWeight: '800', color: '#7C4DFF', letterSpacing: '1.5px' }}>
+          <span style={{ fontSize: '12px', fontWeight: '800', color: '#8140DC', letterSpacing: '1.5px' }}>
             LENS MAKERS CLUB
           </span>
           <span className="badge-pill badge-purple" style={{ fontSize: '10px' }}>VIP PRIVILEGE</span>
@@ -487,7 +487,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
           <button
             className="btn-primary-pill"
-            style={{ height: '44px', padding: '0 22px', fontSize: '14px', background: 'linear-gradient(135deg, #7C4DFF, #FF4D8D)' }}
+            style={{ height: '44px', padding: '0 22px', fontSize: '14px', background: 'linear-gradient(135deg, #8140DC, #FF7873)' }}
             onClick={() => onSelectTab('membership')}
           >
             Join Club for ₹99 →
@@ -504,7 +504,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
         style={{ margin: '0 var(--screen-padding) 32px var(--screen-padding)', display: 'flex', alignItems: 'center', gap: '16px', animationDelay: '200ms' }}
       >
         <div className="pulse-glow-circle">
-          <i data-lucide="camera" style={{ width: '26px', height: '26px', color: '#FF4D8D' }} />
+          <i data-lucide="camera" style={{ width: '26px', height: '26px', color: '#FF7873' }} />
         </div>
         <div style={{ flex: 1 }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#FFFFFF', marginBottom: '4px' }}>
@@ -531,7 +531,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
 
         {/* Card 1: Aviator Gold Frame */}
         <div className="premium-special-card" onClick={() => onSelectTab('shop')}>
-          <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', borderRadius: '16px 0 0 16px', background: '#7C4DFF' }} />
+          <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', borderRadius: '16px 0 0 16px', background: '#8140DC' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: 0 }}>
             <div style={{ width: '60px', height: '60px', borderRadius: '10px', background: 'rgba(255,255,255,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
               <span style={{ fontSize: '28px' }}>🕶️</span>
@@ -551,7 +551,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
 
         {/* Card 2: Tortoise Classic */}
         <div className="premium-special-card" onClick={() => onSelectTab('shop')}>
-          <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', borderRadius: '16px 0 0 16px', background: '#7C4DFF' }} />
+          <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', borderRadius: '16px 0 0 16px', background: '#8140DC' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: 0 }}>
             <div style={{ width: '60px', height: '60px', borderRadius: '10px', background: 'rgba(255,255,255,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
               <span style={{ fontSize: '28px' }}>👓</span>
@@ -571,7 +571,7 @@ const HomeScreen = ({ onSelectTab, onReplaySplash, onReplayOnboarding, onOpenAut
 
         {/* Card 3: Round Titanium Lite */}
         <div className="premium-special-card" onClick={() => onSelectTab('shop')}>
-          <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', borderRadius: '16px 0 0 16px', background: '#7C4DFF' }} />
+          <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', borderRadius: '16px 0 0 16px', background: '#8140DC' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: 0 }}>
             <div style={{ width: '60px', height: '60px', borderRadius: '10px', background: 'rgba(255,255,255,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
               <span style={{ fontSize: '28px' }}>🥽</span>

@@ -311,7 +311,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
                 We sent a 6-digit code to +91 {mobileNumber ? mobileNumber.slice(-5).padStart(11, 'X ') : 'XXXXX XXXXX'}
               </p>
               <span 
-                style={{ color: '#FF4D8D', fontSize: '13px', fontWeight: '700', cursor: 'pointer', display: 'inline-block', marginTop: '6px' }}
+                style={{ color: '#FF7873', fontSize: '13px', fontWeight: '700', cursor: 'pointer', display: 'inline-block', marginTop: '6px' }}
                 onClick={() => setView('signup')}
               >
                 Change number
@@ -399,7 +399,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
               {/* Forgot Password Link */}
               <div style={{ textAlign: 'right', marginBottom: '24px' }}>
                 <span
-                  style={{ fontSize: '12px', color: '#FF4D8D', fontWeight: '700', cursor: 'pointer' }}
+                  style={{ fontSize: '12px', color: '#FF7873', fontWeight: '700', cursor: 'pointer' }}
                   onClick={() => setView('forgot')}
                 >
                   Forgot Password?
@@ -475,7 +475,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
               <button
                 type="button"
                 className="btn-primary-pill"
-                style={{ width: '100%', height: '44px', fontSize: '13px', background: 'linear-gradient(135deg, #7C4DFF 0%, #FF4D8D 100%)', boxShadow: '0 4px 15px rgba(124,77,255,0.4)' }}
+                style={{ width: '100%', height: '44px', fontSize: '13px', background: 'linear-gradient(135deg, #8140DC 0%, #FF7873 100%)', boxShadow: '0 4px 15px rgba(129,64,220,0.4)' }}
                 onClick={() => handleTabSwitch('signup')}
               >
                 <span>✨ Create Account</span>
@@ -637,17 +637,17 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
                 <div 
                   style={{
                     width: '20px', height: '20px', borderRadius: '6px', flexShrink: 0, marginTop: '2px',
-                    background: termsAgreed ? 'linear-gradient(135deg, #FF4D8D 0%, #C2185B 100%)' : 'rgba(27,31,74,0.8)',
+                    background: termsAgreed ? 'linear-gradient(135deg, #FF7873 0%, #E22F80 100%)' : 'rgba(255,240,224,0.8)',
                     border: termsAgreed ? 'none' : '1.5px solid rgba(255,255,255,0.3)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: termsAgreed ? '0 0 10px rgba(255,77,141,0.6)' : 'inset 0 1px 2px rgba(0,0,0,0.4)',
+                    boxShadow: termsAgreed ? '0 0 10px rgba(226,47,128,0.6)' : 'inset 0 1px 2px rgba(0,0,0,0.4)',
                     transition: 'all 200ms var(--spring-bezier)'
                   }}
                 >
                   {termsAgreed && <span style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '900' }}>✓</span>}
                 </div>
                 <span style={{ fontSize: '12px', color: '#A0A4C8', lineHeight: '1.4' }}>
-                  I agree to the <span style={{ color: '#FF4D8D', fontWeight: '700' }} onClick={(e) => { e.stopPropagation(); showToast('📜 Opening Terms of Service...'); }}>Terms of Service</span> and <span style={{ color: '#FF4D8D', fontWeight: '700' }} onClick={(e) => { e.stopPropagation(); showToast('🔒 Opening Privacy Policy...'); }}>Privacy Policy</span>
+                  I agree to the <span style={{ color: '#FF7873', fontWeight: '700' }} onClick={(e) => { e.stopPropagation(); showToast('📜 Opening Terms of Service...'); }}>Terms of Service</span> and <span style={{ color: '#FF7873', fontWeight: '700' }} onClick={(e) => { e.stopPropagation(); showToast('🔒 Opening Privacy Policy...'); }}>Privacy Policy</span>
                 </span>
               </div>
 
@@ -675,7 +675,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
               <div style={{ textAlign: 'center' }}>
                 <span style={{ fontSize: '13px', color: '#A0A4C8' }}>Already a member? </span>
                 <span
-                  style={{ fontSize: '13px', color: '#FF4D8D', fontWeight: '700', cursor: 'pointer' }}
+                  style={{ fontSize: '13px', color: '#FF7873', fontWeight: '700', cursor: 'pointer' }}
                   onClick={() => handleTabSwitch('login')}
                 >
                   Log In
@@ -758,7 +758,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
                 </span>
               ) : (
                 <span
-                  style={{ fontSize: '14px', color: '#FF4D8D', fontWeight: '800', cursor: 'pointer', textDecoration: 'underline' }}
+                  style={{ fontSize: '14px', color: '#FF7873', fontWeight: '800', cursor: 'pointer', textDecoration: 'underline' }}
                   onClick={() => {
                     setOtpTimer(30);
                     showToast('📱 New OTP sent! (Demo code: 123456)');
@@ -866,7 +866,7 @@ const AuthModal = ({ onLoginSuccess, onExploreGuest }) => {
               <span style={{ fontSize: '11px', color: '#6B6E9A', display: 'block', marginBottom: '8px' }}>Demo Mode Testing:</span>
               <button
                 type="button"
-                style={{ background: 'transparent', border: '1px solid #FF4D8D', color: '#FF4D8D', padding: '6px 14px', borderRadius: '999px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
+                style={{ background: 'transparent', border: '1px solid #FF7873', color: '#FF7873', padding: '6px 14px', borderRadius: '999px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
                 onClick={() => setView('reset-password')}
               >
                 Simulate Clicking Reset Link →

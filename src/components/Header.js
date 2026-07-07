@@ -67,7 +67,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activ
           width: '100%',
           maxWidth: '100%',
           zIndex: 100,
-          background: activeTab === 'home' ? '#070A13' : 'linear-gradient(180deg, #070A13 0%, #0F1535 100%)',
+          background: activeTab === 'home' ? '#070A13' : 'linear-gradient(180deg, #070A13 0%, #FFF5EC 100%)',
           border: 'none',
           borderRadius: 0,
           boxShadow: 'none',
@@ -242,7 +242,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activ
           style={{
             position: 'absolute', right: '50px', top: '8px', width: '32px', height: '32px',
             borderRadius: '16px',
-            background: isListening ? 'linear-gradient(135deg, #FF4D8D 0%, #00E5FF 100%)' : 'linear-gradient(135deg, rgba(0, 229, 255, 0.22) 0%, rgba(255, 77, 141, 0.22) 100%)',
+            background: isListening ? 'linear-gradient(135deg, #FF7873 0%, #00E5FF 100%)' : 'linear-gradient(135deg, rgba(0, 229, 255, 0.22) 0%, rgba(226,47,128, 0.22) 100%)',
             border: isListening ? '1.5px solid #FFFFFF' : '1px solid rgba(0, 229, 255, 0.55)',
             boxShadow: isListening ? '0 0 18px rgba(0, 229, 255, 0.9)' : '0 0 10px rgba(0, 229, 255, 0.35)',
             color: '#FFFFFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -295,7 +295,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activ
               style={{
                 position: 'absolute', top: '6px', right: '6px',
                 width: '8px', height: '8px', borderRadius: '4px',
-                background: '#FF4D8D', boxShadow: '0 0 8px rgba(255,77,141,0.9)'
+                background: '#FF7873', boxShadow: '0 0 8px rgba(226,47,128,0.9)'
               }}
             />
           )}
@@ -308,7 +308,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activ
           className="voice-search-hud fade-up-item"
           style={{
             position: 'absolute', top: '100%', left: 'var(--screen-padding)', right: 'var(--screen-padding)',
-            background: 'linear-gradient(135deg, rgba(15, 21, 53, 0.98) 0%, rgba(27, 31, 74, 0.98) 100%)',
+            background: 'linear-gradient(135deg, rgba(255,245,236, 0.98) 0%, rgba(255,240,224, 0.98) 100%)',
             border: '1.5px solid #00E5FF', borderRadius: '18px', padding: '16px', marginTop: '10px',
             boxShadow: '0 16px 48px rgba(0, 229, 255, 0.3), 0 8px 24px rgba(0, 0, 0, 0.7)',
             backdropFilter: 'blur(30px)', zIndex: 300, animation: 'screenFadeSlideIn 300ms forwards'
@@ -364,7 +364,7 @@ const Header = ({ onLogoClick, onSelectTab, onNotificationClick, onLogout, activ
           className="autocomplete-dropdown"
           style={{
             position: 'absolute', top: '100%', left: 'var(--screen-padding)', right: 'var(--screen-padding)',
-            background: '#0F1535',
+            background: '#FFF5EC',
             border: '1px solid #00E5FF',
             borderRadius: '16px',
             marginTop: '8px',

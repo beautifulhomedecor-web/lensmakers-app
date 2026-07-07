@@ -339,7 +339,7 @@ window.App = function App() {
 
             <button
               className="btn-primary-pill"
-              style={{ width: '100%', background: '#0F1535', color: '#FFFFFF', border: 'none', height: '48px', borderRadius: '999px', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
+              style={{ width: '100%', background: '#FFF5EC', color: '#FFFFFF', border: 'none', height: '48px', borderRadius: '999px', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
               onClick={() => {
                 alert('📍 GPS Auto-detection enabled! Using current device coordinates.');
                 setShowLocationModal(false);

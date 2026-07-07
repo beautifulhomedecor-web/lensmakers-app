@@ -262,7 +262,7 @@ const CartScreen = ({ onSelectTab }) => {
             <div className={`lens-toast-item toast-${toast.type}`}>
               <span>{toast.message}</span>
               {toast.undoCb && (
-                <button type="button" onClick={toast.undoCb} style={{ background: 'transparent', border: 'none', color: '#FF4D8D', fontWeight: '900', cursor: 'pointer', textDecoration: 'underline' }}>
+                <button type="button" onClick={toast.undoCb} style={{ background: 'transparent', border: 'none', color: '#FF7873', fontWeight: '900', cursor: 'pointer', textDecoration: 'underline' }}>
                   Undo
                 </button>
               )}
@@ -270,7 +270,7 @@ const CartScreen = ({ onSelectTab }) => {
           </div>
         )}
 
-        <div style={{ position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,77,141,0.22) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none', zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(226,47,128,0.22) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none', zIndex: 0 }} />
 
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '440px', margin: '20px auto 0', textAlign: 'center' }}>
           <div style={{ position: 'relative', width: '110px', height: '110px', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -340,7 +340,7 @@ const CartScreen = ({ onSelectTab }) => {
             <button
               type="button"
               className="btn-primary-pill"
-              style={{ flex: 1, height: '52px', fontSize: '14px', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)' }}
+              style={{ flex: 1, height: '52px', fontSize: '14px', background: 'linear-gradient(135deg, #FF7A30, #FF7873)' }}
               onClick={() => {
                 setCartItems([]);
                 setFreeItem(null);
@@ -365,7 +365,7 @@ const CartScreen = ({ onSelectTab }) => {
             <div className={`lens-toast-item toast-${toast.type}`}>
               <span>{toast.message}</span>
               {toast.undoCb && (
-                <button type="button" onClick={toast.undoCb} style={{ background: 'transparent', border: 'none', color: '#FF4D8D', fontWeight: '900', cursor: 'pointer' }}>
+                <button type="button" onClick={toast.undoCb} style={{ background: 'transparent', border: 'none', color: '#FF7873', fontWeight: '900', cursor: 'pointer' }}>
                   Undo
                 </button>
               )}
@@ -407,14 +407,14 @@ const CartScreen = ({ onSelectTab }) => {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flex: 1 }}>
                   <div style={{
                     width: '100%', height: '6px', borderRadius: '3px',
-                    background: isDone || isCurrent ? 'linear-gradient(90deg, #FF4D8D, #7C4DFF)' : 'rgba(255,255,255,0.12)',
+                    background: isDone || isCurrent ? 'linear-gradient(90deg, #FF7873, #8140DC)' : 'rgba(255,255,255,0.12)',
                     position: 'relative', transition: 'all 400ms ease'
                   }}>
                     {isCurrent && (
-                      <span style={{ position: 'absolute', right: 0, top: '-3px', width: '12px', height: '12px', borderRadius: '6px', background: '#FF4D8D', boxShadow: '0 0 10px #FF4D8D' }} />
+                      <span style={{ position: 'absolute', right: 0, top: '-3px', width: '12px', height: '12px', borderRadius: '6px', background: '#FF7873', boxShadow: '0 0 10px #FF7873' }} />
                     )}
                   </div>
-                  <span style={{ fontSize: '10px', fontWeight: isCurrent ? '800' : '600', color: isCurrent ? '#FFFFFF' : isDone ? '#FF4D8D' : '#A0A4C8', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: '10px', fontWeight: isCurrent ? '800' : '600', color: isCurrent ? '#FFFFFF' : isDone ? '#FF7873' : '#A0A4C8', whiteSpace: 'nowrap' }}>
                     {isDone ? '✓ ' : ''}{label}
                   </span>
                 </div>
@@ -435,8 +435,8 @@ const CartScreen = ({ onSelectTab }) => {
                     className="glass-card-standard"
                     style={{
                       padding: '16px', cursor: 'pointer',
-                      border: isSel ? '2px solid #FF4D8D' : '1px solid rgba(255,255,255,0.12)',
-                      background: isSel ? 'rgba(255,77,141,0.1)' : 'rgba(27,31,74,0.6)',
+                      border: isSel ? '2px solid #FF7873' : '1px solid rgba(255,255,255,0.12)',
+                      background: isSel ? 'rgba(226,47,128,0.1)' : 'rgba(255,240,224,0.6)',
                       transition: 'all 200ms ease'
                     }}
                     onClick={() => {
@@ -449,7 +449,7 @@ const CartScreen = ({ onSelectTab }) => {
                         <span style={{ fontSize: '15px', fontWeight: '900', color: '#FFFFFF' }}>{addr.label} — {addr.name}</span>
                         {addr.isDefault && <span className="badge-pill badge-green" style={{ fontSize: '9px' }}>DEFAULT</span>}
                       </div>
-                      <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF4D8D' : '2px solid #A0A4C8', background: 'rgba(255, 255, 255, 0.95)' }} />
+                      <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF7873' : '2px solid #A0A4C8', background: 'rgba(255, 255, 255, 0.95)' }} />
                     </div>
                     <div style={{ fontSize: '13px', color: '#A0A4C8', lineHeight: '1.4', margin: '6px 0 8px' }}>
                       {addr.address}, {addr.city}
@@ -464,7 +464,7 @@ const CartScreen = ({ onSelectTab }) => {
                 style={{ padding: '16px', borderRadius: '14px', border: '1.5px dashed rgba(255,255,255,0.25)', cursor: 'pointer' }}
                 onClick={() => showToast("📝 Opening New Address Form Modal...", 'info')}
               >
-                <span style={{ fontSize: '14px', fontWeight: '800', color: '#FF4D8D' }}>+ Add New Delivery Address</span>
+                <span style={{ fontSize: '14px', fontWeight: '800', color: '#FF7873' }}>+ Add New Delivery Address</span>
               </div>
             </div>
 
@@ -474,7 +474,7 @@ const CartScreen = ({ onSelectTab }) => {
                 type="checkbox"
                 checked={useSameAddress}
                 onChange={(e) => setUseSameAddress(e.target.checked)}
-                style={{ width: '20px', height: '20px', accentColor: '#FF4D8D', cursor: 'pointer' }}
+                style={{ width: '20px', height: '20px', accentColor: '#FF7873', cursor: 'pointer' }}
               />
             </div>
 
@@ -482,7 +482,7 @@ const CartScreen = ({ onSelectTab }) => {
               <button
                 type="button"
                 className="btn-primary-pill w-100"
-                style={{ height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)' }}
+                style={{ height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF7873)' }}
                 onClick={() => {
                   setCheckoutStep(2);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -510,7 +510,7 @@ const CartScreen = ({ onSelectTab }) => {
                   <span style={{ fontSize: '11px', fontWeight: '800', color: '#A0A4C8', textTransform: 'uppercase' }}>PAIR #{index + 1} ({item.brand})</span>
                   <button
                     type="button"
-                    style={{ background: 'transparent', border: 'none', color: '#FF4D8D', fontSize: '12px', fontWeight: '800', cursor: 'pointer', textDecoration: 'underline' }}
+                    style={{ background: 'transparent', border: 'none', color: '#FF7873', fontSize: '12px', fontWeight: '800', cursor: 'pointer', textDecoration: 'underline' }}
                     onClick={() => showToast(`Editing lens specs for ${item.name.split('#')[0]}`, 'info')}
                   >
                     ✏️ Edit Lenses
@@ -572,7 +572,7 @@ const CartScreen = ({ onSelectTab }) => {
               <button
                 type="button"
                 className="btn-primary-pill w-100"
-                style={{ height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)' }}
+                style={{ height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF7873)' }}
                 onClick={() => {
                   setCheckoutStep(3);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -596,7 +596,7 @@ const CartScreen = ({ onSelectTab }) => {
                   <span>🛒 Order Summary ({cartItems.length + (freeItem ? 1 : 0)} items)</span>
                   <span style={{ fontSize: '12px', color: '#A0A4C8' }}>{showOrderSummaryMini ? '▲' : '▼'}</span>
                 </span>
-                <span style={{ fontSize: '16px', fontWeight: '900', color: '#FF4D8D' }}>₹{totalDue}</span>
+                <span style={{ fontSize: '16px', fontWeight: '900', color: '#FF7873' }}>₹{totalDue}</span>
               </div>
               {showOrderSummaryMini && (
                 <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -613,7 +613,7 @@ const CartScreen = ({ onSelectTab }) => {
                     </div>
                   )}
                   <div className="flex-between">
-                    <span style={{ color: '#7C4DFF' }}>👑 VIP Club Discount & Promo</span>
+                    <span style={{ color: '#8140DC' }}>👑 VIP Club Discount & Promo</span>
                     <span style={{ color: '#43A047', fontWeight: '800' }}>- ₹{memberDiscount + promoDiscount}</span>
                   </div>
                 </div>
@@ -630,8 +630,8 @@ const CartScreen = ({ onSelectTab }) => {
                     className="glass-card-standard"
                     style={{
                       padding: '16px', cursor: 'pointer',
-                      border: isSel ? '2px solid #FF4D8D' : '1px solid rgba(255,255,255,0.12)',
-                      background: isSel ? 'rgba(255,77,141,0.1)' : 'rgba(27,31,74,0.6)',
+                      border: isSel ? '2px solid #FF7873' : '1px solid rgba(255,255,255,0.12)',
+                      background: isSel ? 'rgba(226,47,128,0.1)' : 'rgba(255,240,224,0.6)',
                       transition: 'all 200ms ease'
                     }}
                     onClick={() => {
@@ -646,7 +646,7 @@ const CartScreen = ({ onSelectTab }) => {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span className="badge-pill badge-purple" style={{ fontSize: '9px' }}>{pay.badge}</span>
-                        <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF4D8D' : '2px solid #A0A4C8', background: 'rgba(255, 255, 255, 0.95)' }} />
+                        <div style={{ width: '20px', height: '20px', borderRadius: '10px', border: isSel ? '6px solid #FF7873' : '2px solid #A0A4C8', background: 'rgba(255, 255, 255, 0.95)' }} />
                       </div>
                     </div>
                     <div style={{ fontSize: '12px', color: '#A0A4C8', paddingLeft: '32px' }}>{pay.sub}</div>
@@ -667,7 +667,7 @@ const CartScreen = ({ onSelectTab }) => {
               <button
                 type="button"
                 className="btn-primary-pill w-100"
-                style={{ height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)' }}
+                style={{ height: '54px', fontSize: '16px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF7873)' }}
                 onClick={() => {
                   setCheckoutStep(4);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -728,7 +728,7 @@ const CartScreen = ({ onSelectTab }) => {
             <div className="glass-card-standard mb-3" style={{ padding: '16px' }}>
               <div className="flex-between mb-1">
                 <h3 style={{ fontSize: '14px', fontWeight: '800', color: '#FFFFFF', margin: 0 }}>2. Shipping Address</h3>
-                <button type="button" style={{ background: 'transparent', border: 'none', color: '#FF4D8D', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }} onClick={() => setCheckoutStep(1)}>
+                <button type="button" style={{ background: 'transparent', border: 'none', color: '#FF7873', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }} onClick={() => setCheckoutStep(1)}>
                   Change
                 </button>
               </div>
@@ -740,7 +740,7 @@ const CartScreen = ({ onSelectTab }) => {
             <div className="glass-card-standard mb-4" style={{ padding: '16px' }}>
               <div className="flex-between mb-1">
                 <h3 style={{ fontSize: '14px', fontWeight: '800', color: '#FFFFFF', margin: 0 }}>3. Payment Method</h3>
-                <button type="button" style={{ background: 'transparent', border: 'none', color: '#FF4D8D', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }} onClick={() => setCheckoutStep(3)}>
+                <button type="button" style={{ background: 'transparent', border: 'none', color: '#FF7873', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }} onClick={() => setCheckoutStep(3)}>
                   Change
                 </button>
               </div>
@@ -750,14 +750,14 @@ const CartScreen = ({ onSelectTab }) => {
               </div>
             </div>
 
-            <div className="glass-card-glow-pink mb-4" style={{ padding: '18px', border: '1.5px solid #FF4D8D' }}>
+            <div className="glass-card-glow-pink mb-4" style={{ padding: '18px', border: '1.5px solid #FF7873' }}>
               <div className="flex-between mb-2" style={{ fontSize: '14px' }}>
                 <span style={{ color: '#A0A4C8' }}>Subtotal ({cartItems.length} item{cartItems.length > 1 ? 's' : ''})</span>
                 <span style={{ color: '#FFFFFF', fontWeight: '700' }}>₹{subtotal}</span>
               </div>
               {isMember && (
                 <div className="flex-between mb-2" style={{ fontSize: '14px' }}>
-                  <span style={{ color: '#7C4DFF', fontWeight: '700' }}>👑 Member Discount (25% Off)</span>
+                  <span style={{ color: '#8140DC', fontWeight: '700' }}>👑 Member Discount (25% Off)</span>
                   <span style={{ color: '#43A047', fontWeight: '800' }}>- ₹{memberDiscount}</span>
                 </div>
               )}
@@ -773,7 +773,7 @@ const CartScreen = ({ onSelectTab }) => {
               </div>
               <div className="flex-between pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.15)', fontSize: '20px', fontWeight: '900' }}>
                 <span style={{ color: '#FFFFFF' }}>Total Payable:</span>
-                <span style={{ color: '#FF4D8D', fontSize: '26px' }}>₹{totalDue}</span>
+                <span style={{ color: '#FF7873', fontSize: '26px' }}>₹{totalDue}</span>
               </div>
               <div style={{ fontSize: '12px', color: '#43A047', fontWeight: '700', textAlign: 'right', marginTop: '4px' }}>
                 You save ₹{totalSavings} total on this order! 🎉
@@ -785,7 +785,7 @@ const CartScreen = ({ onSelectTab }) => {
                 type="checkbox"
                 checked={agreedTerms}
                 onChange={(e) => setAgreedTerms(e.target.checked)}
-                style={{ width: '18px', height: '18px', accentColor: '#FF4D8D', cursor: 'pointer' }}
+                style={{ width: '18px', height: '18px', accentColor: '#FF7873', cursor: 'pointer' }}
               />
               <span style={{ fontSize: '11px', color: '#A0A4C8', lineHeight: '1.4' }}>
                 By placing this order you agree to our <strong style={{ color: '#FFFFFF' }}>Terms of Service</strong> and <strong style={{ color: '#FFFFFF' }}>30-Day Free Return Policy</strong>.
@@ -796,7 +796,7 @@ const CartScreen = ({ onSelectTab }) => {
               <button
                 type="button"
                 className="btn-primary-pill w-100"
-                style={{ height: '60px', fontSize: '18px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)', boxShadow: '0 10px 36px rgba(255,77,141,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                style={{ height: '60px', fontSize: '18px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF7873)', boxShadow: '0 10px 36px rgba(226,47,128,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
                 onClick={handlePlaceOrder}
               >
                 <span>🔒 Place Order · ₹{totalDue}</span>
@@ -819,7 +819,7 @@ const CartScreen = ({ onSelectTab }) => {
           <div className={`lens-toast-item toast-${toast.type}`}>
             <span>{toast.message}</span>
             {toast.undoCb && (
-              <button type="button" onClick={toast.undoCb} style={{ background: 'transparent', border: 'none', color: '#FF4D8D', fontWeight: '900', cursor: 'pointer', textDecoration: 'underline' }}>
+              <button type="button" onClick={toast.undoCb} style={{ background: 'transparent', border: 'none', color: '#FF7873', fontWeight: '900', cursor: 'pointer', textDecoration: 'underline' }}>
                 Undo
               </button>
             )}
@@ -873,7 +873,7 @@ const CartScreen = ({ onSelectTab }) => {
       ) : (
         <>
           {!freeItem && subtotal >= 1699 && (
-            <div className="bogo-glow-banner mb-4 fade-up-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', border: '1.5px solid #43A047', background: 'linear-gradient(135deg, rgba(67,160,71,0.15), rgba(27,31,74,0.8))' }}>
+            <div className="bogo-glow-banner mb-4 fade-up-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', border: '1.5px solid #43A047', background: 'linear-gradient(135deg, rgba(67,160,71,0.15), rgba(255,240,224,0.8))' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ width: '46px', height: '46px', borderRadius: '23px', background: 'rgba(67,160,71,0.2)', border: '1.5px solid #43A047', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', flexShrink: 0 }}>
                   🎁
@@ -888,7 +888,7 @@ const CartScreen = ({ onSelectTab }) => {
               <button
                 type="button"
                 className="btn-primary-pill"
-                style={{ padding: '8px 16px', height: '38px', fontSize: '12px', fontWeight: '900', background: 'linear-gradient(135deg, #FF4D8D, #C2185B)', whiteSpace: 'nowrap' }}
+                style={{ padding: '8px 16px', height: '38px', fontSize: '12px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7873, #E22F80)', whiteSpace: 'nowrap' }}
                 onClick={() => {
                   setSelectedFreeCandidate(filteredBogoFrames[0] || null);
                   setShowBogoModal(true);
@@ -928,7 +928,7 @@ const CartScreen = ({ onSelectTab }) => {
                       padding: '16px', position: 'relative', zIndex: 2,
                       transform: isSwiped ? 'translateX(-80px)' : 'translateX(0)',
                       transition: 'transform 250ms var(--spring-bezier)',
-                      background: 'rgba(27, 31, 74, 0.85)'
+                      background: 'rgba(255,240,224, 0.85)'
                     }}
                     onClick={() => setSwipedItemId(isSwiped ? null : item.id)}
                   >
@@ -952,7 +952,7 @@ const CartScreen = ({ onSelectTab }) => {
                             ₹{itemSubtotal}
                           </span>
                           {isMember && (
-                            <span style={{ fontSize: '13px', fontWeight: '800', color: '#7C4DFF' }}>
+                            <span style={{ fontSize: '13px', fontWeight: '800', color: '#8140DC' }}>
                               Your price: ₹{itemMemberPrice}
                             </span>
                           )}
@@ -977,7 +977,7 @@ const CartScreen = ({ onSelectTab }) => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.06)', padding: '2px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.12)' }}>
                           <button
                             type="button"
-                            style={{ width: '28px', height: '28px', borderRadius: '14px', background: 'rgba(255,255,255,0.1)', border: 'none', color: '#FF4D8D', fontSize: '16px', fontWeight: '900', cursor: 'pointer' }}
+                            style={{ width: '28px', height: '28px', borderRadius: '14px', background: 'rgba(255,255,255,0.1)', border: 'none', color: '#FF7873', fontSize: '16px', fontWeight: '900', cursor: 'pointer' }}
                             onClick={() => handleQtyChange(item.id, -1)}
                           >
                             −
@@ -987,7 +987,7 @@ const CartScreen = ({ onSelectTab }) => {
                           </span>
                           <button
                             type="button"
-                            style={{ width: '28px', height: '28px', borderRadius: '14px', background: 'rgba(255,255,255,0.1)', border: 'none', color: '#FF4D8D', fontSize: '16px', fontWeight: '900', cursor: 'pointer' }}
+                            style={{ width: '28px', height: '28px', borderRadius: '14px', background: 'rgba(255,255,255,0.1)', border: 'none', color: '#FF7873', fontSize: '16px', fontWeight: '900', cursor: 'pointer' }}
                             onClick={() => handleQtyChange(item.id, 1)}
                           >
                             +
@@ -1011,7 +1011,7 @@ const CartScreen = ({ onSelectTab }) => {
             })}
 
             {freeItem && (
-              <div className="glass-card-glow-pink" style={{ padding: '16px', border: '1.5px solid #43A047', position: 'relative', background: 'linear-gradient(135deg, rgba(67,160,71,0.12), rgba(27,31,74,0.8))' }}>
+              <div className="glass-card-glow-pink" style={{ padding: '16px', border: '1.5px solid #43A047', position: 'relative', background: 'linear-gradient(135deg, rgba(67,160,71,0.12), rgba(255,240,224,0.8))' }}>
                 <span style={{ position: 'absolute', top: '10px', right: '10px', background: '#43A047', color: '#FFFFFF', padding: '3px 8px', borderRadius: '999px', fontSize: '9px', fontWeight: '900' }}>
                   🎁 FREE BOGO PAIR
                 </span>
@@ -1068,7 +1068,7 @@ const CartScreen = ({ onSelectTab }) => {
                         </div>
                         <div>
                           <div style={{ fontSize: '13px', fontWeight: '800', color: '#FFFFFF' }}>{item.name.split('#')[0]}</div>
-                          <div style={{ fontSize: '12px', color: '#FF4D8D', fontWeight: '700' }}>₹{item.price}</div>
+                          <div style={{ fontSize: '12px', color: '#FF7873', fontWeight: '700' }}>₹{item.price}</div>
                         </div>
                       </div>
                       <button
@@ -1097,7 +1097,7 @@ const CartScreen = ({ onSelectTab }) => {
                   onChange={(e) => setPromoInput(e.target.value)}
                   style={{
                     width: '100%', height: '42px', padding: '0 14px', borderRadius: '999px',
-                    background: promoStatus === 'success' ? 'rgba(67,160,71,0.15)' : promoStatus === 'error' ? 'rgba(239,83,80,0.15)' : 'rgba(27,31,74,0.8)',
+                    background: promoStatus === 'success' ? 'rgba(67,160,71,0.15)' : promoStatus === 'error' ? 'rgba(239,83,80,0.15)' : 'rgba(255,240,224,0.8)',
                     border: promoStatus === 'success' ? '1.5px solid #43A047' : promoStatus === 'error' ? '1.5px solid #EF5350' : '1px solid rgba(255,255,255,0.2)',
                     color: '#FFFFFF', fontSize: '13px', outline: 'none', textTransform: 'uppercase', fontFamily: 'monospace',
                     transition: 'all 200ms ease'
@@ -1105,18 +1105,18 @@ const CartScreen = ({ onSelectTab }) => {
                 />
                 {showConfetti && (
                   <div style={{ position: 'absolute', top: '50%', right: '20px', pointerEvents: 'none' }}>
-                    <span className="confetti-dot" style={{ background: '#FF4D8D', '--dx': '-25px', '--dy': '-25px' }} />
+                    <span className="confetti-dot" style={{ background: '#FF7873', '--dx': '-25px', '--dy': '-25px' }} />
                     <span className="confetti-dot" style={{ background: '#43A047', '--dx': '20px', '--dy': '-30px' }} />
                     <span className="confetti-dot" style={{ background: '#C9A876', '--dx': '25px', '--dy': '15px' }} />
                     <span className="confetti-dot" style={{ background: '#29B6F6', '--dx': '-20px', '--dy': '20px' }} />
-                    <span className="confetti-dot" style={{ background: '#7C4DFF', '--dx': '0px', '--dy': '-35px' }} />
+                    <span className="confetti-dot" style={{ background: '#8140DC', '--dx': '0px', '--dy': '-35px' }} />
                   </div>
                 )}
               </div>
               <button
                 type="submit"
                 className="btn-secondary-pill"
-                style={{ height: '42px', padding: '0 20px', fontSize: '13px', borderColor: '#FF4D8D', color: '#FF4D8D' }}
+                style={{ height: '42px', padding: '0 20px', fontSize: '13px', borderColor: '#FF7873', color: '#FF7873' }}
               >
                 Apply
               </button>
@@ -1148,7 +1148,7 @@ const CartScreen = ({ onSelectTab }) => {
               )}
               {isMember && (
                 <div className="flex-between">
-                  <span style={{ color: '#7C4DFF', fontWeight: '700' }}>Member Discount (25%):</span>
+                  <span style={{ color: '#8140DC', fontWeight: '700' }}>Member Discount (25%):</span>
                   <span style={{ color: '#43A047', fontWeight: '800' }}>- ₹{memberDiscount}</span>
                 </div>
               )}
@@ -1165,11 +1165,11 @@ const CartScreen = ({ onSelectTab }) => {
                 </span>
               </div>
 
-              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, #FF4D8D, transparent)', margin: '6px 0' }} />
+              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, #FF7873, transparent)', margin: '6px 0' }} />
 
               <div className="flex-between" style={{ fontSize: '20px', fontWeight: '900' }}>
                 <span style={{ color: '#FFFFFF' }}>TOTAL:</span>
-                <span style={{ color: '#FF4D8D', fontSize: '26px' }}>₹{totalDue}</span>
+                <span style={{ color: '#FF7873', fontSize: '26px' }}>₹{totalDue}</span>
               </div>
 
               {totalSavings > 0 && (
@@ -1184,7 +1184,7 @@ const CartScreen = ({ onSelectTab }) => {
             <button
               type="button"
               className="btn-primary-pill w-100"
-              style={{ height: '54px', fontSize: '17px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF4D8D)', boxShadow: '0 8px 32px rgba(255,77,141,0.6)' }}
+              style={{ height: '54px', fontSize: '17px', fontWeight: '900', background: 'linear-gradient(135deg, #FF7A30, #FF7873)', boxShadow: '0 8px 32px rgba(226,47,128,0.6)' }}
               onClick={handleStartCheckout}
             >
               <span>Proceed to Checkout · ₹{totalDue} →</span>
@@ -1228,7 +1228,7 @@ const CartScreen = ({ onSelectTab }) => {
                 placeholder="Search eligible free frames..."
                 value={bogoSearch}
                 onChange={(e) => setBogoSearch(e.target.value)}
-                style={{ width: '100%', height: '44px', paddingLeft: '42px', paddingRight: '14px', borderRadius: '999px', background: 'rgba(27,31,74,0.8)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', fontSize: '13px', outline: 'none' }}
+                style={{ width: '100%', height: '44px', paddingLeft: '42px', paddingRight: '14px', borderRadius: '999px', background: 'rgba(255,240,224,0.8)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFFFFF', fontSize: '13px', outline: 'none' }}
               />
             </div>
 
@@ -1239,7 +1239,7 @@ const CartScreen = ({ onSelectTab }) => {
                   type="button"
                   style={{
                     padding: '6px 16px', borderRadius: '999px', fontSize: '12px', fontWeight: '700',
-                    background: bogoFilter === cat ? 'linear-gradient(135deg, #FF4D8D, #C2185B)' : 'rgba(255,255,255,0.06)',
+                    background: bogoFilter === cat ? 'linear-gradient(135deg, #FF7873, #E22F80)' : 'rgba(255,255,255,0.06)',
                     color: '#FFFFFF', border: bogoFilter === cat ? 'none' : '1px solid rgba(255,255,255,0.15)', cursor: 'pointer'
                   }}
                   onClick={() => setBogoFilter(cat)}
@@ -1258,14 +1258,14 @@ const CartScreen = ({ onSelectTab }) => {
                     className="glass-card-standard"
                     style={{
                       padding: '12px', cursor: 'pointer', position: 'relative',
-                      border: isSelected ? '2.5px solid #FF4D8D' : '1px solid rgba(255,255,255,0.12)',
-                      background: isSelected ? 'rgba(255,77,141,0.12)' : 'rgba(27,31,74,0.6)',
+                      border: isSelected ? '2.5px solid #FF7873' : '1px solid rgba(255,255,255,0.12)',
+                      background: isSelected ? 'rgba(226,47,128,0.12)' : 'rgba(255,240,224,0.6)',
                       transform: isSelected ? 'scale(1.02)' : 'scale(1)', transition: 'all 200ms ease'
                     }}
                     onClick={() => setSelectedFreeCandidate(item)}
                   >
                     {isSelected && (
-                      <span style={{ position: 'absolute', top: '8px', right: '8px', width: '22px', height: '22px', borderRadius: '11px', background: '#FF4D8D', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '900', zIndex: 10 }}>
+                      <span style={{ position: 'absolute', top: '8px', right: '8px', width: '22px', height: '22px', borderRadius: '11px', background: '#FF7873', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '900', zIndex: 10 }}>
                         ✓
                       </span>
                     )}
